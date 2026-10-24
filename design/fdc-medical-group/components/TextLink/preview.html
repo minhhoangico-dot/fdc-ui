@@ -1,0 +1,8 @@
+<!-- @dsCard group="Atoms" height=72 subtitle="default and custom label" -->
+<div id="root" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;padding:16px;font-family:var(--font-sans)"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h(F.TextLink, {href: '#'}),
+  h(F.TextLink, {href: '#'}, 'Xem bảng giá dịch vụ')));
+</script>

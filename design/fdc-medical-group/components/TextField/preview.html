@@ -1,0 +1,10 @@
+<!-- @dsCard group="Atoms" height=340 subtitle="label, hint, error, icon, multiline" -->
+<div id="root" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;padding:16px"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h(F.TextField, {label: 'Họ và tên', icon: 'ui-user', autoComplete: 'name', required: true}),
+  h(F.TextField, {label: 'Mã bệnh nhân', hint: 'In ở góc trên phiếu khám'}),
+  h(F.TextField, {label: 'Năm sinh', defaultValue: '58', error: 'Nhập năm sinh gồm 4 chữ số, ví dụ 1958'}),
+  h(F.TextField, {label: 'Nội dung', icon: 'pencil-alt-2', multiline: true, rows: 3, hint: 'Không bắt buộc'})));
+</script>

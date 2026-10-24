@@ -1,0 +1,40 @@
+.ErrorSummary {
+  box-sizing: border-box;
+  padding: var(--space-15) var(--space-20);
+  border: var(--border-width-heavy) solid var(--status-error-text);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-family: var(--font-body);
+}
+.ErrorSummary:focus-visible {
+  box-sizing: border-box;
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+.Title {
+  margin: 0 0 var(--space-10);
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text-default);
+}
+.List {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin: 0;
+  padding-inline-start: var(--space-20);
+}
+.Link {
+  color: var(--status-error-text);
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-decoration: underline;
+}
+.Link:focus-visible {
+  box-sizing: border-box;
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}

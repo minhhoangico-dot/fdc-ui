@@ -1,0 +1,8 @@
+<!-- @dsCard group="Molecules" height=330 subtitle="radio group; taken slots say Đã kín" -->
+<div id="root" style="padding:16px;max-width:560px"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+var slots = [{time:'07:30',taken:true},{time:'08:00'},{time:'08:30',taken:true},{time:'09:00'},{time:'09:30'},{time:'10:00',taken:true},{time:'14:00'},{time:'14:30'},{time:'15:00'}];
+ReactDOM.createRoot(document.getElementById('root')).render(
+  h(F.TimeSlotPicker, {label: 'Chọn giờ khám, thứ Bảy 24/10', slots: slots, defaultValue: '09:00'}));
+</script>

@@ -1,0 +1,8 @@
+<!-- @dsCard group="Molecules" height=190 subtitle="date of birth as Ngày / Tháng / Năm" -->
+<div id="root" style="padding:16px"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(F.Stack, {gap: 30},
+  h(F.DateInput, {label: 'Ngày sinh của người bệnh', required: true}),
+  h(F.DateInput, {label: 'Ngày sinh', defaultValue: {day: '31', month: '2', year: '1950'}, error: 'Ngày sinh không có thật, vui lòng kiểm tra lại'})));
+</script>

@@ -1,0 +1,9 @@
+<!-- @dsCard group="Molecules" height=170 subtitle="nursing home F-D-C promise" -->
+<div id="root" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;padding:16px;font-family:var(--font-sans)"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h(F.ValueCard, {title: 'F – Family'}, 'Người cao tuổi như người cha, người mẹ thứ hai. Viện là ngôi nhà, là gia đình thứ hai của các Cụ.'),
+  h(F.ValueCard, {title: 'D – Doctor'}, 'Mang đến cho người cao tuổi một ngôi nhà thứ hai với tất cả những điều tốt đẹp (D cũng là Dream).'),
+  h(F.ValueCard, {title: 'C – Center'}, 'Chăm sóc các Cụ bằng tất cả tấm lòng, chu đáo từng bữa ăn, giấc ngủ (C cũng là Caring).')));
+</script>

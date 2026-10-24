@@ -1,0 +1,9 @@
+<!-- @dsCard group="Molecules" height=330 subtitle="clinic service grid" -->
+<div id="root" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;background:var(--brand-200);padding:16px;font-family:var(--font-sans)"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h(F.ServiceCard, {image: '/_blob/084c3730c644e4443e89074dc3a2c8ef', title: 'Khám Chữa Bệnh Đa khoa', href: '#', excerpt: 'Các bác sĩ giàu kinh nghiệm từ bệnh viện đại học Y, bệnh viện Nhi Trung Ương, bệnh viện phụ sản Hà Nội và các bệnh viện tuyến đầu khác.'}),
+  h(F.ServiceCard, {image: '/_blob/13805f79e70e253ecc2b61d88d7bfea3', title: 'Khám Chữa Bệnh Tại Nhà', href: '#', excerpt: 'Đơn vị đi đầu cả nước trong lĩnh vực bác sĩ gia đình, làm mô hình mẫu cho nhiều đoàn công tác của Bộ Y tế.'}),
+  h(F.ServiceCard, {image: '/_blob/bb20dbd715d41c289e4a1642ddead96e', title: 'Tiêm Chủng Vắc Xin', href: '#', excerpt: 'Phòng tiêm phục vụ khách hàng của trung tâm từ năm 2012, có đầy đủ vắc xin của các hãng lớn.'})));
+</script>

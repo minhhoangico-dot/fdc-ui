@@ -1,0 +1,8 @@
+<!-- @dsCard group="Layout" height=90 subtitle="horizontal, wraps on phones" -->
+<div id="root" style="padding:16px"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(F.Inline, {gap: 10},
+  h(F.Button, null, 'Quay lại'),
+  h(F.Button, {variant: 'primary'}, 'Tiếp tục')));
+</script>

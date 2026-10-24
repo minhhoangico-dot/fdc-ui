@@ -1,0 +1,27 @@
+import { Meta, ColorPalette, ColorItem } from '@storybook/blocks';
+import tokens from '../../design/fdc-medical-group/tokens.json';
+
+<Meta title="Tokens/Colors" />
+
+# Colors
+
+From Claude Design (`design/fdc-medical-group/tokens.json`). Components use the **semantic** names (`action-primary-bg`, `text-muted`…), which point at the palette and follow the theme.
+
+<ColorPalette>
+  {tokens.color.tokens
+    .filter((t) => typeof t.value !== 'string' || !t.value.startsWith('{'))
+    .map((t) => (
+      <ColorItem
+        key={t.name}
+        title={t.name}
+        subtitle={t.usage}
+        colors={typeof t.value === 'string' ? { Both: t.value } : { 'Phòng khám': t.value.clinic, 'Dưỡng lão': t.value['nursing-home'] }}
+      />
+    ))}
+</ColorPalette>
+
+## Semantic names
+
+| Token | Points to | Use |
+|---|---|---|
+{tokens.color.tokens.filter((t) => typeof t.value === 'string' && t.value.startsWith('{')).map((t) => `| \`${t.name}\` | \`${t.value}\` | ${t.usage} |`).join('\n')}

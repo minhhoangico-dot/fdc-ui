@@ -1,0 +1,53 @@
+.ServiceAccordion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  font-family: var(--font-body);
+}
+.Heading {
+  margin: 0;
+  font: inherit;
+}
+.Trigger {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-10);
+  inline-size: 100%;
+  min-block-size: var(--control-height);
+  padding: var(--space-10) var(--space-15);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--action-primary-bg);
+  color: var(--text-on-action);
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: start;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+:global([data-theme='nursing-home']) .Trigger {
+  box-sizing: border-box;
+  border-radius: var(--radius-leaf) 0;
+}
+.Trigger:hover {
+  background: var(--action-primary-bg-hover);
+}
+.Trigger:focus-visible {
+  box-sizing: border-box;
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+.Panel {
+  box-sizing: border-box;
+  padding: var(--space-10) var(--space-15) 0;
+}
+.Text {
+  margin: 0 0 var(--space-5);
+  font-size: 1.125rem;
+  line-height: 1.55;
+  color: var(--text-default);
+}

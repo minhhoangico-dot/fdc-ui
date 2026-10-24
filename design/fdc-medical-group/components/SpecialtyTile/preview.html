@@ -1,0 +1,10 @@
+<!-- @dsCard group="Molecules" height=170 subtitle="specialty list" -->
+<div id="root" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;background:var(--surface-alt);padding:16px;font-family:var(--font-sans)"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h(F.SpecialtyTile, {image: '/_blob/747baae0a10f54541fbf6d2e9d5fb774', title: 'Khám bệnh từ xa', href: '#'}),
+  h(F.SpecialtyTile, {image: '/_blob/0db432df254835b00e413303f6a66923', title: 'Khám chữa bệnh tại nhà', href: '#'}),
+  h(F.SpecialtyTile, {image: '/_blob/5741429a410f50509b836c5d55a90ec8', title: 'Khoa nhi', href: '#'}),
+  h(F.SpecialtyTile, {image: '/_blob/95ba1df8e33f800deadd25c4d74f6279', title: 'Khoa nội', href: '#'})));
+</script>

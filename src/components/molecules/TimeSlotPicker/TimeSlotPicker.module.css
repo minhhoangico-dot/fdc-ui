@@ -1,0 +1,108 @@
+.TimeSlotPicker {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: var(--font-body);
+}
+.Legend {
+  box-sizing: border-box;
+  padding: 0;
+  margin-block-end: var(--space-5);
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text-default);
+}
+.Hint {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+.Error {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--status-error-text);
+}
+.Empty {
+  margin: 0;
+  font-size: 1.125rem;
+  color: var(--text-default);
+}
+.Grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 7rem), 1fr));
+  gap: var(--space-10);
+}
+.Slot {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-block-size: calc(var(--control-height) + var(--space-10));
+  padding: var(--space-5) var(--space-10);
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-default);
+  cursor: pointer;
+}
+.Radio {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+.Time {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.Taken {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.Slot:hover:not([data-taken]) {
+  box-sizing: border-box;
+  border-color: var(--action-primary-bg);
+  background: var(--brand-50);
+}
+.Slot:has(.Radio:focus-visible) {
+  box-sizing: border-box;
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+.Slot:where([data-selected]) {
+  box-sizing: border-box;
+  border-color: var(--action-primary-bg);
+  background: var(--action-primary-bg);
+  color: var(--text-on-action);
+}
+.Slot:where([data-taken]) {
+  box-sizing: border-box;
+  border-style: dashed;
+  background: var(--surface-alt);
+  cursor: not-allowed;
+}
+.Slot:where([data-taken]) .Time {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+.TimeSlotPicker:where([data-invalid]) .Slot:not([data-taken]) {
+  box-sizing: border-box;
+  border: var(--border-width-strong) solid var(--status-error-text);
+}
+@media (forced-colors: active) {
+  .Slot:where([data-selected]) {
+  box-sizing: border-box;
+    border: var(--border-width-heavy) solid Highlight;
+  }
+}

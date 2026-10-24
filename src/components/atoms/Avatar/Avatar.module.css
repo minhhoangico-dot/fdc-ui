@@ -1,0 +1,23 @@
+.Avatar {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: var(--radius-round);
+  background: var(--brand-100);
+  color: var(--brand-800);
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+.Avatar:where([data-ring]) {
+  box-sizing: border-box;
+  border: var(--ring-width) solid var(--brand-300);
+}
+.Image {
+  box-sizing: border-box;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}

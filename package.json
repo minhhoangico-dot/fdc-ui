@@ -1,7 +1,7 @@
 {
   "name": "@fdc/ui",
   "version": "0.1.0",
-  "description": "FDC Bác sĩ gia đình — atomic design system (tokens, atoms, molecules, organisms, templates)",
+  "description": "FDC B\u00e1c s\u0129 gia \u0111\u00ecnh \u2014 atomic design system (tokens, atoms, molecules, organisms, templates)",
   "private": true,
   "type": "module",
   "main": "./dist/index.js",
@@ -17,7 +17,10 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "contrast": "vitest run src/tokens/contrast.test.ts"
+    "contrast": "vitest run src/tokens/contrast.test.ts",
+    "tokens": "node scripts/tokens-from-design.mjs",
+    "tokens:check": "node scripts/tokens-from-design.mjs --check",
+    "build:design": "vite build -c vite.design.config.ts && node scripts/design-bundle.mjs"
   },
   "peerDependencies": {
     "react": ">=18",
@@ -51,5 +54,8 @@
     "vite": "^6.0.7",
     "vite-plugin-dts": "^4.4.0",
     "vitest": "^3.0.0"
-  }
+  },
+  "sideEffects": [
+    "**/*.css"
+  ]
 }

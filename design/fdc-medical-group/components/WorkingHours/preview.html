@@ -1,0 +1,7 @@
+<!-- @dsCard group="Molecules" height=130 subtitle="clinic header hours" -->
+<div id="root" style="padding:16px;font-family:var(--font-sans)"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(
+  h(F.WorkingHours, {rows: [{label: 'Mùa hè', hours: '07:00–20:00'}, {label: 'Mùa đông', hours: '07:30–20:00'}], note: 'Tất cả các ngày trong tuần'}));
+</script>

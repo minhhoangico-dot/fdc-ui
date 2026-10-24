@@ -1,0 +1,8 @@
+<!-- @dsCard group="Molecules" height=300 subtitle="on the brand-200 section tint" -->
+<div id="root" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;background:var(--brand-200);padding:16px;font-family:var(--font-sans)"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h(F.TestimonialCard, {quote: 'Một môi trường sống tràn đầy yêu thương', name: 'Bà Minh Trân'}),
+  h(F.TestimonialCard, {quote: 'Nơi đây đúng là ngôi nhà thứ hai của đời mình, thật thân thiện và ấm áp', name: 'Cụ Hòa'})));
+</script>

@@ -1,0 +1,8 @@
+<!-- @dsCard group="Molecules" height=90 subtitle="status line under a form" -->
+<div id="root" style="padding:16px"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(F.Stack, {gap: 10},
+  h(F.FormNotice, {notice: {type: 'success', text: 'Đã gửi. Chúng tôi sẽ gọi lại cho bạn trong 30 phút.'}}),
+  h(F.FormNotice, {notice: {type: 'error', text: 'Chúng tôi chưa gửi được. Vui lòng thử lại hoặc gọi 024 35 430 430.'}})));
+</script>

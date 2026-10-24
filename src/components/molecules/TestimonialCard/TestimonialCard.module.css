@@ -1,0 +1,32 @@
+.TestimonialCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-body);
+}
+.Quote {
+  margin: var(--space-15) 0 0;
+  font-size: 1.125rem;
+  line-height: 1.55;
+  color: var(--text-default);
+}
+.Quote::before {
+  content: '\201C';
+}
+.Quote::after {
+  content: '\201D';
+}
+.Name {
+  margin: var(--space-10) 0 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--brand-800);
+}
+.Role {
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}

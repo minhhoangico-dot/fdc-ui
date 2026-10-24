@@ -1,0 +1,8 @@
+<!-- @dsCard group="Molecules" height=150 subtitle="inline (header) and framed (contact)" -->
+<div id="root" style="display:flex;gap:40px;align-items:center;flex-wrap:wrap;padding:16px;font-family:var(--font-sans)"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h(F.HotlineCard, {number: '024 35 430 430'}),
+  h('div', {style: {minWidth: 280, paddingTop: 12}}, h(F.HotlineCard, {variant: 'framed', label: 'Hotline 24/7', number: '096 583 7777'}))));
+</script>

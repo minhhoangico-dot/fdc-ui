@@ -1,43 +1,43 @@
 import type { Preview } from '@storybook/react';
 import '../src/tokens/tokens.css';
+import '../src/styles/base.css';
 
 const preview: Preview = {
+  tags: ['autodocs'],
   parameters: {
-    layout: 'centered',
+    layout: 'padded',
+    a11y: { test: 'error' },
     controls: { matchers: { color: /(background|color)$/i } },
-    backgrounds: {
-      default: 'Trắng',
-      values: [
-        { name: 'Trắng', value: '#FFFFFF' },
-        { name: 'Xám nhạt', value: '#F6F6F6' },
-        { name: 'Xanh nhạt', value: '#E8F1F8' },
-      ],
-    },
     options: {
-      storySort: { order: ['Giới thiệu', 'Tokens', 'Atoms', 'Molecules', 'Organisms', 'Templates'] },
+      storySort: {
+        order: ['Giới thiệu', 'Tokens', 'Layout', 'Atoms', 'Molecules', 'Organisms', 'Templates', 'Pages'],
+      },
     },
   },
   globalTypes: {
-    scale: {
-      description: 'Chế độ cỡ chữ',
-      defaultValue: 'default',
+    theme: {
+      description: 'FDC theme',
+      defaultValue: 'clinic',
       toolbar: {
-        title: 'Cỡ chữ',
-        icon: 'eye',
+        title: 'Theme',
+        icon: 'paintbrush',
         items: [
-          { value: 'default', title: 'Tiêu chuẩn' },
-          { value: 'senior', title: 'Người cao tuổi (lớn)' },
+          { value: 'clinic', title: 'Phòng khám (xanh)' },
+          { value: 'nursing-home', title: 'Viện dưỡng lão (cam)' },
         ],
         dynamicTitle: true,
       },
     },
   },
   decorators: [
-    (Story, ctx) => (
-      <div className="fdc-root" data-scale={ctx.globals.scale}>
-        <Story />
-      </div>
-    ),
+    (Story, ctx) => {
+      if (typeof document !== 'undefined') document.documentElement.dataset.theme = ctx.globals.theme;
+      return (
+        <div data-theme={ctx.globals.theme} style={{ background: 'var(--surface)', color: 'var(--text-default)' }}>
+          <Story />
+        </div>
+      );
+    },
   ],
 };
 

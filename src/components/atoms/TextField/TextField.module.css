@@ -1,0 +1,84 @@
+.TextField {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+  font-family: var(--font-body);
+}
+.Label {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-default);
+}
+.HiddenLabel {
+  box-sizing: border-box;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.Required {
+  color: var(--status-error-text);
+}
+.Hint {
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+.Error {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--status-error-text);
+}
+.Control {
+  position: relative;
+}
+.Input {
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: var(--control-height);
+  padding: var(--space-10) var(--space-15);
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-default);
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+textarea.Input {
+  resize: vertical;
+}
+.Input::placeholder {
+  color: var(--ink-subtle);
+}
+.Input:focus-visible {
+  box-sizing: border-box;
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: 1px;
+  border-color: var(--focus-ring);
+}
+.Input:disabled {
+  background: var(--surface-alt);
+  color: var(--ink-subtle);
+}
+.TextField:where([data-invalid]) .Input {
+  box-sizing: border-box;
+  border: var(--border-width-strong) solid var(--status-error-text);
+}
+.TextField:where([data-icon]) .Input {
+  box-sizing: border-box;
+  padding-inline-start: var(--space-40);
+}
+.Icon {
+  position: absolute;
+  inset-inline-start: var(--space-15);
+  inset-block-start: var(--space-15);
+  color: var(--text-muted);
+  pointer-events: none;
+}

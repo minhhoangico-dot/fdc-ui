@@ -1,0 +1,28 @@
+.TextLink {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-5);
+  min-block-size: var(--target-min);
+  color: var(--text-link);
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.TextLink:hover {
+  color: var(--action-primary-bg-hover);
+}
+.TextLink:focus-visible {
+  box-sizing: border-box;
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-sm);
+}
+.Arrow {
+  transition: transform 0.3s;
+}
+.TextLink:hover .Arrow {
+  transform: translateX(var(--space-5));
+}

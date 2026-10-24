@@ -1,0 +1,44 @@
+.SpecialtyTile {
+  box-sizing: border-box;
+  display: flex;
+  align-items: stretch;
+  min-block-size: 3.75rem;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-default);
+  font-family: var(--font-body);
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s;
+}
+.Square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 3.75rem;
+  background: var(--brand-600);
+  color: var(--text-on-action);
+}
+.Square img {
+  box-sizing: border-box;
+  inline-size: 100%;
+  block-size: 100%;
+}
+.Title {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: var(--space-10) var(--space-20);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.SpecialtyTile:where([data-link]):hover {
+  background: var(--brand-50);
+  color: var(--brand-700);
+}
+.SpecialtyTile:where([data-link]):focus-visible {
+  box-sizing: border-box;
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}

@@ -1,0 +1,36 @@
+<!-- @dsCard height=288 -->
+<style>
+  html,body{margin:0}
+  .cover{position:relative;width:960px;height:288px;background:var(--surface);overflow:hidden;font-family:var(--font-heading)}
+  .cover svg{position:absolute;inset:0}
+  .b2{fill:var(--brand-200)} .b3{fill:var(--brand-300)} .b6{fill:var(--brand-600)} .b7{fill:var(--brand-700)}
+  .leaf{fill:var(--leaf-500)} .acc{fill:var(--accent-600)}
+  .tile{rx:var(--radius-sm)}
+  .text{position:absolute;left:40px;bottom:36px;max-width:440px}
+  .name{margin:0;font-size:64px;line-height:.95;font-weight:700;color:var(--ink)}
+  .tag{margin:12px 0 0;font-size:14px;font-family:var(--font-body);color:var(--text-muted)}
+</style>
+<div class="cover">
+  <svg width="960" height="288" viewBox="0 0 960 288" aria-hidden="true">
+    <!-- blocks: brand-600 320x180, brand-700 160x108, leaf-500 160x60, brand-200 140x80, accent-600 60x60 (radius-sm corners)
+         arrangement: one large FDC-blue slab bleeding off top and right, satellites stepping down to the bottom-right corner
+         pattern: dot grid at space-15 pitch in brand-300; the site is built on a 15px Bootstrap gutter, so the grid is the brand's own measure
+         scales: space-15 pitch, space-20/space-40 offsets, radius-sm 3px, dots r=2 -->
+    <rect class="b6 tile" x="640" y="-4" width="324" height="184"/>
+    <rect class="b7 tile" x="800" y="180" width="164" height="112"/>
+    <rect class="leaf tile" x="640" y="180" width="160" height="60"/>
+    <rect class="b2 tile" x="500" y="40" width="140" height="80"/>
+    <rect class="acc tile" x="580" y="120" width="60" height="60"/>
+    <g class="b3">
+      <circle cx="505" cy="205" r="2"/><circle cx="520" cy="205" r="2"/><circle cx="535" cy="205" r="2"/><circle cx="550" cy="205" r="2"/><circle cx="565" cy="205" r="2"/><circle cx="580" cy="205" r="2"/><circle cx="595" cy="205" r="2"/><circle cx="610" cy="205" r="2"/>
+      <circle cx="505" cy="220" r="2"/><circle cx="520" cy="220" r="2"/><circle cx="535" cy="220" r="2"/><circle cx="550" cy="220" r="2"/><circle cx="565" cy="220" r="2"/><circle cx="580" cy="220" r="2"/><circle cx="595" cy="220" r="2"/><circle cx="610" cy="220" r="2"/>
+      <circle cx="505" cy="235" r="2"/><circle cx="520" cy="235" r="2"/><circle cx="535" cy="235" r="2"/><circle cx="550" cy="235" r="2"/><circle cx="565" cy="235" r="2"/><circle cx="580" cy="235" r="2"/><circle cx="595" cy="235" r="2"/><circle cx="610" cy="235" r="2"/>
+      <circle cx="505" cy="250" r="2"/><circle cx="520" cy="250" r="2"/><circle cx="535" cy="250" r="2"/><circle cx="550" cy="250" r="2"/><circle cx="565" cy="250" r="2"/><circle cx="580" cy="250" r="2"/><circle cx="595" cy="250" r="2"/><circle cx="610" cy="250" r="2"/>
+    </g>
+  </svg>
+  <div class="text">
+    <h1 class="name">FDC Medical<br>Group</h1>
+    <p class="tag">One visual language for the FDC clinic and nursing home.</p>
+  </div>
+</div>
+<script></script>

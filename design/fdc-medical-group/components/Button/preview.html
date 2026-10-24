@@ -1,0 +1,11 @@
+<!-- @dsCard group="Atoms" height=110 subtitle="neutral, primary, hotline, loading, disabled" -->
+<div id="root" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:16px"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h(F.Button, null, 'Gửi thông tin'),
+  h(F.Button, {variant: 'primary'}, 'Đặt lịch khám'),
+  h(F.Button, {variant: 'hotline', icon: 'phone', href: 'tel:02435430430'}, '024 35 430 430'),
+  h(F.Button, {variant: 'primary', loading: true}, 'Đặt lịch khám'),
+  h(F.Button, {variant: 'primary', disabled: true}, 'Đặt lịch khám')));
+</script>

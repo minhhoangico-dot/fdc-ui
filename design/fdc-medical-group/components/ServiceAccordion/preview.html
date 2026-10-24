@@ -1,0 +1,10 @@
+<!-- @dsCard group="Molecules" height=260 subtitle="one item open at a time" -->
+<div id="root" style="padding:16px;font-family:var(--font-sans)"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(F.ServiceAccordion, {items: [
+  {title: 'Phục hồi chức năng trọn gói', content: 'Giúp khách hàng phục hồi tối đa sức khỏe và khả năng sinh hoạt, đặc biệt sau khi xuất viện.', href: '#'},
+  {title: 'Dưỡng lão trọn gói', content: 'Chăm sóc toàn diện về sức khỏe và tinh thần cho người cao tuổi.', href: '#', moreLabel: 'Xem bảng giá'},
+  {title: 'Y học cổ truyền', content: 'Châm cứu, xoa bóp bấm huyệt kết hợp điều trị.'}
+]}));
+</script>

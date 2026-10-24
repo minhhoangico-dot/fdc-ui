@@ -1,0 +1,20 @@
+.Stack {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--stack-gap, var(--space-15));
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  list-style: none;
+}
+.Stack:where([data-gap='5']) { --stack-gap: var(--space-5); }
+.Stack:where([data-gap='10']) { --stack-gap: var(--space-10); }
+.Stack:where([data-gap='20']) { --stack-gap: var(--space-20); }
+.Stack:where([data-gap='30']) { --stack-gap: var(--space-30); }
+.Stack:where([data-gap='40']) { --stack-gap: var(--space-40); }
+.Stack:where([data-gap='50']) { --stack-gap: var(--space-50); }
+.Stack:where([data-align='start']) { align-items: flex-start; }
+.Stack:where([data-align='center']) { align-items: center; }
+.Stack:where([data-align='end']) { align-items: flex-end; }

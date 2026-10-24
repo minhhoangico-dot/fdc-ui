@@ -1,0 +1,78 @@
+.BookingStep {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-30);
+  inline-size: 100%;
+  max-inline-size: var(--measure);
+  margin-inline: auto;
+  padding: var(--space-30) var(--space-15);
+  font-family: var(--font-body);
+  color: var(--text-default);
+}
+.Back {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-5);
+  align-self: flex-start;
+  min-block-size: var(--target-min);
+  color: var(--text-link);
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-decoration: underline;
+}
+.Back:focus-visible {
+  box-sizing: border-box;
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+.Form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-30);
+}
+.Header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+.Progress {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.Title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.625rem;
+  font-weight: 700;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+.Hint {
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+.Fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-30);
+}
+.Actions {
+  display: flex;
+}
+@media (min-width: 48rem) {
+  .Actions > * {
+  box-sizing: border-box;
+    inline-size: auto;
+  }
+}
+.Help {
+  box-sizing: border-box;
+  padding-block-start: var(--space-20);
+  border-block-start: 1px solid var(--border);
+}

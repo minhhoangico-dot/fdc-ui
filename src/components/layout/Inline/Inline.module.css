@@ -1,0 +1,24 @@
+.Inline {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--inline-gap, var(--space-10));
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.Inline:where([data-wrap='false']) { flex-wrap: nowrap; }
+.Inline:where([data-gap='5']) { --inline-gap: var(--space-5); }
+.Inline:where([data-gap='15']) { --inline-gap: var(--space-15); }
+.Inline:where([data-gap='20']) { --inline-gap: var(--space-20); }
+.Inline:where([data-gap='30']) { --inline-gap: var(--space-30); }
+.Inline:where([data-gap='40']) { --inline-gap: var(--space-40); }
+.Inline:where([data-gap='50']) { --inline-gap: var(--space-50); }
+.Inline:where([data-align='start']) { align-items: flex-start; }
+.Inline:where([data-align='end']) { align-items: flex-end; }
+.Inline:where([data-align='baseline']) { align-items: baseline; }
+.Inline:where([data-justify='center']) { justify-content: center; }
+.Inline:where([data-justify='end']) { justify-content: flex-end; }
+.Inline:where([data-justify='between']) { justify-content: space-between; }

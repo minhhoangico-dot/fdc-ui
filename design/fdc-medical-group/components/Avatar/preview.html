@@ -1,0 +1,9 @@
+<!-- @dsCard group="Atoms" height=130 subtitle="initials, ringed, sizes" -->
+<div id="root" style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;padding:16px;font-family:var(--font-sans)"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h(F.Avatar, {name: 'Nguyễn Minh Trân', size: 40}),
+  h(F.Avatar, {name: 'Bùi Hiền', size: 64}),
+  h(F.Avatar, {name: 'Hoàng Tuyên', size: 96, ring: true})));
+</script>

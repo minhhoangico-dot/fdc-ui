@@ -1,0 +1,17 @@
+.FormNotice {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  color: var(--text-muted);
+}
+.FormNotice:empty {
+  display: none;
+}
+.FormNotice:where([data-type='success']) {
+  color: var(--status-success-text);
+  font-weight: 600;
+}
+.FormNotice:where([data-type='error']) {
+  color: var(--status-error-text);
+  font-weight: 600;
+}

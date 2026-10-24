@@ -1,0 +1,8 @@
+<!-- @dsCard group="Organisms" height=170 subtitle="after a failed submit; links to fields" -->
+<div id="root" style="padding:16px;max-width:560px"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(F.ErrorSummary, {focusOnMount: false, errors: [
+  {fieldId: 'name', text: 'Nhập họ và tên'},
+  {fieldId: 'phone', text: 'Nhập số điện thoại gồm 10 chữ số, ví dụ 0912 345 678'}]}));
+</script>

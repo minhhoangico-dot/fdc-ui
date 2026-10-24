@@ -1,0 +1,345 @@
+{
+  "v": 3,
+  "assetGroups": {
+    "Logos": {
+      "files": {
+        "fdc-logo.png": {
+          "blob": "3be5b7bcdc78bb091d490dce765c367a",
+          "name": "fdc-logo.png",
+          "size": 7814,
+          "type": "image/png"
+        },
+        "fdc-nursing-home-logo.png": {
+          "name": "fdc-nursing-home-logo.png",
+          "blob": "34de54c6c89391304fb9bf5a81939f3c",
+          "size": 41368,
+          "type": "image/png"
+        }
+      },
+      "name": "Logos",
+      "order": [
+        "fdc-logo.png",
+        "fdc-nursing-home-logo.png"
+      ],
+      "tile": "l"
+    },
+    "Specialties": {
+      "name": "Specialties",
+      "tile": "s",
+      "order": [
+        "kham-tu-xa.png",
+        "kham-tai-nha.png",
+        "tiem-chung.png",
+        "khoa-nhi.png",
+        "khoa-noi.png",
+        "nam-hoc.png",
+        "tai-mui-hong.png"
+      ],
+      "files": {
+        "kham-tu-xa.png": {
+          "name": "kham-tu-xa.png",
+          "blob": "747baae0a10f54541fbf6d2e9d5fb774",
+          "size": 17249,
+          "type": "image/png"
+        },
+        "kham-tai-nha.png": {
+          "name": "kham-tai-nha.png",
+          "blob": "0db432df254835b00e413303f6a66923",
+          "size": 17249,
+          "type": "image/png"
+        },
+        "tiem-chung.png": {
+          "name": "tiem-chung.png",
+          "blob": "9d8ea607d6d3fd83de8561901d064c59",
+          "size": 1719,
+          "type": "image/png"
+        },
+        "khoa-nhi.png": {
+          "name": "khoa-nhi.png",
+          "blob": "5741429a410f50509b836c5d55a90ec8",
+          "size": 1741,
+          "type": "image/png"
+        },
+        "khoa-noi.png": {
+          "name": "khoa-noi.png",
+          "blob": "95ba1df8e33f800deadd25c4d74f6279",
+          "size": 1760,
+          "type": "image/png"
+        },
+        "nam-hoc.png": {
+          "name": "nam-hoc.png",
+          "blob": "e05d9793564188d4b30cceaae30fd8e8",
+          "size": 1643,
+          "type": "image/png"
+        },
+        "tai-mui-hong.png": {
+          "name": "tai-mui-hong.png",
+          "blob": "3fd96a1339eb91a18f89ef104008ff65",
+          "size": 2010,
+          "type": "image/png"
+        }
+      }
+    },
+    "Services": {
+      "name": "Services",
+      "tile": "m",
+      "order": [
+        "kham-da-khoa.png",
+        "kham-tai-nha.png",
+        "tiem-chung-vac-xin.png",
+        "kham-suc-khoe-doanh-nghiep.png",
+        "xet-nghiem-tai-nha.png",
+        "kham-bhyt.png"
+      ],
+      "files": {
+        "kham-da-khoa.png": {
+          "name": "kham-da-khoa.png",
+          "blob": "084c3730c644e4443e89074dc3a2c8ef",
+          "size": 5537,
+          "type": "image/png"
+        },
+        "kham-tai-nha.png": {
+          "name": "kham-tai-nha.png",
+          "blob": "13805f79e70e253ecc2b61d88d7bfea3",
+          "size": 6240,
+          "type": "image/png"
+        },
+        "tiem-chung-vac-xin.png": {
+          "name": "tiem-chung-vac-xin.png",
+          "blob": "bb20dbd715d41c289e4a1642ddead96e",
+          "size": 4257,
+          "type": "image/png"
+        },
+        "kham-suc-khoe-doanh-nghiep.png": {
+          "name": "kham-suc-khoe-doanh-nghiep.png",
+          "blob": "618a5b00889f9ef6a3e01781f311bb31",
+          "size": 3798,
+          "type": "image/png"
+        },
+        "xet-nghiem-tai-nha.png": {
+          "name": "xet-nghiem-tai-nha.png",
+          "blob": "5a4006951ab5d2701bbf4bffa5843132",
+          "size": 4868,
+          "type": "image/png"
+        },
+        "kham-bhyt.png": {
+          "name": "kham-bhyt.png",
+          "blob": "2d273054b97b039fae9ce195d6ecb88b",
+          "size": 4191,
+          "type": "image/png"
+        }
+      }
+    },
+    "Icons": {
+      "name": "Icons",
+      "tile": "xs",
+      "order": [
+        "phone.svg",
+        "telephone.svg",
+        "envelope.svg",
+        "location-pin.svg",
+        "ui-calendar.svg",
+        "ui-user.svg",
+        "pencil-alt-2.svg",
+        "comment.svg",
+        "ui-messaging.svg",
+        "search-1.svg",
+        "home.svg",
+        "building-alt.svg",
+        "certificate.svg",
+        "eye.svg",
+        "play-alt-1.svg",
+        "navigation-menu.svg",
+        "plus.svg",
+        "minus.svg",
+        "simple-left.svg",
+        "simple-right.svg",
+        "double-left.svg",
+        "double-right.svg",
+        "rounded-down.svg",
+        "rounded-up.svg"
+      ],
+      "files": {
+        "phone.svg": {
+          "name": "phone.svg",
+          "blob": "9eca20fe4bddbc99035738f1f6d4e66a",
+          "size": 620,
+          "type": "image/svg+xml"
+        },
+        "telephone.svg": {
+          "name": "telephone.svg",
+          "blob": "a032d8e77cca00c53c7bc4027667f5c1",
+          "size": 2188,
+          "type": "image/svg+xml"
+        },
+        "envelope.svg": {
+          "name": "envelope.svg",
+          "blob": "21a808a51a6e5a3367b38f14eb1f1495",
+          "size": 642,
+          "type": "image/svg+xml"
+        },
+        "location-pin.svg": {
+          "name": "location-pin.svg",
+          "blob": "72fa4ca9ba3d00adf7575313fe27389f",
+          "size": 598,
+          "type": "image/svg+xml"
+        },
+        "ui-calendar.svg": {
+          "name": "ui-calendar.svg",
+          "blob": "c167a152aad2fd06873846b9c038e87b",
+          "size": 3416,
+          "type": "image/svg+xml"
+        },
+        "ui-user.svg": {
+          "name": "ui-user.svg",
+          "blob": "574f1d21b970e0963c2256dba6829b70",
+          "size": 384,
+          "type": "image/svg+xml"
+        },
+        "pencil-alt-2.svg": {
+          "name": "pencil-alt-2.svg",
+          "blob": "bf81aabebb741e8b396b457b2de4b89a",
+          "size": 287,
+          "type": "image/svg+xml"
+        },
+        "comment.svg": {
+          "name": "comment.svg",
+          "blob": "1202ec26c595f683659ed2c5e92f5795",
+          "size": 751,
+          "type": "image/svg+xml"
+        },
+        "ui-messaging.svg": {
+          "name": "ui-messaging.svg",
+          "blob": "ee9d158ba164ce3896bb436bf067d762",
+          "size": 298,
+          "type": "image/svg+xml"
+        },
+        "search-1.svg": {
+          "name": "search-1.svg",
+          "blob": "e8ac90711f82097857de2eef1bba289f",
+          "size": 667,
+          "type": "image/svg+xml"
+        },
+        "home.svg": {
+          "name": "home.svg",
+          "blob": "4d61e38756f75e4653edac179e726b95",
+          "size": 791,
+          "type": "image/svg+xml"
+        },
+        "building-alt.svg": {
+          "name": "building-alt.svg",
+          "blob": "f36ddfb4ee2a11e7d0298a87bc7ff681",
+          "size": 2200,
+          "type": "image/svg+xml"
+        },
+        "certificate.svg": {
+          "name": "certificate.svg",
+          "blob": "50f3b05b506c119ff364ad172a48aa13",
+          "size": 2211,
+          "type": "image/svg+xml"
+        },
+        "eye.svg": {
+          "name": "eye.svg",
+          "blob": "375ae519da7e981fce48afaa3d6dd80a",
+          "size": 954,
+          "type": "image/svg+xml"
+        },
+        "play-alt-1.svg": {
+          "name": "play-alt-1.svg",
+          "blob": "a0e0c1418ccdb4180c82eba8c22b90bb",
+          "size": 419,
+          "type": "image/svg+xml"
+        },
+        "navigation-menu.svg": {
+          "name": "navigation-menu.svg",
+          "blob": "33eb56d6ade3280750f27fdefd856e0c",
+          "size": 553,
+          "type": "image/svg+xml"
+        },
+        "plus.svg": {
+          "name": "plus.svg",
+          "blob": "902a14c39bbb2e5eeed7a958f7a8d16f",
+          "size": 581,
+          "type": "image/svg+xml"
+        },
+        "minus.svg": {
+          "name": "minus.svg",
+          "blob": "1bf71698bf967127d49c468f0236c7da",
+          "size": 336,
+          "type": "image/svg+xml"
+        },
+        "simple-left.svg": {
+          "name": "simple-left.svg",
+          "blob": "968ed1cb1b687148eb2dbe648180ad16",
+          "size": 183,
+          "type": "image/svg+xml"
+        },
+        "simple-right.svg": {
+          "name": "simple-right.svg",
+          "blob": "f43db2e7e6089150a516c6da43ea1608",
+          "size": 182,
+          "type": "image/svg+xml"
+        },
+        "double-left.svg": {
+          "name": "double-left.svg",
+          "blob": "7b307c50652826ad57c02ca77a7615f4",
+          "size": 280,
+          "type": "image/svg+xml"
+        },
+        "double-right.svg": {
+          "name": "double-right.svg",
+          "blob": "f10bd4e60f7b723291e1c263d943600f",
+          "size": 281,
+          "type": "image/svg+xml"
+        },
+        "rounded-down.svg": {
+          "name": "rounded-down.svg",
+          "blob": "e7090c552064126e5dd200768df23f05",
+          "size": 403,
+          "type": "image/svg+xml"
+        },
+        "rounded-up.svg": {
+          "name": "rounded-up.svg",
+          "blob": "c16b38e9cbe604b2228669070523ab10",
+          "size": 403,
+          "type": "image/svg+xml"
+        }
+      }
+    }
+  },
+  "blobs": {},
+  "createdOnFiles": {
+    "at": "2026-10-12T03:40:18Z",
+    "v": 1
+  },
+  "docs": {
+    "readme": "project/README.md",
+    "sections": []
+  },
+  "groups": [
+    "Logos",
+    "Icons",
+    "Specialties",
+    "Services"
+  ],
+  "lastChange": {
+    "by": "Minh",
+    "at": "2026-10-12T05:43:54Z",
+    "via": "Claude chat",
+    "note": "Added 3 atoms and 10 molecules from both sites, icon set, specialty and service icons"
+  },
+  "layout": "files",
+  "libraries": [
+    {
+      "name": "react",
+      "version": "18"
+    },
+    {
+      "name": "react-dom",
+      "version": "18"
+    }
+  ],
+  "namespace": "FDC",
+  "sections": {},
+  "title": "FDC Medical Group"
+}

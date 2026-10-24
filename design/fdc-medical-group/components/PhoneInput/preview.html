@@ -1,0 +1,8 @@
+<!-- @dsCard group="Molecules" height=230 subtitle="accepts spaces and +84, tidies on blur" -->
+<div id="root" style="padding:16px;max-width:420px"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(F.Stack, {gap: 20},
+  h(F.PhoneInput, {required: true}),
+  h(F.PhoneInput, {icon: 'phone', defaultValue: '091234', error: 'Nhập số điện thoại gồm 10 chữ số, ví dụ 0912 345 678'})));
+</script>

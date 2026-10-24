@@ -1,0 +1,30 @@
+.Form {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-20);
+  padding: var(--space-20);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-family: var(--font-body);
+  color: var(--text-default);
+}
+.Form > * {
+  box-sizing: border-box;
+  max-inline-size: 100%;
+}
+.Title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.Grid {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: var(--space-20);
+  inline-size: 100%;
+}

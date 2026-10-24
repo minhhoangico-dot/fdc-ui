@@ -1,0 +1,9 @@
+<!-- @dsCard group="Molecules" height=420 subtitle="image placeholder when no photo" -->
+<div id="root" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;padding:16px;font-family:var(--font-sans)"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h(F.NewsCard, {href: '#', date: '12/10/2026', title: 'Những năm tháng thanh xuân', excerpt: 'Buổi sinh hoạt văn nghệ cùng các Cụ tại viện điều trị nghỉ dưỡng.'}),
+  h(F.NewsCard, {href: '#', date: '05/10/2026', title: 'Lịch tiêm vắc xin cúm mùa', excerpt: 'Phòng tiêm đã có vắc xin cúm cho người lớn và trẻ em.'}),
+  h(F.NewsCard, {href: '#', date: '28/09/2026', title: 'Khám sức khỏe định kỳ cho người cao tuổi', excerpt: 'Những xét nghiệm nên làm mỗi năm sau tuổi 60.'})));
+</script>

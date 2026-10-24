@@ -1,0 +1,29 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Giới thiệu" />
+
+# FDC UI
+
+The coded components of the **FDC Medical Group** design system, for the clinic (Phòng khám Bác sĩ Gia đình) and the nursing home (Viện điều dưỡng FDC).
+
+**Claude Design is the master.** Colors, type, spacing and guidelines live in the "FDC Medical Group" design system in Claude Design. This library copies its `tokens.json`, and its built components are published back there, so designers and developers see the same parts.
+
+## How it is organized (atomic design)
+
+| Level | What it is | Examples |
+|---|---|---|
+| Tokens | Named values: colors, type, space | `--action-primary-bg`, `--space-15` |
+| Layout | Owns spacing between things | Stack, Inline |
+| Atoms | One control or element | Button, TextField, Icon |
+| Molecules | A small group with one job | DateInput, PhoneInput, TimeSlotPicker, HotlineCard |
+| Organisms | A distinct section | ErrorSummary, ResultLookupForm, ContactForm |
+| Templates | Page layout with slots | BookingStep |
+| Pages | Templates with real content | Pages › Đặt lịch khám |
+
+## Rules every screen follows
+
+- Body text 18px on patient and family screens, 16px on staff screens. Buttons and fields 48px tall, every tap target at least 44px.
+- Headings in Montserrat, everything else in Be Vietnam Pro (clearer Vietnamese tone marks).
+- Button labels in sentence case, verb first: "Đặt lịch khám".
+- One primary action per screen. Pink is only for the hotline; errors are red with words, never color alone.
+- Use the theme switch in the toolbar to check every screen in both the clinic (blue) and nursing-home (orange) themes.
