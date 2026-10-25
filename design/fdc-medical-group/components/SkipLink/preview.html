@@ -1,0 +1,7 @@
+<!-- @dsCard group="Atoms" height=90 subtitle="visible when focused (shown focused here)" -->
+<div id="root" style="padding:16px"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h('div', {style: {position: 'relative', minHeight: 60}}, h(F.SkipLink, {id: 'skip'})));
+setTimeout(function () { var a = document.getElementById('skip'); if (a) a.focus(); }, 50);
+</script>

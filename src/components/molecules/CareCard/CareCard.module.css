@@ -1,0 +1,71 @@
+.CareCard {
+  /* Group blue in every theme: in the nursing-home theme the brand orange would sit too close to urgent red. */
+  --care-band: var(--group-600);
+  --care-border: var(--group-600);
+
+  box-sizing: border-box;
+  overflow: hidden;
+  border: var(--border-width-heavy) solid var(--care-border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-family: var(--font-body);
+  color: var(--text-default);
+}
+.CareCard:where([data-level='urgent']) {
+  --care-band: var(--danger);
+  --care-border: var(--danger);
+}
+.CareCard:where([data-level='emergency']) {
+  --care-band: var(--danger);
+  --care-border: var(--ink);
+}
+.Heading {
+  box-sizing: border-box;
+  margin: 0;
+  padding: var(--space-15) var(--space-20);
+  background: var(--care-band);
+  color: var(--text-on-action);
+  font-family: var(--font-heading);
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.Body {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-15);
+  padding: var(--space-15) var(--space-20) var(--space-20);
+  font-size: 1.125rem;
+  line-height: 1.55;
+}
+.Body :where(ul, ol) {
+  margin: 0;
+  padding-inline-start: var(--space-20);
+}
+.Body :where(p) {
+  margin: 0;
+}
+.CareCard:where([data-level='emergency']) .Body {
+  background: var(--ink);
+  color: var(--text-on-action);
+}
+.Call {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: var(--space-10);
+  min-block-size: var(--control-height);
+  padding: var(--space-10) var(--space-20);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--danger);
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.Call:focus-visible {
+  outline: var(--focus-ring-width) solid var(--surface);
+  outline-offset: var(--focus-ring-offset);
+}

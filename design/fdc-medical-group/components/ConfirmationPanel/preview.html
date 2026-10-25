@@ -1,0 +1,9 @@
+<!-- @dsCard group="Molecules" height=360 subtitle="end of a flow: result, code, what happens next" -->
+<div id="root" style="padding:16px;max-width:640px"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(F.ConfirmationPanel, {title: 'Đã đặt lịch khám', reference: 'FDC-2410-0930', focusOnMount: false},
+  h('h2', null, 'Tiếp theo'),
+  h('p', null, 'Chúng tôi sẽ gọi số 0912 345 678 trong vòng 30 phút để xác nhận lịch.'),
+  h('p', null, 'Muốn đổi hoặc hủy lịch, hãy gọi 024 35 430 430 và đọc mã đặt lịch.')));
+</script>

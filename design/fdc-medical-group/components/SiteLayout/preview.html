@@ -1,0 +1,11 @@
+<!-- @dsCard group="Templates" height=900 subtitle="skip link, header, main, footer (nursing-home theme)" -->
+<div id="root" style=""></div>
+<script>
+var h = React.createElement, F = window.FDC;
+var header = {"logo": {"src": "/_blob/3be5b7bcdc78bb091d490dce765c367a", "alt": "Điều dưỡng FDC, về trang chủ", "href": "#"}, "hours": null, "hotline": {"number": "096 583 7777", "label": "Hotline 24/7"}, "cta": {"label": "Đăng ký tham quan", "href": "#"}, "items": [{"label": "Trang chủ", "href": "#"}, {"label": "Giới thiệu", "href": "#gt", "children": [{"label": "Câu chuyện thương hiệu", "href": "#"}, {"label": "Cơ sở vật chất", "href": "#"}]}, {"label": "Dưỡng lão", "href": "#dl", "children": [{"label": "Chăm sóc nội trú", "href": "#"}, {"label": "Chăm sóc ngoại trú", "href": "#"}, {"label": "Chăm sóc tại gia", "href": "#"}]}, {"label": "Bảng giá", "href": "#bg"}]};
+var footer = {"name": "Điều dưỡng FDC", "tagline": "Khơi nguồn sức khỏe, san sẻ âu lo", "address": "Thôn Long Phú, Phú Cát, Hà Nội", "phones": [{"number": "096 583 7777", "label": "Hotline 24/7"}, {"number": "024 35 430 430"}], "email": "fdc@bacsigiadinhhanoi.vn", "copyright": "© 2026 fdcmedical.vn"};
+ReactDOM.createRoot(document.getElementById('root')).render(h(F.SiteLayout, {theme: 'nursing-home', header: header, footer: footer},
+  h('div', {style: {maxWidth: 'var(--measure)', margin: '0 auto', padding: 'var(--space-30) var(--space-15)'}},
+    h('h1', null, 'Dưỡng lão trọn gói'),
+    h('p', null, 'Chăm sóc toàn diện về sức khỏe và tinh thần cho người cao tuổi.'))));
+</script>

@@ -18,6 +18,8 @@ export type BookingStepProps = {
   children: ReactNode;
   /** Back link. Omit on the first step. */
   backHref?: string;
+  /** In-page back action (single-page flows); prevents navigation when given. */
+  onBack?: () => void;
   /** Default "Quay lại". */
   backLabel?: string;
   /** Default "Tiếp tục". */
@@ -32,6 +34,7 @@ export type BookingStepProps = {
 /**
  * One question per page, as in GOV.UK/NHS booking flows: back link, progress, question as h1,
  * error summary, fields, one primary action, hotline. Layout only; the page supplies the content.
+ * Place it inside SiteLayout, which provides the page's single <main> landmark.
  */
 export function BookingStep({
   title,
@@ -40,6 +43,7 @@ export function BookingStep({
   errorSummary,
   children,
   backHref,
+  onBack,
   backLabel = 'Quay lại',
   continueLabel = 'Tiếp tục',
   onContinue,
@@ -48,9 +52,20 @@ export function BookingStep({
   className,
 }: BookingStepProps) {
   return (
-    <main className={cx(styles.BookingStep, className)} data-component="BookingStep">
-      {backHref ? (
-        <a className={styles.Back} href={backHref}>
+    <div className={cx(styles.BookingStep, className)} data-component="BookingStep">
+      {backHref || onBack ? (
+        <a
+          className={styles.Back}
+          href={backHref ?? '#'}
+          onClick={
+            onBack
+              ? (e) => {
+                  e.preventDefault();
+                  onBack();
+                }
+              : undefined
+          }
+        >
           <Icon name="simple-left" size={14} />
           <span>{backLabel}</span>
         </a>
@@ -81,6 +96,6 @@ export function BookingStep({
           <HotlineCard number={hotline.number} label={hotline.label} />
         </aside>
       ) : null}
-    </main>
+    </div>
   );
 }

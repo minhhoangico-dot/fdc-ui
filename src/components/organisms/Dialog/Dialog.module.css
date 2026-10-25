@@ -1,0 +1,35 @@
+.Dialog {
+  box-sizing: border-box;
+  inline-size: min(100% - var(--space-30), 32rem);
+  max-block-size: calc(100% - var(--space-30));
+  padding: var(--space-30) var(--space-20);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-default);
+  font-family: var(--font-body);
+  box-shadow: var(--shadow-card);
+}
+.Dialog::backdrop {
+  background: color-mix(in srgb, var(--ink) 70%, transparent);
+}
+.Title {
+  margin: 0 0 var(--space-15);
+  font-family: var(--font-heading);
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.Body {
+  font-size: 1.125rem;
+  line-height: 1.55;
+}
+.Body :where(p) {
+  margin: 0 0 var(--space-10);
+}
+.Actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-10);
+  margin-block-start: var(--space-20);
+}

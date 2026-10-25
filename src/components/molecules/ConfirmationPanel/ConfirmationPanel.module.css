@@ -1,0 +1,58 @@
+.ConfirmationPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-30);
+  font-family: var(--font-body);
+  color: var(--text-default);
+}
+.Panel {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  padding: var(--space-30) var(--space-20);
+  border-radius: var(--radius-sm);
+  background: var(--status-success-text);
+  color: var(--text-on-action);
+  text-align: center;
+}
+.Title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.Title:focus {
+  /* Focus is moved here by script so screen readers announce the result; it is not interactive. */
+  outline: none;
+}
+.Reference {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin: 0;
+  font-size: 1.125rem;
+}
+.Code {
+  font-size: 1.625rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
+  user-select: all;
+}
+.Next {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-15);
+  font-size: 1.125rem;
+  line-height: 1.55;
+}
+.Next :where(h2) {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.375rem;
+}
+.Next :where(p, ul, ol) {
+  margin: 0;
+}

@@ -13,7 +13,7 @@ npm test               # unit tests
 npm run typecheck && npm run lint
 ```
 
-Use the **Theme** button in the Storybook toolbar to see every component in the clinic (blue) and nursing-home (orange) themes. Start with **Pages › Đặt lịch khám** to see the booking flow assembled from the parts.
+Use the **Theme** button in the Storybook toolbar to see every component in the clinic (blue) and nursing-home (orange) themes. Start with **Pages › Đặt lịch khám › Toàn bộ quy trình** to walk through the whole booking flow, built only from these parts inside the real clinic header and footer.
 
 ## What's inside
 
@@ -21,11 +21,11 @@ Use the **Theme** button in the Storybook toolbar to see every component in the 
 |---|---|
 | Tokens | `design/fdc-medical-group/tokens.json` (master copy) → `src/tokens/tokens.css` (generated) |
 | Layout | Stack, Inline |
-| Atoms | Button, TextField, Icon (24 FDC glyphs), Avatar, TextLink, VisuallyHidden |
-| Molecules | DateInput (Ngày/Tháng/Năm), PhoneInput, TimeSlotPicker, HotlineCard, WorkingHours, ServiceCard, SpecialtyTile, ValueCard, TestimonialCard, NewsCard, ServiceAccordion, FormNotice |
-| Organisms | ErrorSummary, ResultLookupForm, ContactForm |
-| Templates | BookingStep |
-| Pages (Storybook only) | Đặt lịch khám: choose a time, patient details, with stress cases |
+| Atoms | Button, TextField, Icon (24 FDC glyphs), Avatar, TextLink, SkipLink, VisuallyHidden |
+| Molecules | DateInput (Ngày/Tháng/Năm), PhoneInput, TimeSlotPicker, RadioGroup, SummaryList, CareCard, ConfirmationPanel, HotlineCard, WorkingHours, ServiceCard, SpecialtyTile, ValueCard, TestimonialCard, NewsCard, ServiceAccordion, FormNotice |
+| Organisms | Header, Footer, Dialog, IdleTimeoutDialog, ErrorSummary, ResultLookupForm, ContactForm |
+| Templates | SiteLayout, BookingStep |
+| Pages (Storybook only) | Đặt lịch khám: the full flow (service → who → time → details → check answers → confirmation) with session timeout; single steps with stress cases; Khi nào cần đi khám (care advice) |
 
 Using it in an app:
 
@@ -70,7 +70,7 @@ Then ask Claude to *"publish FDC components to Claude Design"*; it uploads `desi
 
 | Command | Checks |
 |---|---|
-| `npm test` | 75 unit tests: behavior, accessibility attributes, every component in both themes |
+| `npm test` | 111 unit tests: behavior, accessibility attributes, every component in both themes |
 | `npm run tokens:check` | tokens.css matches the master tokens.json |
 | `node <skill>/scripts/lint-tokens.mjs src/components --strict` | No raw colors, px, fonts or atom margins |
 | `node <skill>/scripts/lint-levels.mjs src/components` | No upward imports between atomic levels |

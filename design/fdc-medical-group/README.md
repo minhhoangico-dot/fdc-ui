@@ -8,10 +8,10 @@ The system follows atomic design. Build every level only from the level below it
 
 - **Tokens** (colors, type, spacing, radius, shadow) are the single source of truth. Components use the semantic names (`action-primary-bg`, `text-default`, `text-muted`, `focus-ring`, `hotline`…), which point at the palette and follow the theme.
 - **Layout** owns spacing between things: Stack, Inline. No component sets its own outer margin.
-- **Atoms** use only tokens: Button, TextField, Icon, Avatar, TextLink.
-- **Molecules** combine atoms into one-job blocks: DateInput, PhoneInput, TimeSlotPicker, HotlineCard, WorkingHours, ServiceCard, SpecialtyTile, ValueCard, TestimonialCard, NewsCard, ServiceAccordion, FormNotice.
-- **Organisms** are distinct sections: ErrorSummary, ResultLookupForm, ContactForm (header, footer and page sections come next).
-- **Templates** lay out a page with slots: BookingStep (one question per page).
+- **Atoms** use only tokens: Button, TextField, Icon, Avatar, TextLink, SkipLink.
+- **Molecules** combine atoms into one-job blocks: DateInput, PhoneInput, TimeSlotPicker, RadioGroup, SummaryList, CareCard, ConfirmationPanel, HotlineCard, WorkingHours, ServiceCard, SpecialtyTile, ValueCard, TestimonialCard, NewsCard, ServiceAccordion, FormNotice.
+- **Organisms** are distinct sections: Header, Footer, Dialog, IdleTimeoutDialog, ErrorSummary, ResultLookupForm, ContactForm.
+- **Templates** lay out a page with slots: SiteLayout (skip link, header, main, footer) and BookingStep (one question per page). The booking flow is: service → who it is for → time → details → check answers (SummaryList) → confirmation (ConfirmationPanel), with IdleTimeoutDialog guarding the session.
 
 The group is modeled as **themes**. `FDC Clinic` (blue) is the default. `FDC Nursing Home` (orange) overrides only the brand scale (`brand-50` to `brand-800`) and `leaf-500`; every other token and every component is shared. Set `data-theme="nursing-home"` on the page root to switch. Never hard-code blue or orange in a component; always use `brand-*` so it follows the theme. Use `group-600` only where a unit points back to the group: it stays FDC blue in every theme.
 
@@ -24,6 +24,9 @@ The group is modeled as **themes**. `FDC Clinic` (blue) is the default. `FDC Nur
 - Vietnamese diacritics need room: body line-height 1.5 or more, headings 1.3 or more.
 - Errors say what to do, in the field's own words: "Nhập số điện thoại gồm 10 chữ số, ví dụ 0912 345 678". Never "Sai" or "Không hợp lệ".
 - Ask one question per page in booking flows, and ask early who the appointment is for ("Bạn đặt lịch cho ai?"): families often book for parents.
+- Before anything is booked, show every answer with a "Thay đổi" link; after, say what happens next, the booking code, and how to change or cancel by phone.
+- Health advice uses three levels (CareCard): non-urgent "Gọi bác sĩ gia đình" (FDC blue), urgent "Đến khám trong ngày" (red), emergency "Gọi cấp cứu 115 ngay" (red and dark). Inform and reassure; a doctor approves the wording.
+- Write the address, hotline and email as text in the footer, not only as links.
 
 ## Visual foundations
 
@@ -45,7 +48,7 @@ Service illustrations (Assets › Services) are two-tone with FDC blue baked in;
 
 ## Logos
 
-Both logos are in Assets › Logos: the clinic logo (blue mark with green leaf) and the nursing home logo (Điều dưỡng FDC, blue). Use the one that matches the theme, on white or `surface-alt` only. Do not recolor them or place them on `brand-600`.
+Both logos are in Assets › Logos: the clinic logo (blue mark with green leaf) and the nursing home logo (Điều dưỡng FDC, blue). Use the one that matches the theme, on white or `surface-alt` only; the Header shows it on its white bar. Do not recolor them or place them on `brand-600`.
 
 ## How this system is kept
 

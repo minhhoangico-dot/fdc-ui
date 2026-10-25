@@ -2,6 +2,7 @@
 // carries its data-component hook, and the export list matches the Claude Design catalogue.
 import { render } from '@testing-library/react';
 import * as FDC from '../index';
+import { clinicFooter, clinicHeader } from '../fixtures/site';
 
 const samples: Record<string, JSX.Element> = {
   Stack: <FDC.Stack>x</FDC.Stack>,
@@ -27,6 +28,16 @@ const samples: Record<string, JSX.Element> = {
   ErrorSummary: <FDC.ErrorSummary focusOnMount={false} errors={[{ fieldId: 'x', text: 'Lỗi' }]} />,
   ResultLookupForm: <FDC.ResultLookupForm />,
   BookingStep: <FDC.BookingStep title="Câu hỏi">x</FDC.BookingStep>,
+  SkipLink: <FDC.SkipLink />,
+  RadioGroup: <FDC.RadioGroup label="Ai?" name="who" options={[{ value: 'a', label: 'A' }]} />,
+  SummaryList: <FDC.SummaryList rows={[{ key: 'Tên', value: 'A' }]} />,
+  CareCard: <FDC.CareCard level="non-urgent" title="Gọi bác sĩ">x</FDC.CareCard>,
+  ConfirmationPanel: <FDC.ConfirmationPanel title="Đã đặt lịch" reference="FDC-1" focusOnMount={false} />,
+  Dialog: <FDC.Dialog open onClose={() => {}} title="Hỏi">x</FDC.Dialog>,
+  IdleTimeoutDialog: <div><FDC.IdleTimeoutDialog onTimeout={() => {}} /><span>idle</span></div>,
+  Header: <FDC.Header {...clinicHeader} />,
+  Footer: <FDC.Footer {...clinicFooter} />,
+  SiteLayout: <FDC.SiteLayout header={clinicHeader} footer={clinicFooter}>x</FDC.SiteLayout>,
 };
 
 describe.each(['clinic', 'nursing-home'])('theme %s', (theme) => {

@@ -1,0 +1,172 @@
+.Header {
+  box-sizing: border-box;
+  position: relative;
+  background: var(--surface);
+  color: var(--text-default);
+  font-family: var(--font-body);
+  border-block-end: 1px solid var(--border);
+}
+.Top {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-15);
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: var(--space-10) var(--space-15);
+}
+.Logo {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+.Logo img {
+  display: block;
+  inline-size: auto;
+  block-size: 3.5rem;
+}
+.Logo:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+.Tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-15);
+}
+.Hours {
+  display: none;
+  align-items: center;
+  gap: var(--space-5);
+  margin: 0;
+  font-size: 1rem;
+  color: var(--status-success-text);
+  font-weight: 600;
+}
+.Cta {
+  display: none;
+}
+.MenuButton {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-5);
+  min-block-size: var(--target-min);
+  padding: var(--space-5) var(--space-15);
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.MenuButton:focus-visible,
+.Link:focus-visible,
+.SubLink:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+.Nav {
+  display: none;
+  border-block-start: 1px solid var(--border);
+}
+.Nav:where([data-open]) {
+  display: block;
+}
+.List {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  max-inline-size: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-15);
+  list-style: none;
+}
+.Item {
+  position: relative;
+}
+.Link {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  inline-size: 100%;
+  min-block-size: var(--target-min);
+  padding: var(--space-10);
+  border: 0;
+  background: none;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+}
+.Link:hover {
+  color: var(--text-link);
+}
+.Item:where([data-current]) > .Link {
+  color: var(--text-link);
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+  text-decoration-thickness: var(--border-width-heavy);
+}
+.Sub {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 0 var(--space-5) var(--space-20);
+  list-style: none;
+}
+.SubLink {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  min-block-size: var(--target-min);
+  padding: var(--space-5) var(--space-10);
+  color: var(--text-default);
+  font-size: 1.125rem;
+  text-decoration: none;
+}
+.SubLink:hover,
+.SubLink[aria-current='page'] {
+  color: var(--text-link);
+  text-decoration: underline;
+}
+@media (min-width: 64rem) {
+  .Hours,
+  .Cta {
+    display: inline-flex;
+  }
+  .MenuButton {
+    display: none;
+  }
+  .Nav {
+    display: block;
+  }
+  .List {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-5);
+  }
+  .Link {
+    inline-size: auto;
+  }
+  .Sub {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-start: 0;
+    z-index: 10;
+    min-inline-size: 16rem;
+    padding: var(--space-5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+}

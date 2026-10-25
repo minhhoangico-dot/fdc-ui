@@ -17,7 +17,6 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "contrast": "vitest run src/tokens/contrast.test.ts",
     "tokens": "node scripts/tokens-from-design.mjs",
     "tokens:check": "node scripts/tokens-from-design.mjs --check",
     "build:design": "vite build -c vite.design.config.ts && node scripts/design-bundle.mjs"

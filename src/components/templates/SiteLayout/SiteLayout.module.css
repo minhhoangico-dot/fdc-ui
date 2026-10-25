@@ -1,0 +1,14 @@
+.SiteLayout {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100%;
+  background: var(--surface);
+  color: var(--text-default);
+}
+.Main {
+  flex: 1;
+}
+.Main:focus {
+  outline: none;
+}

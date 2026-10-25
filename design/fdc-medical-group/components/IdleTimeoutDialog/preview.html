@@ -1,0 +1,6 @@
+<!-- @dsCard group="Organisms" height=320 subtitle="warns before the session ends; one tap to continue" -->
+<div id="root" style="padding:16px"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(F.IdleTimeoutDialog, {timeoutMs: 130000, warnBeforeMs: 130000, onTimeout: function () {}}));
+</script>

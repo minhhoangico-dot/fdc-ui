@@ -1,0 +1,23 @@
+.SkipLink {
+  box-sizing: border-box;
+  position: absolute;
+  inset-block-start: var(--space-10);
+  inset-inline-start: var(--space-10);
+  z-index: 100;
+  min-block-size: var(--target-min);
+  padding: var(--space-10) var(--space-20);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-link);
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-decoration: underline;
+  transform: translateY(-200%);
+}
+.SkipLink:focus,
+.SkipLink:focus-visible {
+  transform: none;
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}

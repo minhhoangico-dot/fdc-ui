@@ -1,0 +1,16 @@
+<!-- @dsCard group="Organisms" height=320 subtitle="native modal; Esc closes, focus returns" -->
+<div id="root" style="padding:16px"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+function Demo() {
+  var s = React.useState(true), open = s[0], setOpen = s[1];
+  return h(React.Fragment, null,
+    h(F.Button, {onClick: function () { setOpen(true); }}, 'Hủy lịch'),
+    h(F.Dialog, {open: open, onClose: function () { setOpen(false); }, title: 'Hủy lịch khám?',
+      actions: h(React.Fragment, null,
+        h(F.Button, {variant: 'primary', onClick: function () { setOpen(false); }}, 'Giữ lịch khám'),
+        h(F.Button, {onClick: function () { setOpen(false); }}, 'Hủy lịch'))},
+      h('p', null, 'Lịch khám thứ Bảy 24/10 lúc 09:30 sẽ bị hủy. Bạn có thể đặt lại bất cứ lúc nào.')));
+}
+ReactDOM.createRoot(document.getElementById('root')).render(h(Demo));
+</script>

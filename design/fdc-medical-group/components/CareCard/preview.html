@@ -1,0 +1,10 @@
+<!-- @dsCard group="Molecules" height=720 subtitle="non-urgent, urgent, emergency (115)" -->
+<div id="root" style="padding:16px;max-width:640px"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+function list(items) { return h('ul', null, items.map(function (t) { return h('li', {key: t}, t); })); }
+ReactDOM.createRoot(document.getElementById('root')).render(h(F.Stack, {gap: 20},
+  h(F.CareCard, {level: 'non-urgent', title: 'Gọi bác sĩ gia đình nếu:'}, list(['sốt trên 3 ngày', 'ho kéo dài hơn 3 tuần'])),
+  h(F.CareCard, {level: 'urgent', title: 'Đến khám trong ngày hoặc gọi 024 35 430 430 nếu:'}, list(['sốt cao trên 39 độ không hạ', 'lú lẫn hơn bình thường'])),
+  h(F.CareCard, {level: 'emergency', title: 'Gọi cấp cứu 115 ngay nếu:'}, list(['đau ngực, khó thở', 'méo miệng, yếu nửa người, nói khó']))));
+</script>

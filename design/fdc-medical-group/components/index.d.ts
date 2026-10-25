@@ -125,6 +125,16 @@ export declare function Icon({ name, size, title, className, ...rest }: IconProp
 export type IconName = 'building-alt' | 'certificate' | 'comment' | 'double-left' | 'double-right' | 'envelope' | 'eye' | 'home' | 'location-pin' | 'minus' | 'navigation-menu' | 'pencil-alt-2' | 'phone' | 'play-alt-1' | 'plus' | 'rounded-down' | 'rounded-up' | 'search-1' | 'simple-left' | 'simple-right' | 'telephone' | 'ui-calendar' | 'ui-messaging' | 'ui-user';
 export declare const iconNames: IconName[];
 
+/* ===== components/atoms/SkipLink/SkipLink ===== */
+export type SkipLinkProps = {
+    /** id of the main content. Default "main". */
+    targetId?: string;
+    /** Default "Bỏ qua, đến nội dung chính". */
+    label?: string;
+} & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>;
+/** First focusable element on every page: lets keyboard and screen-reader users jump past the header. Visible only on focus. */
+export declare function SkipLink({ targetId, label, className, ...rest }: SkipLinkProps): import("react").JSX.Element;
+
 /* ===== components/atoms/TextField/TextField ===== */
 export type TextFieldProps = {
     /** Visible label. Always pass one; placeholders never replace it. */
@@ -186,6 +196,46 @@ export declare const TextLink: import('react').ForwardRefExoticComponent<{
 /* ===== components/atoms/VisuallyHidden/VisuallyHidden ===== */
 /** Text for screen readers only, such as the "Lỗi:" prefix before an error message. */
 export declare function VisuallyHidden({ className, ...rest }: HTMLAttributes<HTMLSpanElement>): import("react").JSX.Element;
+
+/* ===== components/molecules/CareCard/CareCard ===== */
+export type CareLevel = 'non-urgent' | 'urgent' | 'emergency';
+export type CareCardProps = {
+    level: CareLevel;
+    /** The action, e.g. "Gọi bác sĩ gia đình nếu:". */
+    title: string;
+    /** Symptoms or advice, usually a list. */
+    children: ReactNode;
+    /** Screen-reader prefix per level. Default "Không khẩn cấp:", "Cần khám trong ngày:", "Cấp cứu:". */
+    levelLabels?: Record<CareLevel, string>;
+    /** Emergency number. Default "115". */
+    emergencyNumber?: string;
+    /** Emergency call line. Default "Gọi 115 ngay". */
+    emergencyCallLabel?: string;
+    headingLevel?: 2 | 3;
+    className?: string;
+};
+/**
+ * "When to get help" advice in three levels (from the NHS care-card pattern). The level is in the heading
+ * text for screen readers, in the band color and in words, never color alone. Inform and reassure; do not scare.
+ */
+export declare function CareCard({ level, title, children, levelLabels, emergencyNumber, emergencyCallLabel, headingLevel, className, }: CareCardProps): import("react").JSX.Element;
+
+/* ===== components/molecules/ConfirmationPanel/ConfirmationPanel ===== */
+export type ConfirmationPanelProps = {
+    /** "Đã đặt lịch khám" */
+    title: string;
+    /** Booking or request code, e.g. "FDC-2410-0830". */
+    reference?: string;
+    /** Default "Mã đặt lịch của bạn". */
+    referenceLabel?: string;
+    /** What happens next, how to change or cancel. */
+    children?: ReactNode;
+    /** Move focus to the title when shown (after a submit). Default true. */
+    focusOnMount?: boolean;
+    className?: string;
+};
+/** The finish of a flow: a clear success panel with the reference code, then what happens next. */
+export declare function ConfirmationPanel({ title, reference, referenceLabel, children, focusOnMount, className, }: ConfirmationPanelProps): import("react").JSX.Element;
 
 /* ===== components/molecules/DateInput/DateInput ===== */
 export type DateInputProps = {
@@ -296,6 +346,40 @@ export declare const PhoneInput: import('react').ForwardRefExoticComponent<{
     onPhoneChange?: (digits: string | null, raw: string) => void;
 } & Omit<TextFieldProps, "inputMode" | "type" | "autoComplete" | "label"> & import('react').RefAttributes<HTMLInputElement | HTMLTextAreaElement>>;
 
+/* ===== components/molecules/RadioGroup/RadioGroup ===== */
+export type RadioOption = {
+    value: string;
+    label: string;
+    /** Optional second line, e.g. what the service includes. */
+    description?: ReactNode;
+    disabled?: boolean;
+};
+export type RadioGroupProps = {
+    /** The question, read as the group's legend: "Bạn đặt lịch cho ai?". */
+    label: string;
+    options: RadioOption[];
+    name: string;
+    hint?: string;
+    error?: string;
+    errorPrefix?: string;
+    value?: string;
+    defaultValue?: string;
+    onValueChange?: (value: string) => void;
+    /** Make the legend the page heading on one-question pages. */
+    legendAsHeading?: boolean;
+    /** Hide the legend visually when the page heading already asks the question (still read by screen readers). */
+    hideLegend?: boolean;
+    required?: boolean;
+    /** id put on the first option, so an ErrorSummary can link to it. */
+    id?: string;
+    className?: string;
+};
+/**
+ * One choice from a short list, as large tappable tiles built on native radios.
+ * Arrow keys move between options; the whole tile is the hit area.
+ */
+export declare function RadioGroup({ label, options, name, hint, error, errorPrefix, value, defaultValue, onValueChange, legendAsHeading, hideLegend, required, id: firstId, className, }: RadioGroupProps): import("react").JSX.Element;
+
 /* ===== components/molecules/ServiceAccordion/ServiceAccordion ===== */
 export type ServiceAccordionItem = {
     title: string;
@@ -344,6 +428,23 @@ export type SpecialtyTileProps = {
 };
 /** A 60px row: brand-colored square with a white icon, then the specialty name. Follows the theme. */
 export declare function SpecialtyTile({ title, image, icon, href, className }: SpecialtyTileProps): import("react").JSX.Element;
+
+/* ===== components/molecules/SummaryList/SummaryList ===== */
+export type SummaryRow = {
+    key: string;
+    value: ReactNode;
+    /** Where "Thay đổi" goes. Use onChange for in-page flows. */
+    changeHref?: string;
+    onChange?: () => void;
+};
+export type SummaryListProps = {
+    rows: SummaryRow[];
+    /** Default "Thay đổi". Screen readers hear it with the row key: "Thay đổi Họ và tên". */
+    changeLabel?: string;
+    className?: string;
+};
+/** "Check your answers": key, value and a change link per row, before anything is booked or sent. */
+export declare function SummaryList({ rows, changeLabel, className }: SummaryListProps): import("react").JSX.Element;
 
 /* ===== components/molecules/TestimonialCard/TestimonialCard ===== */
 export type TestimonialCardProps = {
@@ -444,6 +545,25 @@ export type ContactFormProps = {
 /** Contact request (name, phone, optional message) with an error summary. Pair with a framed HotlineCard. */
 export declare function ContactForm({ onSubmit, title, intro, messageHint, submitLabel, submitting, notice, headingLevel, className, }: ContactFormProps): import("react").JSX.Element;
 
+/* ===== components/organisms/Dialog/Dialog ===== */
+export type DialogProps = {
+    open: boolean;
+    /** Called on Esc, on the close action, or when the browser closes it. */
+    onClose: () => void;
+    title: string;
+    children?: ReactNode;
+    /** Buttons row; put the least destructive action first. */
+    actions?: ReactNode;
+    /** role="alertdialog" for warnings that need an answer (e.g. session timeout). */
+    alert?: boolean;
+    className?: string;
+};
+/**
+ * Modal dialog on the native <dialog> element: the browser traps focus, closes on Esc and returns focus to
+ * the trigger. Use sparingly; a page is usually kinder than a dialog for older users.
+ */
+export declare function Dialog({ open, onClose, title, children, actions, alert, className }: DialogProps): import("react").JSX.Element;
+
 /* ===== components/organisms/ErrorSummary/ErrorSummary ===== */
 export type ErrorSummaryItem = {
     /** id of the input to focus, e.g. "lookup-phone" or a DateInput's "<id>-day". */
@@ -464,6 +584,112 @@ export type ErrorSummaryProps = {
  * Render it only when there are errors; it takes focus so screen-reader and keyboard users land on it.
  */
 export declare function ErrorSummary({ errors, title, focusOnMount, className }: ErrorSummaryProps): import("react").JSX.Element | null;
+
+/* ===== components/organisms/Footer/Footer ===== */
+export type FooterProps = {
+    /** Legal or facility name, e.g. "Công ty cổ phần Trung tâm bác sĩ gia đình Hà Nội". */
+    name: string;
+    tagline?: string;
+    address: string;
+    /** Shown as text and tap-to-call links. */
+    phones: Array<{
+        number: string;
+        label?: string;
+    }>;
+    email?: string;
+    /** Registration and representative lines. */
+    legal?: string[];
+    columns?: Array<{
+        title: string;
+        links: Array<{
+            label: string;
+            href: string;
+        }>;
+    }>;
+    copyright?: string;
+    labels?: {
+        address?: string;
+        phone?: string;
+        email?: string;
+    };
+    className?: string;
+};
+/** Site footer on brand-700: who we are, where, how to reach us (as text, not only links), legal lines, site links. */
+export declare function Footer({ name, tagline, address, phones, email, legal, columns, copyright, labels, className }: FooterProps): import("react").JSX.Element;
+
+/* ===== components/organisms/Header/Header ===== */
+export type NavItem = {
+    label: string;
+    href: string;
+    /** Marks the current page (aria-current="page"). */
+    current?: boolean;
+    /** Sub-pages; the item becomes a button that opens them. */
+    children?: Array<{
+        label: string;
+        href: string;
+        current?: boolean;
+    }>;
+};
+export type HeaderProps = {
+    logo: {
+        src: string;
+        alt: string;
+        href?: string;
+        width?: number;
+        height?: number;
+    };
+    items: NavItem[];
+    hotline?: {
+        number: string;
+        label?: string;
+    };
+    /** One line such as "Mở cửa 07:00–20:00, tất cả các ngày". Hidden on phones. */
+    hours?: string;
+    /** Main call to action, e.g. { label: 'Đặt lịch khám', href: '/dat-lich' }. */
+    cta?: {
+        label: string;
+        href: string;
+    };
+    /** aria-label of the nav. Default "Menu chính". */
+    navLabel?: string;
+    /** Mobile menu button. Default "Menu" / "Đóng menu". */
+    menuLabel?: string;
+    closeMenuLabel?: string;
+    className?: string;
+};
+/**
+ * Site header: logo, hotline (same place on every page), optional hours and call to action, and the main menu.
+ * Sub-menus open on click or Enter/Space, never on hover alone, and close with Esc.
+ */
+export declare function Header({ logo, items, hotline, hours, cta, navLabel, menuLabel, closeMenuLabel, className, }: HeaderProps): import("react").JSX.Element;
+
+/* ===== components/organisms/IdleTimeoutDialog/IdleTimeoutDialog ===== */
+export type IdleTimeoutDialogProps = {
+    /** Inactivity before onTimeout runs. Default 20 minutes. */
+    timeoutMs?: number;
+    /** How long before the timeout the warning opens. Default 2 minutes (WCAG 2.2.1 needs at least 20 seconds). */
+    warnBeforeMs?: number;
+    /** Save what you can and sign out or clear the form. */
+    onTimeout: () => void;
+    /** Person chose "Thoát". Defaults to onTimeout. */
+    onSignOut?: () => void;
+    /** Person chose to continue; refresh the session here. */
+    onStay?: () => void;
+    /** Pause the timer (e.g. when nothing is entered yet). Default false. */
+    disabled?: boolean;
+    title?: string;
+    /** Text before the remaining time. */
+    message?: string;
+    stayLabel?: string;
+    signOutLabel?: string;
+};
+/** "2 phút 05 giây", "45 giây". */
+export declare function formatRemaining(ms: number): string;
+/**
+ * Warns before a session ends after inactivity and lets the person continue with one tap.
+ * Keep what they typed: older users are often slow, interrupted, or helped by a relative.
+ */
+export declare function IdleTimeoutDialog({ timeoutMs, warnBeforeMs, onTimeout, onSignOut, onStay, disabled, title, message, stayLabel, signOutLabel, }: IdleTimeoutDialogProps): import("react").JSX.Element;
 
 /* ===== components/organisms/ResultLookupForm/ResultLookupForm ===== */
 export type ResultLookupValues = {
@@ -501,6 +727,8 @@ export type BookingStepProps = {
     children: ReactNode;
     /** Back link. Omit on the first step. */
     backHref?: string;
+    /** In-page back action (single-page flows); prevents navigation when given. */
+    onBack?: () => void;
     /** Default "Quay lại". */
     backLabel?: string;
     /** Default "Tiếp tục". */
@@ -517,5 +745,20 @@ export type BookingStepProps = {
 /**
  * One question per page, as in GOV.UK/NHS booking flows: back link, progress, question as h1,
  * error summary, fields, one primary action, hotline. Layout only; the page supplies the content.
+ * Place it inside SiteLayout, which provides the page's single <main> landmark.
  */
-export declare function BookingStep({ title, progress, hint, errorSummary, children, backHref, backLabel, continueLabel, onContinue, submitting, hotline, className, }: BookingStepProps): import("react").JSX.Element;
+export declare function BookingStep({ title, progress, hint, errorSummary, children, backHref, onBack, backLabel, continueLabel, onContinue, submitting, hotline, className, }: BookingStepProps): import("react").JSX.Element;
+
+/* ===== components/templates/SiteLayout/SiteLayout ===== */
+export type SiteLayoutProps = {
+    header: HeaderProps;
+    footer: FooterProps;
+    /** Page content; rendered inside <main id="main">. Do not nest another <main>. */
+    children: ReactNode;
+    /** "clinic" (default) or "nursing-home". */
+    theme?: 'clinic' | 'nursing-home';
+    skipLabel?: string;
+    className?: string;
+};
+/** Page shell: skip link, header, main content, footer. Every public FDC page uses it. */
+export declare function SiteLayout({ header, footer, children, theme, skipLabel, className }: SiteLayoutProps): import("react").JSX.Element;
