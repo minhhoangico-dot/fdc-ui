@@ -5,7 +5,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist', 'dist-design', 'storybook-static', 'node_modules', 'design/**/components/**'] },
+  { ignores: ['dist', 'dist-design', 'storybook-static', 'visual-review', '.claude', 'node_modules', 'design/**/components/**'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],

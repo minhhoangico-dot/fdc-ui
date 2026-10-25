@@ -28,6 +28,10 @@
   padding-inline-start: var(--space-20);
 }
 .Link {
+  /* Each link is a 44px tap target for older patients, even when the message is short. */
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--target-min);
   color: var(--status-error-text);
   font-size: 1.125rem;
   font-weight: 600;

@@ -21,9 +21,10 @@ h1, h2, h3, h4 {
 html {
   scroll-padding-top: var(--space-50);
 }
+/* Reduced motion removes movement, not feedback: components drop their own transforms
+   (see TextLink); short color fades stay so state changes remain visible. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    transition-duration: 0ms !important;
-    animation-duration: 0ms !important;
+  html {
+    scroll-behavior: auto;
   }
 }

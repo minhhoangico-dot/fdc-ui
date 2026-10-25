@@ -26,3 +26,12 @@
 .TextLink:hover .Arrow {
   transform: translateX(var(--space-5));
 }
+/* Reduced motion: the arrow stays put; the link's color change still shows the hover. */
+@media (prefers-reduced-motion: reduce) {
+  .Arrow {
+    transition: none;
+  }
+  .TextLink:hover .Arrow {
+    transform: none;
+  }
+}

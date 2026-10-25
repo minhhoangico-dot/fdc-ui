@@ -10,8 +10,16 @@ React components for the **FDC Medical Group** design system: the family-doctor 
 npm install
 npm run storybook      # the component catalogue at http://localhost:6006
 npm test               # unit tests
-npm run typecheck && npm run lint
+npm run check          # typecheck, lint, tests, token sync, token/level lints, contrast
+npm run review:visual  # every story in a real browser, both themes, phone to desktop
 ```
+
+## Designing with Claude Code
+
+Open this repo in Claude Code and describe the work ("thêm màn hình tra cứu kết quả", "check the booking flow on phones"). Everything Claude needs lives here:
+- `CLAUDE.md`: house rules for FDC work, loaded automatically.
+- `.claude/skills/atomic-design-system/`: the design-system skill with the FDC brand profile (`references/brands/fdc.md`), used for every UI task.
+- `.claude/agents/design-review.md`: a read-only reviewer that renders the stories, measures them and writes a ranked report with screenshots.
 
 Use the **Theme** button in the Storybook toolbar to see every component in the clinic (blue) and nursing-home (orange) themes. Start with **Pages › Đặt lịch khám › Toàn bộ quy trình** to walk through the whole booking flow, built only from these parts inside the real clinic header and footer.
 
@@ -53,8 +61,7 @@ Load the fonts once: Montserrat 600/700 for headings, Be Vietnam Pro 400/500/600
 
 ```bash
 npm run tokens         # regenerates src/tokens/tokens.css (never edit it by hand)
-node <skill>/scripts/contrast.mjs --css src/tokens/tokens.css --pairs design/contrast-pairs.json
-node <skill>/scripts/contrast.mjs --css src/tokens/tokens.css --scope "[data-theme='nursing-home']" --pairs design/contrast-pairs.json
+npm run contrast       # both themes
 ```
 
 **Components: code → Claude Design.** After changing components here:
@@ -72,8 +79,10 @@ Then ask Claude to *"publish FDC components to Claude Design"*; it uploads `desi
 |---|---|
 | `npm test` | 111 unit tests: behavior, accessibility attributes, every component in both themes |
 | `npm run tokens:check` | tokens.css matches the master tokens.json |
-| `node <skill>/scripts/lint-tokens.mjs src/components --strict` | No raw colors, px, fonts or atom margins |
-| `node <skill>/scripts/lint-levels.mjs src/components` | No upward imports between atomic levels |
+| `npm run lint:tokens` | No raw colors, px, fonts, atom margins, `transition: all` or animated layout properties |
+| `npm run lint:levels` | No upward imports between atomic levels |
+| `npm run contrast` | Every text/background pair passes WCAG AA in both themes |
+| `npm run review:visual` | Every story rendered at 320/390/768/1280 in both themes: no sideways scroll, 44px tap targets, 16px+ text, visible focus, axe |
 | `node scripts/check-design-previews.mjs` | Claude Design previews render without errors |
 
-`<skill>` is the atomic-design-system skill: `plugins/atomic-design-system/skills/atomic-design-system` in [minhhoangico-dot/atomic-design-system](https://github.com/minhhoangico-dot/atomic-design-system).
+`npm run check` runs all of these except the visual review. The skill in `.claude/` is copied from [minhhoangico-dot/atomic-design-system](https://github.com/minhhoangico-dot/atomic-design-system); update it with `npm run skill:sync -- <path-to-clone>`.

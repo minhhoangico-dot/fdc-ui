@@ -69,7 +69,8 @@ for (const group of t.type.groups) {
       `.${s.name} {`,
       `  font-family: var(--font-${fam});`,
       `  font-size: ${px(s.fontSize)};`,
-      ...(s.lineHeight !== undefined ? [`  line-height: ${px(s.lineHeight)};`] : []),
+      // Line height is a unitless multiplier (1.3), never px: 1.3px would stack lines on top of each other.
+      ...(s.lineHeight !== undefined ? [`  line-height: ${s.lineHeight};`] : []),
       ...(s.fontWeight !== undefined ? [`  font-weight: ${s.fontWeight};`] : []),
       ...(s.letterSpacing !== undefined ? [`  letter-spacing: ${px(s.letterSpacing)};`] : []),
       '}',
