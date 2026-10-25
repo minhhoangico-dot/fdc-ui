@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { nursingHomeHeader } from '../../../fixtures/site';
 import { Header } from './Header';
@@ -30,3 +30,63 @@ describe('Header', () => {
     expect(screen.getByRole('link', { name: 'Bảng giá' })).toHaveAttribute('aria-current', 'page');
   });
 });
+
+describe('Header compact', () => {
+  const props = {
+    variant: 'compact' as const,
+    logo: { src: 'logo.png', alt: 'FDC Bác sĩ gia đình, về Việc của tôi', href: '/' },
+    appName: 'hoso',
+    items: [{ label: 'Việc của tôi', href: '/', current: true }],
+    tools: (
+      <>
+        <span>Chị Lan</span>
+        <a href="/dang-xuat">Đăng xuất</a>
+      </>
+    ),
+  };
+
+  it('is one row with the app name, the named menu and the tools; no hotline or CTA', async () => {
+    render(<Header {...props} hotline={{ number: '024 35 430 430' }} cta={{ label: 'Đặt lịch khám', href: '/' }} />);
+    const header = screen.getByRole('banner');
+    expect(header).toHaveAttribute('data-variant', 'compact');
+    expect(screen.getByRole('link', { name: 'FDC Bác sĩ gia đình, về Việc của tôi hoso' })).toHaveAttribute('href', '/');
+    expect(screen.getByRole('navigation', { name: 'Menu chính' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Việc của tôi' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByRole('link', { name: 'Đăng xuất' })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /024 35 430 430/ })).toBeNull();
+    expect(screen.queryByRole('link', { name: 'Đặt lịch khám' })).toBeNull();
+    // The menu button controls the panel holding the menu and the tools; Esc closes it and returns focus.
+    const menu = screen.getByRole('button', { name: 'Menu' });
+    await userEvent.click(menu);
+    expect(menu).toHaveAttribute('aria-expanded', 'true');
+    expect(document.getElementById(menu.getAttribute('aria-controls')!)).toContainElement(screen.getByRole('link', { name: 'Đăng xuất' }));
+    await userEvent.keyboard('{Escape}');
+    expect(menu).toHaveAttribute('aria-expanded', 'false');
+    expect(menu).toHaveFocus();
+  });
+
+  it('collapseOnScroll: sticks, and marks itself collapsed after scrolling down', () => {
+    render(<Header {...props} collapseOnScroll compactBar={<span>Đặng Thanh Chi · 07/07/1990 · TESTA-0006</span>} />);
+    const header = screen.getByRole('banner');
+    expect(header).toHaveAttribute('data-sticky', 'true');
+    expect(header).not.toHaveAttribute('data-collapsed');
+    act(() => {
+      Object.defineProperty(window, 'scrollY', { value: 400, configurable: true });
+      window.dispatchEvent(new Event('scroll'));
+    });
+    expect(header).toHaveAttribute('data-collapsed', 'true');
+    expect(screen.getByText('Đặng Thanh Chi · 07/07/1990 · TESTA-0006')).toBeInTheDocument();
+    act(() => {
+      Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
+      window.dispatchEvent(new Event('scroll'));
+    });
+    expect(header).not.toHaveAttribute('data-collapsed');
+  });
+
+  it('the site variant is unchanged by default', () => {
+    render(<Header {...props} variant={undefined} />);
+    expect(screen.getByRole('banner')).toHaveAttribute('data-variant', 'site');
+    expect(screen.queryByText('hoso')).toBeNull();
+  });
+});
+

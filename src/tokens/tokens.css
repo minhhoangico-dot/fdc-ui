@@ -34,6 +34,9 @@
   --focus-ring: var(--brand-600);
   --status-success-text: var(--leaf-700);
   --status-error-text: var(--danger);
+  --status-info-bg: var(--brand-50);
+  --status-info-border: var(--brand-600);
+  --status-info-text: var(--brand-800);
   --hotline: var(--accent-600);
   --shadow-card: 0 0 15px rgba(0,0,0,0.15);
   --shadow-sm: 0 0 3px rgba(0,0,0,0.3);
@@ -57,6 +60,9 @@
   --focus-ring: var(--brand-600);
   --status-success-text: var(--leaf-700);
   --status-error-text: var(--danger);
+  --status-info-bg: var(--brand-50);
+  --status-info-border: var(--brand-600);
+  --status-info-text: var(--brand-800);
   --hotline: var(--accent-600);
 }
 

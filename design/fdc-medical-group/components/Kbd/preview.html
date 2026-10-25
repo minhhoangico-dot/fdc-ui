@@ -1,0 +1,7 @@
+<!-- @dsCard group="Atoms" height=80 subtitle="keyboard shortcut hint" -->
+<div id="root" style="padding:16px;font-family:var(--font-body);font-size:1rem;color:var(--text-muted)"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h('p', {style: {margin: 0}},
+  'Phím tắt: ', h(F.Kbd, {keys: ['Ctrl', 'S']}), ' lưu · ', h(F.Kbd, {keys: ['Ctrl', 'Enter']}), ' mở trang Xem lại trước khi gửi'));
+</script>

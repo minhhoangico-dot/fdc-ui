@@ -12,6 +12,8 @@ const samples: Record<string, JSX.Element> = {
   Icon: <FDC.Icon name="phone" title="Gọi" />,
   TextField: <FDC.TextField label="Họ và tên" />,
   TextLink: <FDC.TextLink href="#" />,
+  StatusTag: <FDC.StatusTag tone="info">Chờ gửi</FDC.StatusTag>,
+  Kbd: <FDC.Kbd keys={['Ctrl', 'S']} />,
   DateInput: <FDC.DateInput label="Ngày sinh" />,
   FormNotice: <FDC.FormNotice notice={{ text: 'Đã gửi' }} />,
   HotlineCard: <FDC.HotlineCard number="024 35 430 430" />,

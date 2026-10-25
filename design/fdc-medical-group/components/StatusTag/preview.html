@@ -1,0 +1,17 @@
+<!-- @dsCard group="Atoms" height=130 subtitle="six tones; sm next to a value" -->
+<div id="root" style="display:flex;flex-direction:column;gap:14px;padding:16px"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h('div', {style: {display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}},
+    h(F.StatusTag, null, 'Đã nhập'),
+    h(F.StatusTag, {tone: 'muted'}, 'Nhập tay'),
+    h(F.StatusTag, {tone: 'info'}, 'Chờ gửi · còn 27 giây'),
+    h(F.StatusTag, {tone: 'strong'}, 'Đang làm'),
+    h(F.StatusTag, {tone: 'success'}, 'Đã gửi'),
+    h(F.StatusTag, {tone: 'error'}, 'Cần sửa')),
+  h('div', {style: {display: 'flex', gap: '10px', alignItems: 'center', fontFamily: 'var(--font-body)', fontSize: '1rem'}},
+    h('span', null, 'Huyết áp'), h('strong', null, '150/95 mmHg'),
+    h(F.StatusTag, {tone: 'error', size: 'sm'}, 'Cao'),
+    h(F.StatusTag, {tone: 'muted', size: 'sm'}, 'Nhập tay'))));
+</script>

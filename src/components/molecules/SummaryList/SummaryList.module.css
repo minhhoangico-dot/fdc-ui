@@ -12,11 +12,23 @@
   padding-block: var(--space-15);
   border-block-end: 1px solid var(--border);
 }
+/* Phones (one column): open details right under their toggle, before "Thay đổi". */
+@media (max-width: 39.99rem) {
+  .Details {
+    order: 3;
+  }
+  .Action {
+    order: 4;
+  }
+}
 @media (min-width: 40rem) {
   .Row {
     grid-template-columns: minmax(10rem, 1fr) 2fr auto;
-    gap: var(--space-20);
+    gap: var(--space-5) var(--space-20);
     align-items: baseline;
+  }
+  .Details {
+    grid-column: 2 / -1;
   }
 }
 .Key {
@@ -26,17 +38,54 @@
   margin: 0;
   overflow-wrap: anywhere;
 }
+/* The details toggle sits right under the value: brand text, 44px tall, not underlined like a link. */
+.Toggle {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  min-block-size: var(--target-min);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-link);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: start;
+  cursor: pointer;
+}
+.Toggle:hover {
+  color: var(--action-primary-bg-hover);
+}
+.Toggle:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+/* Details open under the row, across the value and action columns. */
+.Details {
+  box-sizing: border-box;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  overflow-x: auto;
+}
 .Action {
   margin: 0;
 }
 .Link {
+  /* Smaller and quieter than the details toggle, still underlined and a 44px target. */
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   min-block-size: var(--target-min);
-  color: var(--text-link);
-  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-weight: 400;
   text-decoration: underline;
+}
+.Link:hover {
+  color: var(--text-default);
 }
 .Link:focus-visible {
   outline: var(--focus-ring-width) solid var(--focus-ring);

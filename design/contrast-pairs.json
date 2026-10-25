@@ -173,5 +173,37 @@
     "fg": "--text-default",
     "bg": "--brand-50",
     "note": "selected RadioGroup tile"
+  },
+  {
+    "fg": "--status-info-text",
+    "bg": "--status-info-bg",
+    "note": "pending panel / info StatusTag text"
+  },
+  {
+    "fg": "--status-info-border",
+    "bg": "--status-info-bg",
+    "min": 3,
+    "note": "pending panel and info tag edge"
+  },
+  {
+    "fg": "--text-default",
+    "bg": "--status-info-bg",
+    "note": "body text in a pending panel"
+  },
+  {
+    "fg": "--brand-800",
+    "bg": "--surface",
+    "note": "secondary button text"
+  },
+  {
+    "fg": "--brand-600",
+    "bg": "--surface",
+    "min": 3,
+    "note": "secondary button inner edge"
+  },
+  {
+    "fg": "--text-on-action",
+    "bg": "--brand-600",
+    "note": "strong StatusTag, current step"
   }
 ]

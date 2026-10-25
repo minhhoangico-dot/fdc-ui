@@ -170,3 +170,137 @@
     box-shadow: var(--shadow-card);
   }
 }
+
+/* ---------- Compact: one white row for staff tools (≤ 60px tall) ---------- */
+.Header:where([data-sticky]) {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 20;
+}
+.Bar {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5) var(--space-30);
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: var(--space-5) var(--space-15);
+}
+.Brand {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--space-10);
+  color: var(--text-default);
+  text-decoration: none;
+}
+.Brand img {
+  display: block;
+  inline-size: auto;
+  block-size: var(--target-min);
+}
+.Brand:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+.AppName {
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+/* The thin bar's content (name · date of birth · record code): only when collapsed on a phone. */
+.CompactBar {
+  display: none;
+  flex: 1 1 0;
+  min-inline-size: 0;
+  align-items: center;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.Header:where([data-variant='compact']) .MenuButton {
+  margin-inline-start: auto;
+  font-size: 1rem;
+}
+/* Phones: the menu and the tools open as a panel under the row. */
+.Panel {
+  box-sizing: border-box;
+  display: none;
+  flex: 1 0 100%;
+  flex-direction: column;
+  gap: var(--space-10);
+  order: 3;
+  padding-block: var(--space-5) var(--space-10);
+  border-block-start: 1px solid var(--border);
+}
+.Panel:where([data-open]) {
+  display: flex;
+}
+.Header:where([data-variant='compact']) .List {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
+.Header:where([data-variant='compact']) .Link,
+.Header:where([data-variant='compact']) .SubLink {
+  font-size: 1rem;
+}
+.CompactTools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5) var(--space-15);
+  font-size: 1rem;
+}
+@media (max-width: 47.99rem) {
+  .Header:where([data-collapsed]) .Brand {
+    display: none;
+  }
+  .Header:where([data-collapsed]) .CompactBar {
+    display: flex;
+  }
+  .Header:where([data-collapsed]) .Bar {
+    column-gap: var(--space-10);
+    padding-block: var(--space-5);
+  }
+}
+@media (min-width: 48rem) {
+  .Header:where([data-variant='compact']) .MenuButton {
+    display: none;
+  }
+  .Panel {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5) var(--space-30);
+    order: 0;
+    padding: 0;
+    border: 0;
+  }
+  .Header:where([data-variant='compact']) .List {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-5) var(--space-20);
+  }
+  .Header:where([data-variant='compact']) .Link {
+    inline-size: auto;
+    padding-inline: 0;
+  }
+  .Header:where([data-variant='compact']) .Sub {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-start: 0;
+    z-index: 10;
+    min-inline-size: 16rem;
+    padding: var(--space-5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+}

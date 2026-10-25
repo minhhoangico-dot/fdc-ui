@@ -56,3 +56,63 @@
 .Next :where(p, ul, ol) {
   margin: 0;
 }
+
+/* Pending: pressed but not finished. Pale status-info panel, ordinary text, left-aligned like the page. */
+.ConfirmationPanel:where([data-tone='pending']) {
+  gap: var(--space-15);
+}
+.ConfirmationPanel:where([data-tone='pending']) .Panel {
+  padding: var(--space-20);
+  border: 1px solid var(--status-info-border);
+  background: var(--status-info-bg);
+  color: var(--text-default);
+  text-align: start;
+}
+.ConfirmationPanel:where([data-tone='pending']) .Title {
+  font-size: 1.375rem;
+  color: var(--status-info-text);
+}
+.ConfirmationPanel:where([data-tone='pending']) .Next {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Step line: Chờ gửi → Đang gửi → Đã gửi lên Sở → Bộ đã nhận. The current step is filled with the brand. */
+.Steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5) var(--space-10);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.ConfirmationPanel:where([data-tone='pending']) .Steps {
+  justify-content: flex-start;
+}
+.Step {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-10);
+}
+.Step + .Step::before {
+  content: '→' / '';
+}
+.Step:where([data-state='current']) .StepLabel {
+  padding: 0 var(--space-10);
+  border-radius: var(--radius-pill);
+  background: var(--brand-600);
+  color: var(--text-on-action);
+  font-weight: 600;
+}
+/* On the green success panel the current step is a white pill with green text. */
+.ConfirmationPanel:where([data-tone='success']) .Step:where([data-state='current']) .StepLabel {
+  background: var(--surface);
+  color: var(--status-success-text);
+}
+.ConfirmationPanel:where([data-tone='pending']) .Step:where([data-state='todo']) {
+  color: var(--text-muted);
+}

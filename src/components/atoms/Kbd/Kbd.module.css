@@ -1,0 +1,29 @@
+/* A key cap: control-colored edge with a thicker bottom, like a physical key. Text, not a control. */
+.Kbd {
+  box-sizing: border-box;
+  display: inline-block;
+  min-inline-size: 1.75em;
+  padding: 0 var(--space-5);
+  border: 1px solid var(--border-control);
+  border-block-end-width: var(--border-width-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-default);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+}
+.Combo {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  white-space: nowrap;
+}
+.Separator {
+  color: var(--text-default);
+  white-space: pre;
+}

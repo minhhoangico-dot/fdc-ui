@@ -33,3 +33,44 @@ export const WithDisabled: Story = {
     ],
   },
 };
+
+const yesNo = [
+  { value: 'khong', label: 'Không' },
+  { value: 'co', label: 'Có' },
+];
+
+/** Staff form: one history question, Không / Có in one row. The question reads as a label, not a heading. */
+export const YesNoRow: Story = {
+  args: {
+    label: '7. Phẫu thuật can thiệp tim - mạch (thay van, bắc cầu nối, tạo hình mạch, máy tạo nhịp, đặt stent mạch, ghép tim)',
+    name: 'q7',
+    layout: 'row',
+    hint: 'Chưa điền',
+    options: yesNo,
+  },
+};
+
+/** Five short options in one row on a 360px phone: compact density keeps 44px targets. */
+export const ClassesCompact: Story = {
+  args: {
+    label: 'Phân loại sức khỏe',
+    name: 'loai',
+    layout: 'row',
+    density: 'compact',
+    defaultValue: 'II',
+    options: ['I', 'II', 'III', 'IV', 'V'].map((v) => ({ value: v, label: v })),
+  },
+  decorators: [(Story) => <div style={{ maxWidth: 330 }}><Story /></div>],
+  parameters: { viewport: { defaultViewport: 'mobile1' } },
+};
+
+/** After "Kiểm tra": one message and one red bar for the group, not a red box per option. */
+export const RowError: Story = {
+  args: {
+    label: '8. Tăng huyết áp (I10)',
+    name: 'q8',
+    layout: 'row',
+    options: yesNo,
+    error: 'Chọn Không hoặc Có',
+  },
+};

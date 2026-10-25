@@ -1,11 +1,14 @@
-<!-- @dsCard group="Atoms" height=110 subtitle="neutral, primary, hotline, loading, disabled" -->
-<div id="root" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:16px"></div>
+<!-- @dsCard group="Atoms" height=210 subtitle="secondary (white), primary, hotline, loading, unavailable with its reason" -->
+<div id="root" style="display:flex;flex-direction:column;gap:16px;padding:16px"></div>
 <script>
 var h = React.createElement, F = window.FDC;
 ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
-  h(F.Button, null, 'Gửi thông tin'),
-  h(F.Button, {variant: 'primary'}, 'Đặt lịch khám'),
-  h(F.Button, {variant: 'hotline', icon: 'phone', href: 'tel:02435430430'}, '024 35 430 430'),
-  h(F.Button, {variant: 'primary', loading: true}, 'Đặt lịch khám'),
-  h(F.Button, {variant: 'primary', disabled: true}, 'Đặt lịch khám')));
+  h('div', {style: {display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center'}},
+    h(F.Button, null, 'Quay lại phiếu'),
+    h(F.Button, {variant: 'primary'}, 'Đặt lịch khám'),
+    h(F.Button, {variant: 'hotline', icon: 'phone', href: 'tel:02435430430'}, '024 35 430 430'),
+    h(F.Button, {variant: 'primary', loading: true}, 'Đặt lịch khám')),
+  h('div', {style: {display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center'}},
+    h(F.Button, {icon: 'simple-left'}, 'Quay lại phiếu'),
+    h(F.Button, {variant: 'primary', disabledReason: 'Chọn một dòng ở trên trước.'}, 'Dùng người và lượt khám này'))));
 </script>

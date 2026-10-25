@@ -1,16 +1,26 @@
-<!-- @dsCard group="Organisms" height=320 subtitle="native modal; Esc closes, focus returns" -->
-<div id="root" style="padding:16px"></div>
+<!-- @dsCard group="Organisms" height=520 subtitle="native modal; wide with a scrolling body and fixed buttons" -->
+<div id="root" style="padding:16px;display:flex;gap:12px;flex-wrap:wrap"></div>
 <script>
 var h = React.createElement, F = window.FDC;
+var names = ['Phạm Văn Nam', 'Đặng Thanh Chi', 'Nguyễn Thị Lan', 'Tôn Thất Nguyễn Hoàng Phương Quỳnh'];
+var rows = []; for (var i = 1; i <= 24; i++) rows.push(h('tr', {key: i, style: {borderTop: '1px solid var(--border)'}},
+  h('td', {style: {padding: '5px 10px'}}, names[i % 4]), h('td', {style: {padding: '5px 10px'}}, 'TESTA-' + ('000' + i).slice(-4))));
 function Demo() {
-  var s = React.useState(true), open = s[0], setOpen = s[1];
+  var a = React.useState(false), small = a[0], setSmall = a[1];
+  var b = React.useState(true), wide = b[0], setWide = b[1];
   return h(React.Fragment, null,
-    h(F.Button, {onClick: function () { setOpen(true); }}, 'Hủy lịch'),
-    h(F.Dialog, {open: open, onClose: function () { setOpen(false); }, title: 'Hủy lịch khám?',
+    h(F.Button, {onClick: function () { setSmall(true); }}, 'Hủy lịch'),
+    h(F.Button, {onClick: function () { setWide(true); }}, 'Xem danh sách gửi'),
+    h(F.Dialog, {open: small, onClose: function () { setSmall(false); }, title: 'Hủy lịch khám?',
       actions: h(React.Fragment, null,
-        h(F.Button, {variant: 'primary', onClick: function () { setOpen(false); }}, 'Giữ lịch khám'),
-        h(F.Button, {onClick: function () { setOpen(false); }}, 'Hủy lịch'))},
-      h('p', null, 'Lịch khám thứ Bảy 24/10 lúc 09:30 sẽ bị hủy. Bạn có thể đặt lại bất cứ lúc nào.')));
+        h(F.Button, {variant: 'primary', onClick: function () { setSmall(false); }}, 'Giữ lịch khám'),
+        h(F.Button, {onClick: function () { setSmall(false); }}, 'Hủy lịch'))},
+      h('p', null, 'Lịch khám thứ Bảy 24/10 lúc 09:30 sẽ bị hủy. Bạn có thể đặt lại bất cứ lúc nào.')),
+    h(F.Dialog, {open: wide, onClose: function () { setWide(false); }, title: 'Gửi 24 hồ sơ lên Sở?', size: 'wide', scrollBody: true,
+      actions: h(React.Fragment, null,
+        h(F.Button, {variant: 'primary', onClick: function () { setWide(false); }}, 'Gửi 24 hồ sơ'),
+        h(F.Button, {onClick: function () { setWide(false); }}, 'Quay lại'))},
+      h('table', {style: {width: '100%', borderCollapse: 'collapse', fontSize: '1rem'}}, h('tbody', null, rows))));
 }
 ReactDOM.createRoot(document.getElementById('root')).render(h(Demo));
 </script>

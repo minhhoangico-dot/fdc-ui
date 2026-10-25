@@ -29,9 +29,9 @@ Use the **Theme** button in the Storybook toolbar to see every component in the 
 |---|---|
 | Tokens | `design/fdc-medical-group/tokens.json` (master copy) → `src/tokens/tokens.css` (generated) |
 | Layout | Stack, Inline |
-| Atoms | Button, TextField, Icon (24 FDC glyphs), Avatar, TextLink, SkipLink, VisuallyHidden |
+| Atoms | Button (secondary, primary, hotline; `disabledReason`), TextField, Icon (24 FDC glyphs), Avatar, TextLink, SkipLink, StatusTag, Kbd, VisuallyHidden |
 | Molecules | DateInput (Ngày/Tháng/Năm), PhoneInput, TimeSlotPicker, RadioGroup, SummaryList, CareCard, ConfirmationPanel, HotlineCard, WorkingHours, ServiceCard, SpecialtyTile, ValueCard, TestimonialCard, NewsCard, ServiceAccordion, FormNotice |
-| Organisms | Header, Footer, Dialog, IdleTimeoutDialog, ErrorSummary, ResultLookupForm, ContactForm |
+| Organisms | Header (site, and `compact` for staff tools), Footer, Dialog (`wide`, `scrollBody`), IdleTimeoutDialog, ErrorSummary, ResultLookupForm, ContactForm |
 | Templates | SiteLayout, BookingStep |
 | Pages (Storybook only) | Đặt lịch khám: the full flow (service → who → time → details → check answers → confirmation) with session timeout; single steps with stress cases; Khi nào cần đi khám (care advice) |
 
@@ -54,6 +54,14 @@ Load the fonts once: Montserrat 600/700 for headings, Be Vietnam Pro 400/500/600
 - Every color comes from a token; every text/background pair passes WCAG AA (4.5:1) in both themes.
 - Components never fetch data or position themselves; layout primitives own spacing.
 - Pink is only for the hotline. Errors are red **with words**, linked from an error summary.
+- Staff tools (hoso, FDC Manager):
+  - One primary button per screen state; an unavailable button always says why (`disabledReason`).
+  - Green only for success; pending work uses `status-info` (ConfirmationPanel `tone="pending"`, StatusTag `info`).
+  - Word labels (StatusTag) rather than bold or color alone.
+  - Ctrl shortcuts only (Kbd), never single letters, because Telex typing triggers them.
+  - The one-row compact Header.
+
+  See `CHANGELOG.md` for version 2.1.
 
 ## Keeping code and Claude Design in sync
 

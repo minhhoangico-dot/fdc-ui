@@ -1,10 +1,17 @@
-<!-- @dsCard group="Molecules" height=330 subtitle="check your answers before confirming" -->
-<div id="root" style="padding:16px;max-width:720px"></div>
+<!-- @dsCard group="Molecules" height=520 subtitle="check your answers; read-only details under a row" -->
+<div id="root" style="padding:16px;max-width:760px"></div>
 <script>
 var h = React.createElement, F = window.FDC;
+var td = {padding: '5px 10px', textAlign: 'left', verticalAlign: 'top'};
+var table = h('table', {style: {width: '100%', borderCollapse: 'collapse'}},
+  h('thead', null, h('tr', {style: {background: 'var(--surface-alt)'}}, h('th', {style: td}, 'Chỉ số'), h('th', {style: td}, 'Kết quả'), h('th', {style: td}, 'Ghi chú'))),
+  h('tbody', null,
+    h('tr', {style: {borderTop: '1px solid var(--border)'}}, h('td', {style: td}, 'Huyết áp'), h('td', {style: td}, '150/95 mmHg'), h('td', {style: td}, h(F.StatusTag, {tone: 'error', size: 'sm'}, 'Cao'))),
+    h('tr', {style: {borderTop: '1px solid var(--border)'}}, h('td', {style: td}, 'Chiều cao'), h('td', {style: td}, '162 cm'), h('td', {style: td}, h(F.StatusTag, {tone: 'muted', size: 'sm'}, 'Nhập tay'))),
+    h('tr', {style: {borderTop: '1px solid var(--border)'}}, h('td', {style: td}, 'X-quang tim phổi'), h('td', {style: td}, 'Bình thường'), h('td', {style: td}))));
 ReactDOM.createRoot(document.getElementById('root')).render(h(F.SummaryList, {rows: [
   {key: 'Dịch vụ', value: 'Khám đa khoa', changeHref: '#'},
-  {key: 'Thời gian', value: 'Thứ Bảy, 24 tháng 10, 2026 lúc 09:30', changeHref: '#'},
   {key: 'Người đi khám', value: 'Nguyễn Thị Ánh Tuyết', changeHref: '#'},
-  {key: 'Số điện thoại liên hệ', value: '0912 345 678', changeHref: '#'}]}));
+  {key: 'Tiền sử', value: '25 câu · 2 câu trả lời Có', changeHref: '#', detailsLabel: 'Xem 25 câu', details: h('p', {style: {margin: 0}}, '8. Tăng huyết áp (I10): Có · 14. Đái tháo đường (E11): Có')},
+  {key: 'Cận lâm sàng', value: '12 chỉ số và X-quang', changeHref: '#', detailsLabel: 'Xem 12 chỉ số và X-quang', defaultDetailsOpen: true, details: table}]}));
 </script>

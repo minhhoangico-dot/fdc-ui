@@ -23,3 +23,31 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+const sendSteps = ['Chờ gửi', 'Đang gửi', 'Đã gửi lên Sở', 'Bộ đã nhận'];
+
+/** Pressed but not finished: pale status-info, never green. The step line shows where it is. */
+export const Pending: Story = {
+  args: {
+    tone: 'pending',
+    title: 'Chờ gửi · còn 27 giây',
+    reference: undefined,
+    headingLevel: 2,
+    steps: sendSteps,
+    currentStep: 0,
+    children: <p>Hồ sơ chưa được gửi. Chị có thể hủy.</p>,
+  },
+};
+
+/** Done, with the same step line: the current step is the last one reached. */
+export const SuccessWithSteps: Story = {
+  args: {
+    title: 'Đã gửi lên Sở',
+    reference: 'HS-2610-0412',
+    referenceLabel: 'Mã hồ sơ',
+    headingLevel: 2,
+    steps: sendSteps,
+    currentStep: 2,
+    children: <p>Bộ Y tế thường nhận trong 1 giờ. Trạng thái tự cập nhật trên trang Việc của tôi.</p>,
+  },
+};

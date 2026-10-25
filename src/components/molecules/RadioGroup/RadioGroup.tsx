@@ -29,6 +29,13 @@ export type RadioGroupProps = {
   required?: boolean;
   /** id put on the first option, so an ErrorSummary can link to it. */
   id?: string;
+  /**
+   * row = options side by side, sharing the width equally: for short answers such as Không / Có or Loại I–V.
+   * The question then reads as a field label (body text), so a long list of questions stays calm. Default column.
+   */
+  layout?: 'column' | 'row';
+  /** compact = less padding and gap, so five short options (I–V) fit a 360px phone; targets stay ≥ 44px. */
+  density?: 'comfortable' | 'compact';
   className?: string;
 };
 
@@ -50,6 +57,8 @@ export function RadioGroup({
   hideLegend,
   required,
   id: firstId,
+  layout = 'column',
+  density = 'comfortable',
   className,
 }: RadioGroupProps) {
   const id = useId();
@@ -64,6 +73,8 @@ export function RadioGroup({
       aria-describedby={[hintId, errorId].filter(Boolean).join(' ') || undefined}
       data-component="RadioGroup"
       data-invalid={error ? 'true' : undefined}
+      data-layout={layout}
+      data-density={density}
     >
       <legend className={hideLegend ? styles.LegendHidden : legendAsHeading ? styles.LegendHeading : styles.Legend}>
         {legendAsHeading ? <h1 className={styles.LegendH1}>{label}</h1> : label}

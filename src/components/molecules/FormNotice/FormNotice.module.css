@@ -15,3 +15,36 @@
   color: var(--status-error-text);
   font-weight: 600;
 }
+.FormNotice:where([data-type='warning']) {
+  color: var(--text-default);
+  font-weight: 600;
+}
+
+/* Boxed: a notice standing on its own in a page. The bar carries the type, the words carry the meaning. */
+.FormNotice:where([data-boxed]) {
+  box-sizing: border-box;
+  --notice-bar: var(--status-info-border);
+  padding: var(--space-15) var(--space-20);
+  border: 1px solid var(--border-control);
+  /* 6px bar: twice the heavy border width. */
+  border-inline-start: calc(2 * var(--border-width-heavy)) solid var(--notice-bar);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-default);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.FormNotice:where([data-boxed][data-type='warning']) {
+  --notice-bar: var(--brand-600);
+}
+.FormNotice:where([data-boxed][data-type='error']) {
+  --notice-bar: var(--status-error-text);
+  color: var(--status-error-text);
+  font-weight: 600;
+}
+.FormNotice:where([data-boxed][data-type='success']) {
+  --notice-bar: var(--status-success-text);
+  color: var(--status-success-text);
+  font-weight: 600;
+}

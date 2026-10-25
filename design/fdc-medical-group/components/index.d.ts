@@ -79,7 +79,10 @@ export declare function Avatar({ src, name, initials, alt, size, ring, className
 
 /* ===== components/atoms/Button/Button ===== */
 export type ButtonProps = {
-    /** neutral = grey; primary = brand (one per view); hotline = pink, only for calling the hotline. Default neutral. */
+    /**
+     * neutral = secondary: white with a brand edge, so it never looks unavailable (default);
+     * primary = brand fill, one per screen state; hotline = pink, only for calling the hotline.
+     */
     variant?: 'neutral' | 'primary' | 'hotline';
     /** Renders a link that looks like a button (for example href="tel:02435430430"). */
     href?: string;
@@ -91,11 +94,20 @@ export type ButtonProps = {
     loading?: boolean;
     /** Label read during loading. Default "Đang xử lý…". */
     loadingLabel?: string;
+    /**
+     * Why the button cannot be used yet, shown right next to it ("Chọn một dòng ở trên trước.").
+     * Setting it makes the button unavailable but still reachable with Tab, so screen readers read the reason;
+     * clicks do nothing. Prefer it to a bare `disabled`: an unavailable button always says why.
+     */
+    disabledReason?: string;
     children: ReactNode;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 /** The action button: 48px tall, sentence-case label. Write labels verb first: "Đặt lịch khám". */
 export declare const Button: import('react').ForwardRefExoticComponent<{
-    /** neutral = grey; primary = brand (one per view); hotline = pink, only for calling the hotline. Default neutral. */
+    /**
+     * neutral = secondary: white with a brand edge, so it never looks unavailable (default);
+     * primary = brand fill, one per screen state; hotline = pink, only for calling the hotline.
+     */
     variant?: "neutral" | "primary" | "hotline";
     /** Renders a link that looks like a button (for example href="tel:02435430430"). */
     href?: string;
@@ -107,6 +119,12 @@ export declare const Button: import('react').ForwardRefExoticComponent<{
     loading?: boolean;
     /** Label read during loading. Default "Đang xử lý…". */
     loadingLabel?: string;
+    /**
+     * Why the button cannot be used yet, shown right next to it ("Chọn một dòng ở trên trước.").
+     * Setting it makes the button unavailable but still reachable with Tab, so screen readers read the reason;
+     * clicks do nothing. Prefer it to a bare `disabled`: an unavailable button always says why.
+     */
+    disabledReason?: string;
     children: ReactNode;
 } & ButtonHTMLAttributes<HTMLButtonElement> & import('react').RefAttributes<HTMLButtonElement>>;
 
@@ -125,6 +143,28 @@ export declare function Icon({ name, size, title, className, ...rest }: IconProp
 export type IconName = 'building-alt' | 'certificate' | 'comment' | 'double-left' | 'double-right' | 'envelope' | 'eye' | 'home' | 'location-pin' | 'minus' | 'navigation-menu' | 'pencil-alt-2' | 'phone' | 'play-alt-1' | 'plus' | 'rounded-down' | 'rounded-up' | 'search-1' | 'simple-left' | 'simple-right' | 'telephone' | 'ui-calendar' | 'ui-messaging' | 'ui-user';
 export declare const iconNames: IconName[];
 
+/* ===== components/atoms/Kbd/Kbd ===== */
+export type KbdProps = {
+    /** A key combination, e.g. ['Ctrl', 'S']: one key cap each, joined by the separator. */
+    keys?: string[];
+    /** Shown between keys. Default " + ". */
+    separator?: string;
+    /** A single key, when `keys` is not given. */
+    children?: ReactNode;
+} & HTMLAttributes<HTMLElement>;
+/**
+ * A keyboard key, for the shortcut hint shown where a shortcut works: "Ctrl + S lưu".
+ * Staff tools use Ctrl combinations only: single-letter shortcuts fire by accident while typing Vietnamese (Telex).
+ */
+export declare const Kbd: import('react').ForwardRefExoticComponent<{
+    /** A key combination, e.g. ['Ctrl', 'S']: one key cap each, joined by the separator. */
+    keys?: string[];
+    /** Shown between keys. Default " + ". */
+    separator?: string;
+    /** A single key, when `keys` is not given. */
+    children?: ReactNode;
+} & HTMLAttributes<HTMLElement> & import('react').RefAttributes<HTMLElement>>;
+
 /* ===== components/atoms/SkipLink/SkipLink ===== */
 export type SkipLinkProps = {
     /** id of the main content. Default "main". */
@@ -134,6 +174,35 @@ export type SkipLinkProps = {
 } & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>;
 /** First focusable element on every page: lets keyboard and screen-reader users jump past the header. Visible only on focus. */
 export declare function SkipLink({ targetId, label, className, ...rest }: SkipLinkProps): import("react").JSX.Element;
+
+/* ===== components/atoms/StatusTag/StatusTag ===== */
+export type StatusTagTone = 'neutral' | 'muted' | 'info' | 'strong' | 'success' | 'error';
+export type StatusTagProps = {
+    /**
+     * neutral = outlined (default); muted = grey, for sources like "Nhập tay"; info = pending work ("Chờ gửi");
+     * strong = brand fill, for the one state that matters most; success = done ("Đã gửi"); error = needs attention ("Cao", "Thấp").
+     */
+    tone?: StatusTagTone;
+    /** sm sits next to a value in tables and summaries; md (default) stands alone. */
+    size?: 'sm' | 'md';
+    /** Always words: the tag must make sense without its color. */
+    children: ReactNode;
+} & HTMLAttributes<HTMLSpanElement>;
+/**
+ * A rounded status label for staff tools: "Cao", "Nhập tay", "Chờ gửi", "Đã gửi".
+ * It is text, not a control; when the state needs an action, put a Button next to it.
+ */
+export declare const StatusTag: import('react').ForwardRefExoticComponent<{
+    /**
+     * neutral = outlined (default); muted = grey, for sources like "Nhập tay"; info = pending work ("Chờ gửi");
+     * strong = brand fill, for the one state that matters most; success = done ("Đã gửi"); error = needs attention ("Cao", "Thấp").
+     */
+    tone?: StatusTagTone;
+    /** sm sits next to a value in tables and summaries; md (default) stands alone. */
+    size?: "sm" | "md";
+    /** Always words: the tag must make sense without its color. */
+    children: ReactNode;
+} & HTMLAttributes<HTMLSpanElement> & import('react').RefAttributes<HTMLSpanElement>>;
 
 /* ===== components/atoms/TextField/TextField ===== */
 export type TextFieldProps = {
@@ -222,7 +291,7 @@ export declare function CareCard({ level, title, children, levelLabels, emergenc
 
 /* ===== components/molecules/ConfirmationPanel/ConfirmationPanel ===== */
 export type ConfirmationPanelProps = {
-    /** "Đã đặt lịch khám" */
+    /** "Đã đặt lịch khám" (success) or "Chờ gửi · còn 27 giây" (pending). */
     title: string;
     /** Booking or request code, e.g. "FDC-2410-0830". */
     reference?: string;
@@ -232,10 +301,26 @@ export type ConfirmationPanelProps = {
     children?: ReactNode;
     /** Move focus to the title when shown (after a submit). Default true. */
     focusOnMount?: boolean;
+    /**
+     * success (default) = the work is done: green panel. pending = pressed but not finished yet
+     * ("Chờ gửi · còn 27 giây"): pale status-info panel with ordinary text. Green is only ever for success.
+     */
+    tone?: 'success' | 'pending';
+    /** Short step line, e.g. ['Chờ gửi', 'Đang gửi', 'Đã gửi lên Sở', 'Bộ đã nhận']. */
+    steps?: string[];
+    /** Index of the current step in `steps` (0-based). */
+    currentStep?: number;
+    /** Read before the step line. Default "Tiến trình". */
+    stepsLabel?: string;
+    /** Heading level of the title. Default 1 (the page result); use 2 or 3 inside a page that has its own h1. */
+    headingLevel?: 1 | 2 | 3;
     className?: string;
 };
-/** The finish of a flow: a clear success panel with the reference code, then what happens next. */
-export declare function ConfirmationPanel({ title, reference, referenceLabel, children, focusOnMount, className, }: ConfirmationPanelProps): import("react").JSX.Element;
+/**
+ * The finish of a flow, or its waiting state: a clear panel with the title, the reference code,
+ * an optional step line, then what happens next.
+ */
+export declare function ConfirmationPanel({ title, reference, referenceLabel, children, focusOnMount, tone, steps, currentStep, stepsLabel, headingLevel, className, }: ConfirmationPanelProps): import("react").JSX.Element;
 
 /* ===== components/molecules/DateInput/DateInput ===== */
 export type DateInputProps = {
@@ -282,15 +367,20 @@ export declare const partsToIso: (p: DateParts) => string | null;
 
 /* ===== components/molecules/FormNotice/FormNotice ===== */
 export type FormNoticeValue = {
-    type?: 'info' | 'success' | 'error';
+    type?: 'info' | 'success' | 'warning' | 'error';
     text: string;
 };
 export type FormNoticeProps = {
     notice?: FormNoticeValue | null;
+    /**
+     * Stand-alone notice in a page (not under a form): a box with a 1px edge and a 6px bar on the left
+     * in the type's color (warning brand, error red, success green, info brand).
+     */
+    boxed?: boolean;
     className?: string;
 };
-/** Status line under a form ("Đã gửi…"), announced by screen readers without moving focus. */
-export declare function FormNotice({ notice, className }: FormNoticeProps): import("react").JSX.Element;
+/** Status line under a form ("Đã gửi…"), announced by screen readers without moving focus. `boxed` for a notice that stands alone. */
+export declare function FormNotice({ notice, boxed, className }: FormNoticeProps): import("react").JSX.Element;
 
 /* ===== components/molecules/HotlineCard/HotlineCard ===== */
 export type HotlineCardProps = {
@@ -372,13 +462,20 @@ export type RadioGroupProps = {
     required?: boolean;
     /** id put on the first option, so an ErrorSummary can link to it. */
     id?: string;
+    /**
+     * row = options side by side, sharing the width equally: for short answers such as Không / Có or Loại I–V.
+     * The question then reads as a field label (body text), so a long list of questions stays calm. Default column.
+     */
+    layout?: 'column' | 'row';
+    /** compact = less padding and gap, so five short options (I–V) fit a 360px phone; targets stay ≥ 44px. */
+    density?: 'comfortable' | 'compact';
     className?: string;
 };
 /**
  * One choice from a short list, as large tappable tiles built on native radios.
  * Arrow keys move between options; the whole tile is the hit area.
  */
-export declare function RadioGroup({ label, options, name, hint, error, errorPrefix, value, defaultValue, onValueChange, legendAsHeading, hideLegend, required, id: firstId, className, }: RadioGroupProps): import("react").JSX.Element;
+export declare function RadioGroup({ label, options, name, hint, error, errorPrefix, value, defaultValue, onValueChange, legendAsHeading, hideLegend, required, id: firstId, layout, density, className, }: RadioGroupProps): import("react").JSX.Element;
 
 /* ===== components/molecules/ServiceAccordion/ServiceAccordion ===== */
 export type ServiceAccordionItem = {
@@ -436,6 +533,14 @@ export type SummaryRow = {
     /** Where "Thay đổi" goes. Use onChange for in-page flows. */
     changeHref?: string;
     onChange?: () => void;
+    /** Read-only detail opened right under the row (a table of answers or results). */
+    details?: ReactNode;
+    /** The toggle's words when closed, e.g. "Xem 12 chỉ số". Shown as "▸ Xem 12 chỉ số". Default "Xem chi tiết". */
+    detailsLabel?: string;
+    /** The toggle's words when open. Default: detailsLabel with "Xem" replaced by "Thu gọn" ("▾ Thu gọn 12 chỉ số"). */
+    detailsOpenLabel?: string;
+    /** Start with the details open. */
+    defaultDetailsOpen?: boolean;
 };
 export type SummaryListProps = {
     rows: SummaryRow[];
@@ -443,7 +548,10 @@ export type SummaryListProps = {
     changeLabel?: string;
     className?: string;
 };
-/** "Check your answers": key, value and a change link per row, before anything is booked or sent. */
+/**
+ * "Check your answers": key, value and a change link per row, before anything is booked or sent.
+ * A row can also open read-only details right under it ("▸ Xem 12 chỉ số").
+ */
 export declare function SummaryList({ rows, changeLabel, className }: SummaryListProps): import("react").JSX.Element;
 
 /* ===== components/molecules/TestimonialCard/TestimonialCard ===== */
@@ -556,13 +664,22 @@ export type DialogProps = {
     actions?: ReactNode;
     /** role="alertdialog" for warnings that need an answer (e.g. session timeout). */
     alert?: boolean;
+    /** wide (about 52rem) for dialogs that hold a list or table. Default default (32rem). */
+    size?: 'default' | 'wide';
+    /**
+     * The body scrolls between a fixed title and a fixed Actions row, with a fade at the bottom while
+     * more content is below. Use with long lists so the buttons never scroll away.
+     */
+    scrollBody?: boolean;
+    /** Label of the scrolling body for keyboard and screen-reader users. Default: the title. */
+    bodyLabel?: string;
     className?: string;
 };
 /**
  * Modal dialog on the native <dialog> element: the browser traps focus, closes on Esc and returns focus to
  * the trigger. Use sparingly; a page is usually kinder than a dialog for older users.
  */
-export declare function Dialog({ open, onClose, title, children, actions, alert, className }: DialogProps): import("react").JSX.Element;
+export declare function Dialog({ open, onClose, title, children, actions, alert, size, scrollBody, bodyLabel, className }: DialogProps): import("react").JSX.Element;
 
 /* ===== components/organisms/ErrorSummary/ErrorSummary ===== */
 export type ErrorSummaryItem = {
@@ -655,13 +772,29 @@ export type HeaderProps = {
     /** Mobile menu button. Default "Menu" / "Đóng menu". */
     menuLabel?: string;
     closeMenuLabel?: string;
+    /**
+     * site (default) = the two-row public header (logo, hotline, hours, CTA, then the menu).
+     * compact = one white row for staff tools: logo, app name, menu and a `tools` slot; nothing else.
+     */
+    variant?: 'site' | 'compact';
+    /** compact: the app's name next to the logo, e.g. "hoso" (Montserrat 700, 18px). */
+    appName?: string;
+    /** compact: right-hand slot for system status, the signed-in person and "Đăng xuất". On phones it moves into the menu. */
+    tools?: ReactNode;
+    /**
+     * compact: stick to the top and, on phones, shrink to a thin bar after scrolling down.
+     * The thin bar shows `compactBar` (the person being worked on: name, date of birth, record code) and the menu button.
+     */
+    collapseOnScroll?: boolean;
+    /** compact: content of the thin bar shown when collapsed. */
+    compactBar?: ReactNode;
     className?: string;
 };
 /**
  * Site header: logo, hotline (same place on every page), optional hours and call to action, and the main menu.
  * Sub-menus open on click or Enter/Space, never on hover alone, and close with Esc.
  */
-export declare function Header({ logo, items, hotline, hours, cta, navLabel, menuLabel, closeMenuLabel, className, }: HeaderProps): import("react").JSX.Element;
+export declare function Header({ logo, items, hotline, hours, cta, navLabel, menuLabel, closeMenuLabel, variant, appName, tools, collapseOnScroll, compactBar, className, }: HeaderProps): import("react").JSX.Element;
 
 /* ===== components/organisms/IdleTimeoutDialog/IdleTimeoutDialog ===== */
 export type IdleTimeoutDialogProps = {

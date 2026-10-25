@@ -37,3 +37,24 @@ it('closes on Escape and returns focus to the button that opened it', async () =
   expect(screen.getByRole('dialog', { hidden: true })).not.toHaveAttribute('open');
   expect(trigger).toHaveFocus();
 });
+
+it('wide + scrollBody: a named, keyboard-scrollable body between the title and fixed actions', () => {
+  render(
+    <Dialog open onClose={() => {}} title="Gửi 24 hồ sơ lên Sở?" size="wide" scrollBody actions={<button>Gửi 24 hồ sơ</button>}>
+      <ul>
+        {Array.from({ length: 24 }, (_, i) => (
+          <li key={i}>Hồ sơ {i + 1}</li>
+        ))}
+      </ul>
+    </Dialog>,
+  );
+  const dialog = screen.getByRole('dialog', { name: 'Gửi 24 hồ sơ lên Sở?' });
+  expect(dialog).toHaveAttribute('data-size', 'wide');
+  expect(dialog).toHaveAttribute('data-scroll-body', 'true');
+  expect(dialog).not.toHaveAttribute('aria-describedby');
+  const body = screen.getByRole('region', { name: 'Gửi 24 hồ sơ lên Sở?' });
+  expect(body).toHaveAttribute('tabindex', '0');
+  expect(body).toContainElement(screen.getByText('Hồ sơ 24'));
+  // Actions sit outside the scrolling body, so they never scroll away.
+  expect(body).not.toContainElement(screen.getByRole('button', { name: 'Gửi 24 hồ sơ' }));
+});

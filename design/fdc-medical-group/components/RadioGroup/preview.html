@@ -1,8 +1,15 @@
-<!-- @dsCard group="Molecules" height=280 subtitle="one choice as large tiles; optional description" -->
-<div id="root" style="padding:16px;max-width:560px"></div>
+<!-- @dsCard group="Molecules" height=520 subtitle="tiles; Không / Có in a row; I–V compact; one error for the group" -->
+<div id="root" style="padding:16px;max-width:560px;display:flex;flex-direction:column;gap:24px"></div>
 <script>
 var h = React.createElement, F = window.FDC;
-ReactDOM.createRoot(document.getElementById('root')).render(h(F.RadioGroup, {label: 'Bạn đặt lịch cho ai?', name: 'who', defaultValue: 'relative', options: [
-  {value: 'self', label: 'Cho tôi'},
-  {value: 'relative', label: 'Cho người thân', description: 'Ví dụ: bố mẹ, ông bà. Bạn nhập thông tin của người đi khám.'}]}));
+var yn = [{value: 'khong', label: 'Không'}, {value: 'co', label: 'Có'}];
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h(F.RadioGroup, {label: 'Bạn đặt lịch cho ai?', name: 'who', defaultValue: 'relative', options: [
+    {value: 'self', label: 'Cho tôi'},
+    {value: 'relative', label: 'Cho người thân', description: 'Ví dụ: bố mẹ, ông bà. Bạn nhập thông tin của người đi khám.'}]}),
+  h(F.RadioGroup, {label: '6. Bệnh ở tim, hoặc nhồi máu cơ tim, các bệnh tim mạch khác', name: 'q6', layout: 'row', defaultValue: 'khong', options: yn}),
+  h('div', {style: {maxWidth: '330px'}},
+    h(F.RadioGroup, {label: 'Phân loại sức khỏe', name: 'loai', layout: 'row', density: 'compact', defaultValue: 'II',
+      options: ['I', 'II', 'III', 'IV', 'V'].map(function (v) { return {value: v, label: v}; })})),
+  h(F.RadioGroup, {label: '8. Tăng huyết áp (I10)', name: 'q8', layout: 'row', options: yn, error: 'Chọn Không hoặc Có'})));
 </script>

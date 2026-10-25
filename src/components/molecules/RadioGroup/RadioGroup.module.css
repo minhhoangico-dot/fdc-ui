@@ -77,9 +77,6 @@
   outline: var(--focus-ring-width) solid var(--focus-ring);
   outline-offset: var(--focus-ring-offset);
 }
-.RadioGroup:where([data-invalid]) .Option {
-  border: var(--border-width-strong) solid var(--status-error-text);
-}
 .Input {
   box-sizing: border-box;
   flex: 0 0 auto;
@@ -122,3 +119,46 @@
 .Option:where([data-disabled]) .Text {
   color: var(--ink-subtle);
 }
+
+/* Error: one message and one red bar for the whole group; the options keep their normal edge. */
+.RadioGroup:where([data-invalid]) {
+  box-sizing: border-box;
+  border-inline-start: var(--border-width-heavy) solid var(--status-error-text);
+  padding-inline-start: var(--space-15);
+}
+
+/* Row: short answers side by side, sharing the width (Không / Có, Loại I–V). The question reads as a label. */
+.RadioGroup:where([data-layout='row']) .Options {
+  flex-direction: row;
+}
+.RadioGroup:where([data-layout='row']) .Option {
+  flex: 1 1 0;
+  min-inline-size: 0;
+}
+.RadioGroup:where([data-layout='row']) .Legend {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* Compact: tighter padding and gaps so five short options fit a 360px phone; still a 44px target. */
+.RadioGroup:where([data-density='compact']) {
+  gap: var(--space-5);
+}
+.RadioGroup:where([data-density='compact']) .Options {
+  gap: var(--space-5);
+}
+.RadioGroup:where([data-density='compact']) .Option {
+  align-items: center;
+  gap: var(--space-5);
+  min-block-size: var(--target-min);
+  padding: var(--space-5);
+}
+.RadioGroup:where([data-density='compact']) .Input {
+  margin: 0;
+}
+.RadioGroup:where([data-density='compact']) .Text {
+  font-size: 1rem;
+}
+

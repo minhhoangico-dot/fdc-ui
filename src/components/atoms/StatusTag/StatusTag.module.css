@@ -1,0 +1,58 @@
+/* Text label, not a control: no target size. Every tone keeps a 1px edge so all tags are the same size;
+   the error tone thickens it to 2px with an inset shadow instead of a wider border. */
+.StatusTag {
+  box-sizing: border-box;
+  --tag-bg: var(--surface);
+  --tag-fg: var(--text-default);
+  --tag-edge: var(--border-control);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-5);
+  max-inline-size: 100%;
+  padding: 0 var(--space-10);
+  border: 1px solid var(--tag-edge);
+  border-radius: var(--radius-pill);
+  background: var(--tag-bg);
+  color: var(--tag-fg);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.StatusTag:where([data-size='sm']) {
+  padding: 0 var(--space-5);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+.StatusTag:where([data-tone='muted']) {
+  --tag-bg: var(--surface-alt);
+  --tag-fg: var(--text-muted);
+  --tag-edge: var(--surface-alt);
+}
+.StatusTag:where([data-tone='info']) {
+  --tag-bg: var(--status-info-bg);
+  --tag-fg: var(--status-info-text);
+  --tag-edge: var(--status-info-bg);
+}
+.StatusTag:where([data-tone='strong']) {
+  --tag-bg: var(--brand-600);
+  --tag-fg: var(--text-on-action);
+  --tag-edge: var(--brand-600);
+}
+.StatusTag:where([data-tone='success']) {
+  --tag-fg: var(--status-success-text);
+  --tag-edge: var(--status-success-text);
+}
+.StatusTag:where([data-tone='error']) {
+  --tag-fg: var(--status-error-text);
+  --tag-edge: var(--status-error-text);
+  box-shadow: inset 0 0 0 1px var(--status-error-text);
+}
+@media (forced-colors: active) {
+  .StatusTag {
+    border-color: CanvasText;
+  }
+}

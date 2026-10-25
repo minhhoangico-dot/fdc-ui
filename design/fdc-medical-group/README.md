@@ -8,9 +8,9 @@ The system follows atomic design. Build every level only from the level below it
 
 - **Tokens** (colors, type, spacing, radius, shadow) are the single source of truth. Components use the semantic names (`action-primary-bg`, `text-default`, `text-muted`, `focus-ring`, `hotline`…), which point at the palette and follow the theme.
 - **Layout** owns spacing between things: Stack, Inline. No component sets its own outer margin.
-- **Atoms** use only tokens: Button, TextField, Icon, Avatar, TextLink, SkipLink.
+- **Atoms** use only tokens: Button, TextField, Icon, Avatar, TextLink, SkipLink, StatusTag, Kbd.
 - **Molecules** combine atoms into one-job blocks: DateInput, PhoneInput, TimeSlotPicker, RadioGroup, SummaryList, CareCard, ConfirmationPanel, HotlineCard, WorkingHours, ServiceCard, SpecialtyTile, ValueCard, TestimonialCard, NewsCard, ServiceAccordion, FormNotice.
-- **Organisms** are distinct sections: Header, Footer, Dialog, IdleTimeoutDialog, ErrorSummary, ResultLookupForm, ContactForm.
+- **Organisms** are distinct sections: Header (with a `compact` variant for staff tools), Footer, Dialog, IdleTimeoutDialog, ErrorSummary, ResultLookupForm, ContactForm.
 - **Templates** lay out a page with slots: SiteLayout (skip link, header, main, footer) and BookingStep (one question per page). The booking flow is: service → who it is for → time → details → check answers (SummaryList) → confirmation (ConfirmationPanel), with IdleTimeoutDialog guarding the session.
 
 The group is modeled as **themes**. `FDC Clinic` (blue) is the default. `FDC Nursing Home` (orange) overrides only the brand scale (`brand-50` to `brand-800`) and `leaf-500`; every other token and every component is shared. Set `data-theme="nursing-home"` on the page root to switch. Never hard-code blue or orange in a component; always use `brand-*` so it follows the theme. Use `group-600` only where a unit points back to the group: it stays FDC blue in every theme.
@@ -27,6 +27,22 @@ The group is modeled as **themes**. `FDC Clinic` (blue) is the default. `FDC Nur
 - Before anything is booked, show every answer with a "Thay đổi" link; after, say what happens next, the booking code, and how to change or cancel by phone.
 - Health advice uses three levels (CareCard): non-urgent "Gọi bác sĩ gia đình" (FDC blue), urgent "Đến khám trong ngày" (red), emergency "Gọi cấp cứu 115 ngay" (red and dark). Inform and reassure; a doctor approves the wording.
 - Write the address, hotline and email as text in the footer, not only as links.
+
+## Công cụ nhân viên (staff tools)
+
+Staff tools (FDC Manager, hoso, reception) are used all day by trained people, often against the clock. They follow the rules above plus these, approved by Minh on 25/10/2026 from the hoso health-record app.
+
+- **One primary button per screen state.** Secondary buttons are white with a blue edge and blue text (`surface`, `brand-600` edge, `brand-800` text), so they never look disabled. A button that cannot be used has no fill and a dashed edge, and always has a line right next to it that says why (Button `disabledReason`).
+- **Labels say exactly what will happen**, and change with the choice when needed: "Dùng người và lượt khám này", "Nhờ Minh kiểm tra". Never a generic "OK" or "Tiếp".
+- **An empty field is neutral, not an error.** Show a grey hint: "Chưa điền · ví dụ 78". Show red only when a typed value is wrong, or after the user presses check or review and something is still missing. A group of choices reports its error once for the whole group: one message and one red bar, not a red box on every option.
+- **Two different counts, two different names:** "mục còn thiếu" (things still to do) and "ô chưa lưu" (changes not yet saved). Never mix them in one number.
+- **Name first, code after in brackets and lighter:** "Tăng huyết áp (I10)", "Nhà chuyên môn về sức khỏe (22)". A code never stands alone.
+- **Green is only for success.** Work that was started but is not finished ("Chờ gửi · còn 27 giây") uses the pale `status-info` tint: light blue in the clinic theme (`status-info-bg`, `status-info-border`, `status-info-text`).
+- **Bold only emphasizes a value.** Anything that needs attention gets a word label (StatusTag: "Cao", "Nhập tay"); bold or color is never the only signal.
+- **No single-letter shortcuts:** with Telex Vietnamese typing they fire by accident. Use Ctrl combinations only, and show the hint where it applies with Kbd ("Ctrl + S lưu").
+- **One-row header** (Header `compact`) to leave height for the work. On phones it shrinks while scrolling but always keeps the current person's name, date of birth and record code in view.
+- **Long lists page clearly:** "Hiển thị 1–50 trong 2.033 · ‹ Trước · Sau ›".
+- **Design notes and implementation rules live outside the interface.** On screen, keep only the sentence that helps the user act now.
 
 ## Visual foundations
 
