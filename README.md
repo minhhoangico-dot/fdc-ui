@@ -21,7 +21,7 @@ Open this repo in Claude Code and describe the work ("thêm màn hình tra cứu
 - `.claude/skills/atomic-design-system/`: the design-system skill with the FDC brand profile (`references/brands/fdc.md`), used for every UI task.
 - `.claude/agents/design-review.md`: a read-only reviewer that renders the stories, measures them and writes a ranked report with screenshots.
 
-Use the **Theme** button in the Storybook toolbar to see every component in the clinic (blue) and nursing-home (orange) themes. Start with **Pages › Đặt lịch khám › Toàn bộ quy trình** to walk through the whole booking flow, built only from these parts inside the real clinic header and footer.
+Use the **Theme** button in the Storybook toolbar to see every component in the clinic (blue) and nursing-home (orange) themes. Start with **Pages › Đặt lịch khám › Toàn bộ quy trình** to walk through the whole booking flow, built only from these parts inside the real clinic header and footer. For staff tools, see **Pages › Nhân viên**: the record list, result entry and review before sending (compact density, mock data).
 
 ## What's inside
 
@@ -29,11 +29,11 @@ Use the **Theme** button in the Storybook toolbar to see every component in the 
 |---|---|
 | Tokens | `design/fdc-medical-group/tokens.json` (master copy) → `src/tokens/tokens.css` (generated) |
 | Layout | Stack, Inline, FieldRow (aligned multi-column fields) |
-| Atoms | Button (secondary, primary, hotline; `disabledReason`), TextField, Icon (24 FDC glyphs), Avatar, TextLink, SkipLink, StatusTag, Kbd, VisuallyHidden |
-| Molecules | DateInput (Ngày/Tháng/Năm), PhoneInput, TimeSlotPicker, RadioGroup, SummaryList, CareCard, ConfirmationPanel, HotlineCard, WorkingHours, ServiceCard, SpecialtyTile, ValueCard, TestimonialCard, NewsCard, ServiceAccordion, FormNotice |
-| Organisms | Header (site, and `compact` for staff tools), Footer, Dialog (`wide`, `scrollBody`), IdleTimeoutDialog, ErrorSummary, ResultLookupForm, ContactForm |
-| Templates | SiteLayout, BookingStep |
-| Pages (Storybook only) | Đặt lịch khám: the full flow (service → who → time → details → check answers → confirmation) with session timeout; single steps with stress cases; Khi nào cần đi khám (care advice) |
+| Atoms | Button (secondary, primary, hotline; `disabledReason`), TextField (`unit`, `after`), Icon (24 FDC glyphs), Avatar, TextLink, SkipLink, StatusTag, Kbd, VisuallyHidden |
+| Molecules | DateInput (Ngày/Tháng/Năm), PhoneInput, TimeSlotPicker, RadioGroup, SummaryList, CareCard, ConfirmationPanel, HotlineCard, WorkingHours, ServiceCard, SpecialtyTile, ValueCard, TestimonialCard, NewsCard, ServiceAccordion, FormNotice; staff: NumberField, Combobox, SaveStatus, Pagination, Breadcrumb |
+| Organisms | Header (site, and `compact` for staff tools), Footer, Dialog (`wide`, `scrollBody`), IdleTimeoutDialog, ErrorSummary, ResultLookupForm, ContactForm; staff: DataTable, PatientContextBar |
+| Templates | SiteLayout, BookingStep, StaffLayout |
+| Pages (Storybook only) | Đặt lịch khám: the full flow (service → who → time → details → check answers → confirmation) with session timeout; single steps with stress cases; Khi nào cần đi khám (care advice); Nhân viên: danh sách hồ sơ, nhập kết quả, xem lại trước khi gửi |
 
 Using it in an app:
 
@@ -86,11 +86,11 @@ Then run `npm run release` (every check, the bundle, and `release.json` with the
 
 | Command | Checks |
 |---|---|
-| `npm test` | 111 unit tests: behavior, accessibility attributes, every component in both themes |
+| `npm test` | 188 unit tests: behavior, accessibility attributes, every component in both themes |
 | `npm run tokens:check` | tokens.css matches the master tokens.json |
 | `npm run lint:tokens` | No raw colors, px, fonts, atom margins, `transition: all` or animated layout properties |
 | `npm run lint:levels` | No upward imports between atomic levels |
-| `npm run contrast` | Every text/background pair passes WCAG AA in both themes |
+| `npm run contrast` | Every text role on every surface it may sit on passes WCAG AA in both themes (146 pairs) |
 | `npm run review:visual` | Every story rendered at 320/390/768/1280 in both themes: no sideways scroll, 44px tap targets, 16px+ text, visible focus, axe |
 | `node scripts/check-design-previews.mjs` | Claude Design previews render without errors |
 

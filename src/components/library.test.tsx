@@ -40,6 +40,14 @@ const samples: Record<string, JSX.Element> = {
   IdleTimeoutDialog: <div><FDC.IdleTimeoutDialog onTimeout={() => {}} /><span>idle</span></div>,
   Header: <FDC.Header {...clinicHeader} />,
   Footer: <FDC.Footer {...clinicFooter} />,
+  Breadcrumb: <FDC.Breadcrumb items={[{ label: 'Việc của tôi', href: '#' }, { label: 'Đợt' }]} />,
+  Combobox: <FDC.Combobox label="Chẩn đoán" options={[{ value: 'I10', label: 'Tăng huyết áp', code: 'I10' }]} />,
+  NumberField: <FDC.NumberField label="Mạch" unit="lần/phút" />,
+  Pagination: <FDC.Pagination page={1} pageSize={50} total={2033} />,
+  SaveStatus: <FDC.SaveStatus status={{ state: 'unsaved', count: 3 }} />,
+  DataTable: <FDC.DataTable caption="Hồ sơ" columns={[{ key: 'a', header: 'Tên', cell: (r: { a: string }) => r.a }]} rows={[{ a: 'Lan' }]} getRowKey={(r) => r.a} />,
+  PatientContextBar: <FDC.PatientContextBar name="Đặng Thanh Chi" birthDate="07/07/1990" recordCode="RD26-0006" />,
+  StaffLayout: <FDC.StaffLayout header={{ logo: clinicHeader.logo, items: [], appName: 'hoso' }}>x</FDC.StaffLayout>,
   SiteLayout: <FDC.SiteLayout header={clinicHeader} footer={clinicFooter}>x</FDC.SiteLayout>,
 };
 

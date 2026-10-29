@@ -1,0 +1,92 @@
+.StaffLayout {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100vh;
+  background: var(--surface-alt);
+  color: var(--text-default);
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  line-height: 1.5;
+}
+.Body {
+  box-sizing: border-box;
+  flex: 1;
+  inline-size: 100%;
+  max-inline-size: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-20) var(--space-15) var(--space-40);
+}
+@media (min-width: 64rem) {
+  .Body:where([data-aside]) {
+    display: grid;
+    grid-template-columns: 17.5rem minmax(0, 1fr);
+    align-items: start;
+    gap: var(--space-20);
+  }
+  .Aside {
+    position: sticky;
+    /* Under the sticky PatientContextBar (about two lines tall). */
+    inset-block-start: var(--aside-top, 7rem);
+  }
+}
+.Aside {
+  margin-block-end: var(--space-20);
+}
+@media (min-width: 64rem) {
+  .Aside {
+    margin-block-end: 0;
+  }
+}
+.Main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+  min-inline-size: 0;
+}
+.Main:focus {
+  outline: none;
+}
+/* Floats over the content while it scrolls, so it is the one block with a shadow. */
+.ActionBar {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: 10;
+  border-block-start: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+.ActionInner {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-10) var(--space-20);
+  max-inline-size: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-15);
+}
+.Shortcuts {
+  display: none;
+}
+@media (min-width: 64rem) {
+  .Shortcuts {
+    display: block;
+    box-sizing: border-box;
+    max-inline-size: var(--container-max);
+    margin: calc(var(--space-5) * -1) auto 0;
+    padding: 0 var(--space-15) var(--space-10);
+    color: var(--text-muted);
+  }
+}
+
+/* Keep the focused field clear of the sticky bars (WCAG 2.4.11): scrolling to it leaves room
+   under the context bar and above the action bar. */
+:global(html):has(.ActionBar) {
+  scroll-padding-block-end: var(--action-bar-space, 9rem);
+}
+@media (min-width: 64rem) {
+  :global(html):has(.StaffLayout [data-component='PatientContextBar'][data-sticky]) {
+    scroll-padding-block-start: var(--context-bar-space, 8rem);
+  }
+}

@@ -172,10 +172,14 @@
 }
 
 /* ---------- Compact: one white row for staff tools (≤ 60px tall) ---------- */
-.Header:where([data-sticky]) {
-  position: sticky;
-  inset-block-start: 0;
-  z-index: 20;
+/* Sticky only below 64rem, where it shrinks to the thin bar with the person's name. From 64rem up the
+   PatientContextBar sticks instead, so one bar at a time holds the top of the screen. */
+@media (max-width: 63.99rem) {
+  .Header:where([data-sticky]) {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 20;
+  }
 }
 .Bar {
   box-sizing: border-box;

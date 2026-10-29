@@ -1,0 +1,13 @@
+<!-- @dsCard group="Templates" height=330 subtitle="staff page shell: compact header, grey work surface, sticky action bar" -->
+<div id="root"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(F.StaffLayout, {
+  header: {logo: {src: '/_blob/3be5b7bcdc78bb091d490dce765c367a', alt: 'FDC Bác sĩ gia đình, về Việc của tôi', href: '#'}, appName: 'hoso',
+    items: [{label: 'Việc của tôi', href: '#', current: true}], tools: h('span', null, 'Chị Lan')},
+  actionBar: h(React.Fragment, null, h('span', {style: {flex: '1 1 auto'}}, 'Còn ', h('strong', null, '47 mục'), ' ở 4 phần'),
+    h(F.SaveStatus, {status: {state: 'unsaved', count: 8, lastSavedAt: '09:12'}}), h(F.Button, {variant: 'primary'}, 'Lưu'))},
+  h('section', {style: {background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: 'var(--space-20)'}},
+    h('h1', {style: {margin: 0, fontFamily: 'var(--font-heading)', fontSize: '1.5rem'}}, 'Việc của tôi'),
+    h('p', {style: {marginBottom: 0}}, 'Mỗi khối là một mặt trắng có viền trên nền xám, không đổ bóng.'))));
+</script>

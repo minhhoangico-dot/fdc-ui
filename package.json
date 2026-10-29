@@ -1,6 +1,6 @@
 {
   "name": "@fdc/ui",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "FDC Bác sĩ gia đình — atomic design system (tokens, atoms, molecules, organisms, templates)",
   "private": true,
   "type": "module",

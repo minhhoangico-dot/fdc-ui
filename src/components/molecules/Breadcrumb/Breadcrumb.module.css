@@ -1,0 +1,46 @@
+.Breadcrumb {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.List {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.Item {
+  display: inline-flex;
+  align-items: center;
+  min-inline-size: 0;
+}
+.Separator {
+  padding: 0 var(--space-5);
+  color: var(--text-muted);
+}
+/* The link is 44px tall for touch, without adding visible height around the text. */
+.Link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--target-min);
+  color: var(--text-link);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.Link:hover {
+  color: var(--text-link-hover);
+}
+.Link:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: 1px;
+  border-radius: var(--radius-sm);
+}
+.Current {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--target-min);
+  color: var(--text-muted);
+}

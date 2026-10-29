@@ -37,7 +37,8 @@ export type HeaderProps = {
   /** compact: right-hand slot for system status, the signed-in person and "Đăng xuất". Below 1024px (phones, tablets) it moves into the menu. */
   tools?: ReactNode;
   /**
-   * compact: stick to the top and, below 1024px, shrink to a thin bar after scrolling down.
+   * compact, below 1024px: stick to the top and shrink to a thin bar after scrolling down.
+   * From 1024px up the header scrolls away and a sticky PatientContextBar keeps the person in view.
    * The thin bar shows `compactBar` (the person being worked on: name, date of birth, record code) and the menu button.
    */
   collapseOnScroll?: boolean;

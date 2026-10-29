@@ -18,6 +18,24 @@ export declare function normalizeVnPhone(input: string): string | null;
 /** Display form: 0912 345 678 for mobiles, 024 3543 0430 for 11-digit landlines. */
 export declare function formatVnPhone(digits: string): string;
 
+/* ===== utils/vi ===== */
+/**
+ * Fold Vietnamese text for searching: lower case, tone marks and vowel marks removed, đ → d.
+ * "Tăng huyết áp" and "tang huyet ap" fold to the same string, so staff can type without Telex.
+ */
+export declare function foldVi(text: string): string;
+/** 2033 → "2.033" (Vietnamese grouping). */
+export declare const formatViInteger: (n: number) => string;
+/**
+ * Read a number the way Vietnamese staff type it: "52,5" and "52.5" both mean 52.5.
+ * Returns null for empty input and NaN for anything that is not a plain number.
+ */
+export declare function parseViNumber(text: string): number | null;
+/** 52.5 → "52,5"; keeps at most `decimals` digits after the comma. */
+export declare function formatViNumber(n: number, decimals?: number): string;
+/** Age in whole years on `today` for a date written dd/mm/yyyy; null when the date cannot be read. */
+export declare function ageFromViDate(date: string, today?: Date): number | null;
+
 /* ===== components/layout/FieldRow/FieldRow ===== */
 export type FieldRowProps = {
     /** Narrowest a column may get before fields wrap onto the next line. Default "15rem". */
@@ -232,6 +250,10 @@ export type TextFieldProps = {
     errorPrefix?: string;
     /** Leading icon (the nursing home's icon-led fields). */
     icon?: IconName;
+    /** Unit shown inside the box on the right ("kg", "lần/phút"), and read after the label. */
+    unit?: string;
+    /** Next to the box, outside it: a StatusTag such as "Cao" for the value typed. */
+    after?: ReactNode;
     /** Renders a resizable textarea. */
     multiline?: boolean;
     rows?: number;
@@ -253,6 +275,10 @@ export declare const TextField: import('react').ForwardRefExoticComponent<{
     errorPrefix?: string;
     /** Leading icon (the nursing home's icon-led fields). */
     icon?: IconName;
+    /** Unit shown inside the box on the right ("kg", "lần/phút"), and read after the label. */
+    unit?: string;
+    /** Next to the box, outside it: a StatusTag such as "Cao" for the value typed. */
+    after?: ReactNode;
     /** Renders a resizable textarea. */
     multiline?: boolean;
     rows?: number;
@@ -280,6 +306,20 @@ export declare const TextLink: import('react').ForwardRefExoticComponent<{
 /** Text for screen readers only, such as the "Lỗi:" prefix before an error message. */
 export declare function VisuallyHidden({ className, ...rest }: HTMLAttributes<HTMLSpanElement>): import("react").JSX.Element;
 
+/* ===== components/molecules/Breadcrumb/Breadcrumb ===== */
+export type BreadcrumbItem = {
+    label: string;
+    href?: string;
+};
+export type BreadcrumbProps = {
+    /** From the top level down; the last item is the current page and is not a link. */
+    items: BreadcrumbItem[];
+    /** aria-label of the nav. Default "Vị trí". */
+    label?: string;
+} & HTMLAttributes<HTMLElement>;
+/** Where this page sits: "Việc của tôi › Rạng Đông KSK 2026 › Người 6/2.033". Staff tools only; public pages are shallow. */
+export declare function Breadcrumb({ items, label, className, ...rest }: BreadcrumbProps): import("react").JSX.Element;
+
 /* ===== components/molecules/CareCard/CareCard ===== */
 export type CareLevel = 'non-urgent' | 'urgent' | 'emergency';
 export type CareCardProps = {
@@ -302,6 +342,55 @@ export type CareCardProps = {
  * text for screen readers, in the band color and in words, never color alone. Inform and reassure; do not scare.
  */
 export declare function CareCard({ level, title, children, levelLabels, emergencyNumber, emergencyCallLabel, headingLevel, className, }: CareCardProps): import("react").JSX.Element;
+
+/* ===== components/molecules/Combobox/Combobox ===== */
+export type ComboboxOption = {
+    value: string;
+    /** The name people know: "Tăng huyết áp". */
+    label: string;
+    /** The code, shown after the name in brackets and lighter: "I10". Never shown alone. */
+    code?: string;
+    /** A second line, e.g. the group it belongs to. */
+    hint?: string;
+    /** Other words that should find it: "cao huyet ap, THA". */
+    keywords?: string;
+};
+export type ComboboxProps = {
+    /** Visible label. */
+    label: string;
+    hideLabel?: boolean;
+    /** Help under the label. Default says what can be typed: "Gõ tên hoặc mã, có dấu hay không dấu đều được." */
+    hint?: string;
+    error?: string;
+    errorPrefix?: string;
+    options: ComboboxOption[];
+    /** Controlled value (an option's value); null = nothing chosen. */
+    value?: string | null;
+    defaultValue?: string | null;
+    onValueChange?: (value: string | null, option: ComboboxOption | null) => void;
+    /** Most options shown at once; staff refine by typing. Default 50. */
+    maxResults?: number;
+    /** Shown when nothing matches. */
+    noResultsText?: (query: string) => string;
+    /** Read after the result count changes. */
+    resultsText?: (count: number) => string;
+    /** Text of the button that empties the field. Default "Xóa". */
+    clearLabel?: string;
+    required?: boolean;
+    disabled?: boolean;
+    /** id of the input, so an ErrorSummary can link to it. */
+    id?: string;
+    name?: string;
+    className?: string;
+};
+/** "Tăng huyết áp (I10)": how a chosen option reads in the field and in summaries. */
+export declare const optionText: (o: ComboboxOption) => string;
+/**
+ * Choose one coded item by typing part of its name or its code: diagnoses (ICD-10), occupations, wards.
+ * Typing without tone marks works ("tang huyet ap" finds "Tăng huyết áp"). The field only accepts an item
+ * from the list; leaving it without choosing puts back the previous choice. Follows the ARIA 1.2 combobox pattern.
+ */
+export declare function Combobox({ label, hideLabel, hint, error, errorPrefix, options, value, defaultValue, onValueChange, maxResults, noResultsText, resultsText, clearLabel, required, disabled, id, name, className, }: ComboboxProps): import("react").JSX.Element;
 
 /* ===== components/molecules/ConfirmationPanel/ConfirmationPanel ===== */
 export type StepState = 'done' | 'current' | 'todo' | 'failed';
@@ -440,6 +529,91 @@ export type NewsCardProps = {
 /** Article teaser: image, date, title, excerpt. The image takes the leaf corner in the nursing-home theme. */
 export declare function NewsCard({ title, excerpt, image, date, href, headingLevel, className }: NewsCardProps): import("react").JSX.Element;
 
+/* ===== components/molecules/NumberField/NumberField ===== */
+export type NumberFieldProps = {
+    /** The measurement, without the unit: "Cân nặng". The unit goes in `unit`. */
+    label: string;
+    /** Shown inside the box and read after the label: "kg", "lần/phút", "mmHg". */
+    unit?: string;
+    /** Lowest and highest value that can be typed at all; outside it is an error after leaving the field. */
+    min?: number;
+    max?: number;
+    /** Digits allowed after the comma. Default 0 (whole numbers). */
+    decimals?: number;
+    /** Normal range: a value outside it gets a word tag ("Cao", "Thấp"), never color alone. It is not an error. */
+    normalRange?: [number, number];
+    highLabel?: string;
+    lowLabel?: string;
+    /** A typical value for the grey hint: "Chưa điền · ví dụ 78". */
+    example?: string;
+    /** Hint when the field is empty. Default "Chưa điền". */
+    emptyLabel?: string;
+    /** Controlled text, as typed ("52,5"). */
+    value?: string;
+    defaultValue?: string;
+    /** Called on every change with the number (null when empty or not a number) and the text typed. */
+    onValueChange?: (value: number | null, text: string) => void;
+    /** An error from the page, e.g. a required field still empty after pressing "Xem lại". Wins over the field's own checks. */
+    error?: string;
+} & Omit<TextFieldProps, 'type' | 'value' | 'defaultValue' | 'error' | 'unit' | 'after' | 'multiline' | 'icon' | 'min' | 'max'>;
+/**
+ * A number with its unit, for measurements and results: "52,5 kg", "78 lần/phút".
+ * Accepts a decimal comma or dot, checks the range when the user leaves the field (not while typing),
+ * and flags values outside the normal range with a word. An empty field stays neutral: a grey hint, no red.
+ */
+export declare const NumberField: import('react').ForwardRefExoticComponent<{
+    /** The measurement, without the unit: "Cân nặng". The unit goes in `unit`. */
+    label: string;
+    /** Shown inside the box and read after the label: "kg", "lần/phút", "mmHg". */
+    unit?: string;
+    /** Lowest and highest value that can be typed at all; outside it is an error after leaving the field. */
+    min?: number;
+    max?: number;
+    /** Digits allowed after the comma. Default 0 (whole numbers). */
+    decimals?: number;
+    /** Normal range: a value outside it gets a word tag ("Cao", "Thấp"), never color alone. It is not an error. */
+    normalRange?: [number, number];
+    highLabel?: string;
+    lowLabel?: string;
+    /** A typical value for the grey hint: "Chưa điền · ví dụ 78". */
+    example?: string;
+    /** Hint when the field is empty. Default "Chưa điền". */
+    emptyLabel?: string;
+    /** Controlled text, as typed ("52,5"). */
+    value?: string;
+    defaultValue?: string;
+    /** Called on every change with the number (null when empty or not a number) and the text typed. */
+    onValueChange?: (value: number | null, text: string) => void;
+    /** An error from the page, e.g. a required field still empty after pressing "Xem lại". Wins over the field's own checks. */
+    error?: string;
+} & Omit<TextFieldProps, "defaultValue" | "type" | "icon" | "after" | "max" | "min" | "value" | "error" | "unit" | "multiline"> & import('react').RefAttributes<HTMLInputElement>>;
+
+/* ===== components/molecules/Pagination/Pagination ===== */
+export type PaginationProps = {
+    /** Current page, from 1. */
+    page: number;
+    pageSize: number;
+    /** Rows in the whole (filtered) list. */
+    total: number;
+    /** What the rows are, after the count: "người", "hồ sơ". Default "dòng". */
+    itemLabel?: string;
+    /** Links: the page's address, so pages can be bookmarked and opened in a new tab. Preferred. */
+    getHref?: (page: number) => string;
+    /** Buttons: called with the new page when there is no address per page. */
+    onPageChange?: (page: number) => void;
+    /** aria-label of the nav. Default "Trang của danh sách". */
+    label?: string;
+    previousLabel?: string;
+    nextLabel?: string;
+    className?: string;
+};
+/**
+ * "Hiển thị 1–50 trong 2.033 người · ‹ Trước · Trang 1 / 41 · Sau ›".
+ * Says what is shown and how much there is; only Previous and Next, so the control never grows with the list.
+ * Renders nothing when the list is empty (the table says so instead).
+ */
+export declare function Pagination({ page, pageSize, total, itemLabel, getHref, onPageChange, label, previousLabel, nextLabel, className, }: PaginationProps): import("react").JSX.Element | null;
+
 /* ===== components/molecules/PhoneInput/PhoneInput ===== */
 export type PhoneInputProps = {
     /** Default "Số điện thoại". */
@@ -490,9 +664,10 @@ export type RadioGroupProps = {
     id?: string;
     /**
      * row = options side by side, sharing the width equally: for short answers such as Không / Có or Loại I–V.
-     * The question then reads as a field label (body text), so a long list of questions stays calm. Default column.
+     * The question then reads as a field label (body text), so a long list of questions stays calm.
+     * wrap = options as wide as their words, flowing onto more lines: for list filters such as "Cần điền hoặc sửa · 15". Default column.
      */
-    layout?: 'column' | 'row';
+    layout?: 'column' | 'row' | 'wrap';
     /** compact = less padding and gap, so five short options (I–V) fit a 360px phone; targets stay ≥ 44px. */
     density?: 'comfortable' | 'compact';
     className?: string;
@@ -502,6 +677,43 @@ export type RadioGroupProps = {
  * Arrow keys move between options; the whole tile is the hit area.
  */
 export declare function RadioGroup({ label, options, name, hint, error, errorPrefix, value, defaultValue, onValueChange, legendAsHeading, hideLegend, required, id: firstId, layout, density, className, }: RadioGroupProps): import("react").JSX.Element;
+
+/* ===== components/molecules/SaveStatus/SaveStatus ===== */
+export type SaveStatusState = 
+/** Everything typed is on the server. */
+{
+    state: 'saved';
+    at?: string;
+}
+/** Changes typed, not written yet ("ô chưa lưu"). */
+ | {
+    state: 'unsaved';
+    count: number;
+    lastSavedAt?: string;
+}
+/** The save request is on its way. */
+ | {
+    state: 'saving';
+}
+/** The server refused or the network failed. `reason` in plain words: "mất mạng". */
+ | {
+    state: 'error';
+    reason: string;
+    count?: number;
+};
+export type SaveStatusProps = {
+    status: SaveStatusState;
+    /** Shown with the error; the typed data is kept, so this only tries again. */
+    onRetry?: () => void;
+    retryLabel?: string;
+} & Omit<HTMLAttributes<HTMLDivElement>, 'children'>;
+/**
+ * The save line of a staff form, one of four moments: "8 ô chưa lưu · Lưu lần cuối 09:12", "Đang lưu…",
+ * "Đã lưu 09:15", or "Lưu không được: mất mạng. Chữ đã gõ vẫn còn." with "Lưu lại".
+ * It counts unsaved fields only ("ô chưa lưu"); items still to fill ("mục còn thiếu") are a different count, shown elsewhere.
+ * Changes are announced politely; a failed save is announced at once.
+ */
+export declare function SaveStatus({ status, onRetry, retryLabel, className, ...rest }: SaveStatusProps): import("react").JSX.Element;
 
 /* ===== components/molecules/ServiceAccordion/ServiceAccordion ===== */
 export type ServiceAccordionItem = {
@@ -679,6 +891,54 @@ export type ContactFormProps = {
 /** Contact request (name, phone, optional message) with an error summary. Pair with a framed HotlineCard. */
 export declare function ContactForm({ onSubmit, title, intro, messageHint, submitLabel, submitting, notice, headingLevel, className, }: ContactFormProps): import("react").JSX.Element;
 
+/* ===== components/organisms/DataTable/DataTable ===== */
+export type DataTableColumn<Row> = {
+    key: string;
+    header: ReactNode;
+    /** What the cell shows. */
+    cell: (row: Row, index: number) => ReactNode;
+    /** end = numbers and dates, right-aligned with even digit widths. Default start. */
+    align?: 'start' | 'end';
+    /** A CSS width such as "6rem"; leave the main column without one so it takes the rest. */
+    width?: string;
+    /** Keep on one line (codes, dates, statuses). Names and next steps should wrap. */
+    nowrap?: boolean;
+    /**
+     * This column names the row (usually the person); read before each cell of the row.
+     * A link placed first in this cell is stretched over the whole cell, so the target is large on touch screens.
+     */
+    rowHeader?: boolean;
+};
+export type DataTableProps<Row> = {
+    /** Names the table for screen readers and the scroll region: "Người cần điền hoặc sửa". */
+    caption: string;
+    /** Show the caption as a heading above the table. Default hidden (the page heading usually says it). */
+    showCaption?: boolean;
+    columns: Array<DataTableColumn<Row>>;
+    rows: Row[];
+    getRowKey: (row: Row) => string;
+    /** loading keeps the header and says so; error says what failed and offers to try again. */
+    status?: 'ready' | 'loading' | 'error';
+    loadingText?: string;
+    /** What failed, in plain words: "Không tải được danh sách: mất mạng." */
+    errorText?: string;
+    onRetry?: () => void;
+    retryLabel?: string;
+    /** Shown when there are no rows: say why and what to do ("Không có ai khớp “Hằng”. Xóa chữ tìm để xem cả đợt."). */
+    emptyText?: ReactNode;
+    /** Narrowest width before the table scrolls sideways inside its box (never the page). Default 48rem. */
+    minWidth?: string;
+    /** Under the table, inside the same box. */
+    pagination?: PaginationProps;
+    className?: string;
+};
+/**
+ * A list of records for staff tools: one row per record, the name first, a status word, the next step.
+ * The box scrolls sideways on narrow screens instead of the page, and becomes a keyboard-scrollable region
+ * only when it actually overflows. Loading, empty and failed states keep the header so the page does not jump.
+ */
+export declare function DataTable<Row>({ caption, showCaption, columns, rows, getRowKey, status, loadingText, errorText, onRetry, retryLabel, emptyText, minWidth, pagination, className, }: DataTableProps<Row>): import("react").JSX.Element;
+
 /* ===== components/organisms/Dialog/Dialog ===== */
 export type DialogProps = {
     open: boolean;
@@ -808,7 +1068,8 @@ export type HeaderProps = {
     /** compact: right-hand slot for system status, the signed-in person and "Đăng xuất". Below 1024px (phones, tablets) it moves into the menu. */
     tools?: ReactNode;
     /**
-     * compact: stick to the top and, below 1024px, shrink to a thin bar after scrolling down.
+     * compact, below 1024px: stick to the top and shrink to a thin bar after scrolling down.
+     * From 1024px up the header scrolls away and a sticky PatientContextBar keeps the person in view.
      * The thin bar shows `compactBar` (the person being worked on: name, date of birth, record code) and the menu button.
      */
     collapseOnScroll?: boolean;
@@ -849,6 +1110,41 @@ export declare function formatRemaining(ms: number): string;
  * Keep what they typed: older users are often slow, interrupted, or helped by a relative.
  */
 export declare function IdleTimeoutDialog({ timeoutMs, warnBeforeMs, onTimeout, onSignOut, onStay, disabled, title, message, stayLabel, signOutLabel, }: IdleTimeoutDialogProps): import("react").JSX.Element;
+
+/* ===== components/organisms/PatientContextBar/PatientContextBar ===== */
+export type PatientContextBarProps = {
+    /** Full name, exactly as on the record. */
+    name: string;
+    sex?: string;
+    /** dd/mm/yyyy. The age is added after it: "07/07/1990 (36 tuổi)". */
+    birthDate: string;
+    /** The day the age is counted on; default today. Set it to the exam date for past records. */
+    ageOn?: Date;
+    /** Last four digits of the citizen ID; the full number is never shown here. */
+    idEnd?: string;
+    /** Record or visit code: "RD26-0006". */
+    recordCode: string;
+    recordCodeLabel?: string;
+    /** Company or ward, after the code. */
+    organization?: string;
+    /** Where this page sits, above the name. */
+    breadcrumb?: BreadcrumbItem[];
+    /** A StatusTag with the record's state: "Cần điền · còn 47 mục". */
+    status?: ReactNode;
+    /** Buttons such as "Người trước" and "Người sau cần làm". */
+    actions?: ReactNode;
+    /** The name is the page's heading. Default 1. */
+    headingLevel?: 1 | 2;
+    /** Stay at the top while the form scrolls, from 1024px up. Below that the compact Header's thin bar (collapseOnScroll + compactBar) does this job. */
+    sticky?: boolean;
+    className?: string;
+};
+/**
+ * Who is being worked on, always in view on a staff form: name, sex, date of birth with age, the last four ID digits,
+ * the record code, the state and the way to the previous or next person.
+ * Name, date of birth and record code are the three facts that tell two people apart; they are never hidden.
+ */
+export declare function PatientContextBar({ name, sex, birthDate, ageOn, idEnd, recordCode, recordCodeLabel, organization, breadcrumb, status, actions, headingLevel, sticky, className, }: PatientContextBarProps): import("react").JSX.Element;
 
 /* ===== components/organisms/ResultLookupForm/ResultLookupForm ===== */
 export type ResultLookupValues = {
@@ -921,3 +1217,33 @@ export type SiteLayoutProps = {
 };
 /** Page shell: skip link, header, main content, footer. Every public FDC page uses it. */
 export declare function SiteLayout({ header, footer, children, theme, skipLabel, className }: SiteLayoutProps): import("react").JSX.Element;
+
+/* ===== components/templates/StaffLayout/StaffLayout ===== */
+export type StaffLayoutProps = {
+    /** The compact header; `variant` is set for you. */
+    header: Omit<HeaderProps, 'variant'>;
+    /** Full-width bar under the header, e.g. a sticky PatientContextBar on a record form. */
+    context?: ReactNode;
+    /** A column beside the content (from 64rem up; above the content on smaller screens), e.g. the list of form parts. */
+    aside?: ReactNode;
+    /** aria-label of the aside's landmark. Default "Các phần của phiếu". */
+    asideLabel?: string;
+    /** Page content; rendered inside <main id="main">. */
+    children: ReactNode;
+    /** Sticky bar at the bottom for the save line and the screen's actions. */
+    actionBar?: ReactNode;
+    /** Keyboard shortcut hints under the action bar ("Ctrl + S lưu"). Shown from 1024px up only: phones have no Ctrl key. */
+    shortcuts?: ReactNode;
+    /** aria-label of the action bar. Default "Lưu và chuyển bước". */
+    actionBarLabel?: string;
+    /** Sets the brand theme on the shell. Leave it out to inherit the theme already set on <html> or a parent. */
+    theme?: 'clinic' | 'nursing-home';
+    skipLabel?: string;
+    className?: string;
+};
+/**
+ * Page shell for staff tools (hoso, FDC Manager): compact density, a grey work surface, the one-row header,
+ * an optional context bar and side column, and a sticky action bar. Blocks inside are separated by edges and space,
+ * not shadows; only the action bar, which floats over content, has one.
+ */
+export declare function StaffLayout({ header, context, aside, asideLabel, children, actionBar, shortcuts, actionBarLabel, theme, skipLabel, className, }: StaffLayoutProps): import("react").JSX.Element;

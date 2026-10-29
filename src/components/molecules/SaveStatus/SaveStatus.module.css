@@ -1,0 +1,33 @@
+.SaveStatus {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-10) var(--space-15);
+  min-block-size: var(--target-min);
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+  color: var(--text-default);
+}
+/* Work started but not finished is info blue in both themes; green only once the server confirmed. */
+.Unsaved {
+  color: var(--status-info-text);
+  font-weight: 600;
+}
+.Muted {
+  color: var(--text-muted);
+}
+.Saved {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-5);
+  color: var(--status-success-text);
+  font-weight: 600;
+}
+.Mark {
+  font-weight: 700;
+}
+.Error {
+  color: var(--status-error-text);
+  font-weight: 600;
+}

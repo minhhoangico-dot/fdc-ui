@@ -1,0 +1,55 @@
+.Pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5) var(--space-20);
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+  color: var(--text-default);
+}
+.Range {
+  margin: 0;
+}
+.Controls {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-10) var(--space-20);
+}
+.Page {
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.Control {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--target-min);
+  padding: 0 var(--space-5);
+  border: 0;
+  background: none;
+  color: var(--text-link);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.Control:hover {
+  color: var(--text-link-hover);
+}
+.Control:focus-visible {
+  box-sizing: border-box;
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: 1px;
+  border-radius: var(--radius-sm);
+}
+/* First or last page: the word stays in place (no layout jump) but is plainly not a link. */
+.Unavailable {
+  padding: 0 var(--space-5);
+  color: var(--text-muted);
+  white-space: nowrap;
+}

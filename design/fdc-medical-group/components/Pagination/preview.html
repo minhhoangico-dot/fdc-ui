@@ -1,0 +1,9 @@
+<!-- @dsCard group="Molecules" height=150 subtitle="what is shown, of how many; Trước / Sau only" -->
+<div id="root" style="display:flex;flex-direction:column;gap:12px;padding:16px;max-width:760px" data-density="compact"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+var href = function (p) { return '#trang-' + p; };
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h(F.Pagination, {page: 1, pageSize: 50, total: 2033, itemLabel: 'người', getHref: href}),
+  h(F.Pagination, {page: 12, pageSize: 50, total: 2033, itemLabel: 'người', getHref: href})));
+</script>

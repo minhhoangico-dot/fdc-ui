@@ -1,0 +1,74 @@
+.PatientContextBar {
+  box-sizing: border-box;
+  border-block-end: 1px solid var(--border);
+  background: var(--surface);
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+  color: var(--text-default);
+}
+@media (min-width: 64rem) {
+  .PatientContextBar:where([data-sticky]) {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 5;
+  }
+}
+.Inner {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-10) var(--space-30);
+  max-inline-size: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-15) var(--space-10);
+}
+.Who {
+  flex: 1 1 32rem;
+  min-inline-size: 0;
+}
+.Breadcrumb {
+  margin-block-end: calc(var(--space-5) * -1);
+}
+.NameLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--space-15);
+}
+.Name {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+/* Facts separated by middots; each fact stays whole when the line wraps. */
+.Facts {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  color: var(--text-default);
+}
+.Facts > span {
+  white-space: nowrap;
+}
+/* The dot ends a fact, so a wrapped line never starts with one. */
+.Facts > span:not(:last-child)::after {
+  content: '·';
+  padding: 0 var(--space-5);
+  color: var(--text-muted);
+}
+.Facts > span:last-child {
+  white-space: normal;
+}
+.Status {
+  flex: none;
+}
+.Actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-10);
+}

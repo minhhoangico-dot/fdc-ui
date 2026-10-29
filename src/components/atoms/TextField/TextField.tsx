@@ -4,6 +4,7 @@ import {
   type ChangeEvent,
   type FocusEvent,
   type InputHTMLAttributes,
+  type ReactNode,
 } from 'react';
 import { cx } from '../../../utils/cx';
 import { Icon } from '../Icon';
@@ -24,6 +25,10 @@ export type TextFieldProps = {
   errorPrefix?: string;
   /** Leading icon (the nursing home's icon-led fields). */
   icon?: IconName;
+  /** Unit shown inside the box on the right ("kg", "lần/phút"), and read after the label. */
+  unit?: string;
+  /** Next to the box, outside it: a StatusTag such as "Cao" for the value typed. */
+  after?: ReactNode;
   /** Renders a resizable textarea. */
   multiline?: boolean;
   rows?: number;
@@ -34,14 +39,15 @@ export type TextFieldProps = {
 
 /** A labeled input or textarea with hint and error, for every FDC form. The consumer owns the value and validation. */
 export const TextField = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextFieldProps>(function TextField(
-  { label, hideLabel, hint, error, errorPrefix = 'Lỗi:', icon, multiline, rows = 4, type = 'text', id, required, className, ...rest },
+  { label, hideLabel, hint, error, errorPrefix = 'Lỗi:', icon, unit, after, multiline, rows = 4, type = 'text', id, required, className, ...rest },
   ref,
 ) {
   const autoId = useId();
   const inputId = id ?? `fdc-field-${autoId}`;
   const hintId = hint ? `${inputId}-hint` : undefined;
   const errorId = error ? `${inputId}-error` : undefined;
-  const describedBy = [hintId, errorId].filter(Boolean).join(' ') || undefined;
+  const unitId = unit ? `${inputId}-unit` : undefined;
+  const describedBy = [unitId, hintId, errorId].filter(Boolean).join(' ') || undefined;
   const common = {
     ...rest,
     id: inputId,
@@ -57,6 +63,9 @@ export const TextField = forwardRef<HTMLInputElement | HTMLTextAreaElement, Text
       data-component="TextField"
       data-invalid={error ? 'true' : undefined}
       data-icon={icon ? 'true' : undefined}
+      data-unit={unit ? 'true' : undefined}
+      // Room on the right for the unit, sized to its text so "lần/phút" never sits under the digits.
+      style={unit ? ({ '--unit-space': `calc(${unit.length}ch + var(--space-30))` } as React.CSSProperties) : undefined}
     >
       <label className={hideLabel ? styles.HiddenLabel : styles.Label} htmlFor={inputId} data-part="label">
         {label}
@@ -78,12 +87,20 @@ export const TextField = forwardRef<HTMLInputElement | HTMLTextAreaElement, Text
         </span>
       ) : null}
       <div className={styles.Control} data-part="control">
-        {icon ? <Icon name={icon} size={18} className={styles.Icon} /> : null}
-        {multiline ? (
-          <textarea {...(common as object)} rows={rows} ref={ref as React.Ref<HTMLTextAreaElement>} />
-        ) : (
-          <input {...common} type={type} ref={ref as React.Ref<HTMLInputElement>} />
-        )}
+        <div className={styles.Box}>
+          {icon ? <Icon name={icon} size={18} className={styles.Icon} /> : null}
+          {multiline ? (
+            <textarea {...(common as object)} rows={rows} ref={ref as React.Ref<HTMLTextAreaElement>} />
+          ) : (
+            <input {...common} type={type} ref={ref as React.Ref<HTMLInputElement>} />
+          )}
+          {unit ? (
+            <span id={unitId} className={styles.Unit}>
+              {unit}
+            </span>
+          ) : null}
+        </div>
+        {after ? <span className={styles.After}>{after}</span> : null}
       </div>
     </div>
   );

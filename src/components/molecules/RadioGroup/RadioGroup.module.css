@@ -130,12 +130,24 @@
 /* Row: short answers side by side, sharing the width (Không / Có, Loại I–V). The question reads as a label. */
 .RadioGroup:where([data-layout='row']) .Options {
   flex-direction: row;
+  flex-wrap: wrap;
 }
+/* Equal widths, but never narrower than the option's own words: on a narrow phone the last options wrap
+   to a second line instead of cutting "Loại III" in half. */
 .RadioGroup:where([data-layout='row']) .Option {
   flex: 1 1 0;
+  min-inline-size: max-content;
+}
+/* Wrap: options as wide as their words, flowing onto more lines when needed (list filters with counts). */
+.RadioGroup:where([data-layout='wrap']) .Options {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.RadioGroup:where([data-layout='wrap']) .Option {
+  flex: 0 1 auto;
   min-inline-size: 0;
 }
-.RadioGroup:where([data-layout='row']) .Legend {
+.RadioGroup:where([data-layout='row'], [data-layout='wrap']) .Legend {
   font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 500;

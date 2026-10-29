@@ -8,14 +8,15 @@
       "--text-brand-strong",
       "--text-placeholder",
       "--status-success-text",
-      "--status-error-text"
+      "--status-error-text",
+      "--status-info-text"
     ],
     "bg": [
       "--surface",
       "--surface-alt",
       "--surface-selected"
     ],
-    "note": "every text role on every surface components may place it on"
+    "note": "every text role on every surface components may place it on (status-info-text: SaveStatus \"ô chưa lưu\" on the white action bar)"
   },
   {
     "fg": [

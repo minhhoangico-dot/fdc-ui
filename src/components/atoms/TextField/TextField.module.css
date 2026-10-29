@@ -36,7 +36,27 @@
   color: var(--status-error-text);
 }
 .Control {
+  display: flex;
+  align-items: center;
+  gap: var(--space-10);
+}
+.Box {
   position: relative;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+.Unit {
+  position: absolute;
+  inset-inline-end: var(--space-15);
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+  pointer-events: none;
+}
+.After {
+  flex: none;
 }
 .Input {
   box-sizing: border-box;
@@ -74,6 +94,10 @@ textarea.Input {
 .TextField:where([data-icon]) .Input {
   box-sizing: border-box;
   padding-inline-start: var(--space-40);
+}
+.TextField:where([data-unit]) .Input {
+  box-sizing: border-box;
+  padding-inline-end: var(--unit-space, var(--space-50));
 }
 .Icon {
   position: absolute;

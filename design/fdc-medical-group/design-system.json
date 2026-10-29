@@ -324,9 +324,10 @@
   ],
   "lastChange": {
     "by": "Minh",
-    "at": "2026-10-12T05:43:54Z",
-    "via": "Claude chat",
-    "note": "Added 3 atoms and 10 molecules from both sites, icon set, specialty and service icons"
+    "at": "2026-10-29T17:13:09Z",
+    "via": "Claude Code · fdc-ui@2.3.0",
+    "note": "v2.3 release: staff components NumberField, Combobox, SaveStatus, Pagination, Breadcrumb, DataTable, PatientContextBar, StaffLayout; TextField unit, RadioGroup wrap, compact Header sticky below 1024px; README staff screens and moments; tokens version 2.3 (no value changes)",
+    "release": "2.3.0"
   },
   "layout": "files",
   "libraries": [

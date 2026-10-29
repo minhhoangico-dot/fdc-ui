@@ -1,0 +1,184 @@
+/* Field parts match TextField (label, hint, error, control), so a Combobox lines up with TextFields in a FieldRow. */
+.Combobox {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+  font-family: var(--font-body);
+}
+.Label {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-default);
+}
+.HiddenLabel {
+  box-sizing: border-box;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.Required {
+  color: var(--status-error-text);
+}
+.Hint {
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+.Error {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--status-error-text);
+}
+.Control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-10);
+}
+.Box {
+  position: relative;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+.Input {
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: var(--control-height);
+  padding: var(--space-10) var(--space-40);
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-default);
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+  text-overflow: ellipsis;
+}
+.Input::placeholder {
+  color: var(--text-placeholder);
+}
+.Input:focus-visible {
+  box-sizing: border-box;
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: 1px;
+  border-color: var(--focus-ring);
+}
+.Input:disabled {
+  background: var(--surface-alt);
+  color: var(--text-disabled);
+}
+.Combobox:where([data-invalid]) .Input {
+  box-sizing: border-box;
+  border: var(--border-width-strong) solid var(--status-error-text);
+}
+.Icon,
+.Chevron {
+  position: absolute;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.Icon {
+  inset-inline-start: var(--space-15);
+}
+.Chevron {
+  inset-inline-end: var(--space-15);
+}
+.Clear {
+  box-sizing: border-box;
+  flex: none;
+  min-block-size: var(--target-min);
+  min-inline-size: var(--target-min);
+  padding: 0 var(--space-10);
+  border: 0;
+  background: none;
+  color: var(--text-link);
+  font: inherit;
+  font-size: var(--font-size-body);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+.Clear:hover {
+  color: var(--text-link-hover);
+}
+.Clear:focus-visible {
+  box-sizing: border-box;
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: 1px;
+  border-radius: var(--radius-sm);
+}
+/* The list floats over the page, so it is the one place here with a shadow. */
+.List,
+.Empty {
+  box-sizing: border-box;
+  position: absolute;
+  inset-block-start: calc(100% + var(--space-5));
+  inset-inline: 0;
+  z-index: 10;
+  margin: 0;
+  padding: var(--space-5) 0;
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+.List {
+  max-block-size: 20rem;
+  overflow-y: auto;
+  list-style: none;
+}
+.List[hidden] {
+  display: none;
+}
+.Empty {
+  padding: var(--space-10) var(--space-15);
+  color: var(--text-muted);
+  font-size: var(--font-size-body);
+}
+.Option {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  min-block-size: var(--target-min);
+  padding: var(--space-5) var(--space-15);
+  color: var(--text-default);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+  cursor: pointer;
+}
+.Option[data-active] {
+  background: var(--surface-selected);
+  box-shadow: inset var(--border-width-heavy) 0 0 var(--border-brand);
+}
+.Option[aria-selected='true'] {
+  font-weight: 600;
+}
+.OptionText {
+  display: flex;
+  flex-direction: column;
+}
+.Code {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+.OptionHint {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+@media (forced-colors: active) {
+  .Option[data-active] {
+    outline: var(--focus-ring-width) solid Highlight;
+    outline-offset: calc(var(--focus-ring-width) * -1);
+  }
+}

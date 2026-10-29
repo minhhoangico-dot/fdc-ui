@@ -1,0 +1,13 @@
+<!-- @dsCard group="Molecules" height=330 subtitle="choose a coded item by name or code; no tone marks needed" -->
+<div id="root" style="display:flex;flex-direction:column;gap:20px;padding:16px;max-width:560px" data-density="compact"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+var icd = [
+  {value: 'I10', label: 'Tăng huyết áp vô căn (nguyên phát)', code: 'I10', hint: 'Bệnh tuần hoàn'},
+  {value: 'E11', label: 'Đái tháo đường type 2', code: 'E11'},
+  {value: 'E66', label: 'Béo phì', code: 'E66'}];
+var jobs = [{value: '22', label: 'Nhà chuyên môn về sức khỏe', code: '22'}, {value: '83', label: 'Lái xe và thợ vận hành thiết bị chuyển động', code: '83'}];
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h(F.Combobox, {label: 'Bệnh, tật (nếu có)', options: icd, defaultValue: 'I10'}),
+  h(F.Combobox, {label: 'Nghề nghiệp', options: jobs, required: true, error: 'Chọn nghề nghiệp trước khi xem lại'})));
+</script>

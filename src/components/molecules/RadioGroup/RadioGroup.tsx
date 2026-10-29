@@ -31,9 +31,10 @@ export type RadioGroupProps = {
   id?: string;
   /**
    * row = options side by side, sharing the width equally: for short answers such as Không / Có or Loại I–V.
-   * The question then reads as a field label (body text), so a long list of questions stays calm. Default column.
+   * The question then reads as a field label (body text), so a long list of questions stays calm.
+   * wrap = options as wide as their words, flowing onto more lines: for list filters such as "Cần điền hoặc sửa · 15". Default column.
    */
-  layout?: 'column' | 'row';
+  layout?: 'column' | 'row' | 'wrap';
   /** compact = less padding and gap, so five short options (I–V) fit a 360px phone; targets stay ≥ 44px. */
   density?: 'comfortable' | 'compact';
   className?: string;
