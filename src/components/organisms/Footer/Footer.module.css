@@ -1,6 +1,6 @@
 .Footer {
   box-sizing: border-box;
-  background: var(--brand-700);
+  background: var(--surface-footer);
   color: var(--text-on-action);
   font-family: var(--font-body);
   font-size: 1.125rem;
@@ -46,7 +46,7 @@
 }
 .Tagline {
   margin: var(--space-5) 0 0;
-  color: var(--brand-100);
+  color: var(--text-on-footer-muted);
 }
 .Contact {
   display: flex;
@@ -74,9 +74,9 @@
   max-inline-size: var(--container-max);
   margin-inline: auto;
   padding: var(--space-15) var(--space-15) var(--space-30);
-  border-block-start: 1px solid var(--brand-600);
+  border-block-start: 1px solid var(--border-brand);
   font-size: 1rem;
-  color: var(--brand-100);
+  color: var(--text-on-footer-muted);
 }
 .Legal p {
   margin: 0 0 var(--space-5);

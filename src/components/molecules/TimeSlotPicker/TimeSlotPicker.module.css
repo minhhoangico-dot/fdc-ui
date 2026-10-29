@@ -30,7 +30,7 @@
 }
 .Empty {
   margin: 0;
-  font-size: 1.125rem;
+  font-size: var(--font-size-body);
   color: var(--text-default);
 }
 .Grid {
@@ -73,7 +73,7 @@
 .Slot:hover:not([data-taken]) {
   box-sizing: border-box;
   border-color: var(--action-primary-bg);
-  background: var(--brand-50);
+  background: var(--surface-selected);
 }
 .Slot:has(.Radio:focus-visible) {
   box-sizing: border-box;

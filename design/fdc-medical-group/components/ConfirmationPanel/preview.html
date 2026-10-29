@@ -1,4 +1,4 @@
-<!-- @dsCard group="Molecules" height=560 subtitle="success (green) and pending (status-info) with a step line" -->
+<!-- @dsCard group="Molecules" height=720 subtitle="success (green), pending (status-info), a failed step; explicit step states" -->
 <div id="root" style="padding:16px;max-width:640px;display:flex;flex-direction:column;gap:28px"></div>
 <script>
 var h = React.createElement, F = window.FDC;
@@ -7,6 +7,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, nu
   h(F.ConfirmationPanel, {title: 'Đã đặt lịch khám', reference: 'FDC-2410-0930', focusOnMount: false},
     h('h2', null, 'Tiếp theo'),
     h('p', null, 'Chúng tôi sẽ gọi số 0912 345 678 trong vòng 30 phút để xác nhận lịch.')),
-  h(F.ConfirmationPanel, {tone: 'pending', title: 'Chờ gửi · còn 27 giây', headingLevel: 2, focusOnMount: false, steps: steps, currentStep: 0},
-    h('p', null, 'Hồ sơ chưa được gửi. Chị có thể hủy.'))));
+  h(F.ConfirmationPanel, {tone: 'pending', title: 'Chờ gửi · còn 27 giây', headingLevel: 2, focusOnMount: false, steps: [{label: 'Chờ gửi', state: 'current'}, {label: 'Đang gửi', state: 'todo'}, {label: 'Đã gửi lên Sở', state: 'todo'}, {label: 'Bộ đã nhận', state: 'todo'}]},
+    h('p', null, 'Hồ sơ chưa được gửi. Chị có thể hủy.')),
+  h(F.ConfirmationPanel, {tone: 'pending', title: 'Chưa gửi được lên Sở', headingLevel: 2, focusOnMount: false, steps: [{label: 'Chờ gửi', state: 'done'}, {label: 'Đang gửi', state: 'failed'}, {label: 'Đã gửi lên Sở', state: 'todo'}, {label: 'Bộ đã nhận', state: 'todo'}]},
+    h('p', null, 'Sở không trả lời sau 30 giây. Bấm Gửi lại, hoặc Nhờ Minh kiểm tra.'))));
 </script>

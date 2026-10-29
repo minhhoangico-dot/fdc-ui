@@ -1,0 +1,34 @@
+/* Each TextField spans four row tracks of the row (label, hint, error, control) through subgrid,
+   so parts line up across columns whether or not a field has a hint or an error. */
+.FieldRow {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--field-min, 15rem)), 1fr));
+  column-gap: var(--space-20);
+  row-gap: var(--space-20);
+  align-items: end;
+}
+@supports (grid-template-rows: subgrid) {
+  .FieldRow > [data-component='TextField'] {
+    display: grid;
+    grid-row: span 4;
+    grid-template-rows: subgrid;
+    row-gap: var(--space-5);
+    align-items: end;
+  }
+  .FieldRow > [data-component='TextField'] > [data-part='label'] {
+    grid-row: 1;
+  }
+  .FieldRow > [data-component='TextField'] > [data-part='hint'] {
+    grid-row: 2;
+    align-self: start;
+  }
+  .FieldRow > [data-component='TextField'] > [data-part='error'] {
+    grid-row: 3;
+    align-self: start;
+  }
+  .FieldRow > [data-component='TextField'] > [data-part='control'] {
+    grid-row: 4;
+    align-self: start;
+  }
+}

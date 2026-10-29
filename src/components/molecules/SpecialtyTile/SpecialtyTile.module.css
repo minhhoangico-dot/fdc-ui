@@ -16,7 +16,7 @@
   align-items: center;
   justify-content: center;
   flex: 0 0 3.75rem;
-  background: var(--brand-600);
+  background: var(--surface-brand);
   color: var(--text-on-action);
 }
 .Square img {
@@ -34,8 +34,8 @@
   line-height: 1.35;
 }
 .SpecialtyTile:where([data-link]):hover {
-  background: var(--brand-50);
-  color: var(--brand-700);
+  background: var(--surface-selected);
+  color: var(--text-brand-strong);
 }
 .SpecialtyTile:where([data-link]):focus-visible {
   box-sizing: border-box;

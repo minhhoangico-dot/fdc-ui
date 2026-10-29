@@ -1,5 +1,6 @@
 import type { Preview } from '@storybook/react';
 import '../src/tokens/tokens.css';
+import '../src/tokens/density.css';
 import '../src/styles/base.css';
 
 const preview: Preview = {
@@ -28,12 +29,29 @@ const preview: Preview = {
         dynamicTitle: true,
       },
     },
+    density: {
+      description: 'Mật độ: comfortable cho bệnh nhân, compact cho nhân viên',
+      defaultValue: 'comfortable',
+      toolbar: {
+        title: 'Mật độ',
+        icon: 'component',
+        items: [
+          { value: 'comfortable', title: 'Thoáng (bệnh nhân)' },
+          { value: 'compact', title: 'Gọn (nhân viên)' },
+        ],
+        dynamicTitle: true,
+      },
+    },
   },
   decorators: [
     (Story, ctx) => {
-      if (typeof document !== 'undefined') document.documentElement.dataset.theme = ctx.globals.theme;
+      const density = ctx.parameters.density ?? ctx.globals.density ?? 'comfortable';
+      if (typeof document !== 'undefined') {
+        document.documentElement.dataset.theme = ctx.globals.theme;
+        document.documentElement.dataset.density = density;
+      }
       return (
-        <div data-theme={ctx.globals.theme} style={{ background: 'var(--surface)', color: 'var(--text-default)' }}>
+        <div data-theme={ctx.globals.theme} data-density={density} style={{ background: 'var(--surface)', color: 'var(--text-default)' }}>
           <Story />
         </div>
       );

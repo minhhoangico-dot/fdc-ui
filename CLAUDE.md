@@ -16,10 +16,12 @@ This repo is the code side of the **FDC Medical Group design system**: the famil
 | `npm run check` | Typecheck, lint, unit tests, tokens in sync, token/level lints, contrast in both themes |
 | `npm run review:visual` | Builds Storybook and measures every story at 320/390/768/1280 in both themes (overflow, tap-target size, text size, focus, axe); writes `visual-review/report.md` |
 | `npm run tokens` | Regenerates `src/tokens/tokens.css` from the master copy |
+| `npm run release` | Every check + the Claude Design bundle + `release.json` (versions, file hashes); `-- --verify <dir>` after publishing |
 | `npm run build:design` then `node scripts/check-design-previews.mjs` | Builds the `window.FDC` bundle for Claude Design and checks every preview card |
 | `node .claude/skills/atomic-design-system/scripts/scaffold.mjs <Name> --level <level> --dir src/components --prefix fdc` | New component from the template |
 
 ## Sync
 - **Tokens: Claude Design → code.** Read the master's `tokens.json` into `design/fdc-medical-group/`, run `npm run tokens`, then `npm run contrast`.
-- **Components: code → Claude Design.** `npm run build:design` and the preview check, then publish the changed `design/fdc-medical-group/` files to the master, with the index (`design-system.json`, new `lastChange`) last.
+- **Components: code → Claude Design.** `npm run release`, then publish the changed `design/fdc-medical-group/` files (with `release.json`) to the master, the index (`design-system.json`, new `lastChange`) last; read the files back and run `npm run release -- --verify <readback-dir>`. Not done until it says verified.
+- **Tokens rule:** components use role tokens only (`text-link`, `surface-selected`…), never the palette (`brand-*`, `ink*`); `npm run lint:tokens` fails otherwise. Staff screens use `data-density="compact"`.
 - **Skill: plugin repo → here.** The skill and agent in `.claude/` are copied from [minhhoangico-dot/atomic-design-system](https://github.com/minhhoangico-dot/atomic-design-system). To update them, clone that repo and run `npm run skill:sync -- <path-to-clone>`. Improvements to the skill itself go to that repo first, so other brands get them too.

@@ -58,7 +58,7 @@ export const TextField = forwardRef<HTMLInputElement | HTMLTextAreaElement, Text
       data-invalid={error ? 'true' : undefined}
       data-icon={icon ? 'true' : undefined}
     >
-      <label className={hideLabel ? styles.HiddenLabel : styles.Label} htmlFor={inputId}>
+      <label className={hideLabel ? styles.HiddenLabel : styles.Label} htmlFor={inputId} data-part="label">
         {label}
         {required ? (
           <span className={styles.Required} aria-hidden="true">
@@ -67,17 +67,17 @@ export const TextField = forwardRef<HTMLInputElement | HTMLTextAreaElement, Text
         ) : null}
       </label>
       {hint ? (
-        <span id={hintId} className={styles.Hint}>
+        <span id={hintId} className={styles.Hint} data-part="hint">
           {hint}
         </span>
       ) : null}
       {error ? (
-        <span id={errorId} className={styles.Error}>
+        <span id={errorId} className={styles.Error} data-part="error">
           <VisuallyHidden>{errorPrefix} </VisuallyHidden>
           {error}
         </span>
       ) : null}
-      <div className={styles.Control}>
+      <div className={styles.Control} data-part="control">
         {icon ? <Icon name={icon} size={18} className={styles.Icon} /> : null}
         {multiline ? (
           <textarea {...(common as object)} rows={rows} ref={ref as React.Ref<HTMLTextAreaElement>} />

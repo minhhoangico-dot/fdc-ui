@@ -254,7 +254,8 @@
   gap: var(--space-5) var(--space-15);
   font-size: 1rem;
 }
-@media (max-width: 47.99rem) {
+/* Below 64rem the menu and tools go behind the Menu button, so the bar stays one row on tablets too. */
+@media (max-width: 63.99rem) {
   .Header:where([data-collapsed]) .Brand {
     display: none;
   }
@@ -266,7 +267,7 @@
     padding-block: var(--space-5);
   }
 }
-@media (min-width: 48rem) {
+@media (min-width: 64rem) {
   .Header:where([data-variant='compact']) .MenuButton {
     display: none;
   }

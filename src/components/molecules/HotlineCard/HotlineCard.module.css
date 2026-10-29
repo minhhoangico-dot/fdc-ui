@@ -16,7 +16,7 @@
   inline-size: var(--target-min);
   block-size: var(--target-min);
   border-radius: var(--radius-round);
-  background: var(--accent-cta);
+  background: var(--hotline-bg);
   color: var(--text-on-action);
 }
 .Text {
@@ -46,7 +46,7 @@
   box-sizing: border-box;
   display: block;
   padding: 0 var(--space-20) var(--space-15);
-  border: 1px solid var(--brand-600);
+  border: 1px solid var(--border-brand);
   border-block-start: 0;
   border-radius: var(--radius-sm);
   text-align: center;
@@ -67,7 +67,7 @@
   box-sizing: border-box;
   content: '';
   flex: 1;
-  border-block-start: 1px solid var(--brand-600);
+  border-block-start: 1px solid var(--border-brand);
 }
 .FramedNumber {
   box-sizing: border-box;

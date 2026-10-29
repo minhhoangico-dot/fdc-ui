@@ -33,4 +33,24 @@ describe('ConfirmationPanel', () => {
       screen.getByRole('heading', { level: 2 }),
     );
   });
+
+  it('uses explicit step states and never infers a later step from an earlier one', () => {
+    render(
+      <ConfirmationPanel
+        tone="pending"
+        title="Chưa gửi được lên Sở"
+        focusOnMount={false}
+        steps={[
+          { label: 'Chờ gửi', state: 'done' },
+          { label: 'Đang gửi', state: 'failed' },
+          { label: 'Đã gửi lên Sở', state: 'todo' },
+        ]}
+      />,
+    );
+    const items = screen.getAllByRole('listitem');
+    expect(items.map((li) => li.getAttribute('data-state'))).toEqual(['done', 'failed', 'todo']);
+    expect(items[1]).toHaveTextContent('Lỗi: Đang gửi');
+    expect(items.some((li) => li.getAttribute('aria-current'))).toBe(false);
+  });
 });
+

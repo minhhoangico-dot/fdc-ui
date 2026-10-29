@@ -18,6 +18,20 @@ export declare function normalizeVnPhone(input: string): string | null;
 /** Display form: 0912 345 678 for mobiles, 024 3543 0430 for 11-digit landlines. */
 export declare function formatVnPhone(digits: string): string;
 
+/* ===== components/layout/FieldRow/FieldRow ===== */
+export type FieldRowProps = {
+    /** Narrowest a column may get before fields wrap onto the next line. Default "15rem". */
+    minColumn?: string;
+} & HTMLAttributes<HTMLDivElement>;
+/**
+ * Fields side by side in a form (Họ và tên · Ngày sinh · Số điện thoại). Labels line up with labels and
+ * inputs with inputs, even when only some fields have a hint or an error. Wraps to one column on phones.
+ */
+export declare const FieldRow: import('react').ForwardRefExoticComponent<{
+    /** Narrowest a column may get before fields wrap onto the next line. Default "15rem". */
+    minColumn?: string;
+} & HTMLAttributes<HTMLDivElement> & import('react').RefAttributes<HTMLDivElement>>;
+
 /* ===== components/layout/Inline/Inline ===== */
 export type InlineProps = {
     /** Gap between items, from the space-* tokens. Default 10. */
@@ -290,6 +304,12 @@ export type CareCardProps = {
 export declare function CareCard({ level, title, children, levelLabels, emergencyNumber, emergencyCallLabel, headingLevel, className, }: CareCardProps): import("react").JSX.Element;
 
 /* ===== components/molecules/ConfirmationPanel/ConfirmationPanel ===== */
+export type StepState = 'done' | 'current' | 'todo' | 'failed';
+/** A step and what has actually happened to it. Each state should come from a real event (a receipt, an answer). */
+export type ConfirmationStep = {
+    label: string;
+    state: StepState;
+};
 export type ConfirmationPanelProps = {
     /** "Đã đặt lịch khám" (success) or "Chờ gửi · còn 27 giây" (pending). */
     title: string;
@@ -306,10 +326,16 @@ export type ConfirmationPanelProps = {
      * ("Chờ gửi · còn 27 giây"): pale status-info panel with ordinary text. Green is only ever for success.
      */
     tone?: 'success' | 'pending';
-    /** Short step line, e.g. ['Chờ gửi', 'Đang gửi', 'Đã gửi lên Sở', 'Bộ đã nhận']. */
-    steps?: string[];
-    /** Index of the current step in `steps` (0-based). */
+    /**
+     * Short step line. Prefer objects with an explicit state per step, set from real events:
+     * [{ label: 'Đã gửi lên Sở', state: 'done' }, { label: 'Bộ đã nhận', state: 'current' }].
+     * Plain strings with `currentStep` still work (earlier steps are then shown as done).
+     */
+    steps?: Array<string | ConfirmationStep>;
+    /** For plain-string steps: index of the current step (0-based). */
     currentStep?: number;
+    /** Read before a failed step. Default "Lỗi:". */
+    failedPrefix?: string;
     /** Read before the step line. Default "Tiến trình". */
     stepsLabel?: string;
     /** Heading level of the title. Default 1 (the page result); use 2 or 3 inside a page that has its own h1. */
@@ -320,7 +346,7 @@ export type ConfirmationPanelProps = {
  * The finish of a flow, or its waiting state: a clear panel with the title, the reference code,
  * an optional step line, then what happens next.
  */
-export declare function ConfirmationPanel({ title, reference, referenceLabel, children, focusOnMount, tone, steps, currentStep, stepsLabel, headingLevel, className, }: ConfirmationPanelProps): import("react").JSX.Element;
+export declare function ConfirmationPanel({ title, reference, referenceLabel, children, focusOnMount, tone, steps, currentStep, stepsLabel, failedPrefix, headingLevel, className, }: ConfirmationPanelProps): import("react").JSX.Element;
 
 /* ===== components/molecules/DateInput/DateInput ===== */
 export type DateInputProps = {
@@ -779,10 +805,10 @@ export type HeaderProps = {
     variant?: 'site' | 'compact';
     /** compact: the app's name next to the logo, e.g. "hoso" (Montserrat 700, 18px). */
     appName?: string;
-    /** compact: right-hand slot for system status, the signed-in person and "Đăng xuất". On phones it moves into the menu. */
+    /** compact: right-hand slot for system status, the signed-in person and "Đăng xuất". Below 1024px (phones, tablets) it moves into the menu. */
     tools?: ReactNode;
     /**
-     * compact: stick to the top and, on phones, shrink to a thin bar after scrolling down.
+     * compact: stick to the top and, below 1024px, shrink to a thin bar after scrolling down.
      * The thin bar shows `compactBar` (the person being worked on: name, date of birth, record code) and the menu button.
      */
     collapseOnScroll?: boolean;

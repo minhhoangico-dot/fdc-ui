@@ -1,9 +1,13 @@
 // FDC UI: the components of the FDC Medical Group design system.
 // Tokens and guidelines are mastered in Claude Design ("FDC Medical Group"); see README.md.
 
+// The density layer ships with the components (data-density="compact" for staff tools).
+import './tokens/density.css';
+
 // Layout
 export * from './components/layout/Stack';
 export * from './components/layout/Inline';
+export * from './components/layout/FieldRow';
 
 // Atoms
 export * from './components/atoms/Avatar';

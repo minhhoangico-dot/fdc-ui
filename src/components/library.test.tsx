@@ -7,6 +7,7 @@ import { clinicFooter, clinicHeader } from '../fixtures/site';
 const samples: Record<string, JSX.Element> = {
   Stack: <FDC.Stack>x</FDC.Stack>,
   Inline: <FDC.Inline>x</FDC.Inline>,
+  FieldRow: <FDC.FieldRow><FDC.TextField label="Họ và tên" /></FDC.FieldRow>,
   Avatar: <FDC.Avatar name="Bùi Hiền" />,
   Button: <FDC.Button>Gửi</FDC.Button>,
   Icon: <FDC.Icon name="phone" title="Gọi" />,

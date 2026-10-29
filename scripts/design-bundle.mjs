@@ -2,6 +2,7 @@
 // After `vite build -c vite.design.config.ts`: adds Claude Design's bundle header,
 // checks the bundle is safe to inline, and copies bundle.js, bundle.css and the
 // type declarations into design/fdc-medical-group/components/ for publishing.
+import { createHash } from 'node:crypto';
 import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -24,8 +25,15 @@ const indexSrc = readFileSync(join(root, 'src/index.ts'), 'utf8');
 const names = [...indexSrc.matchAll(/components\/\w+\/(\w+)'/g)].map((m) => m[1]).filter((n) => n !== 'VisuallyHidden');
 const header = `/* @ds-bundle: ${JSON.stringify({ format: 4, namespace: 'FDC', components: names.map((name) => ({ name })) })} */\n`;
 
-writeFileSync(join(out, 'bundle.js'), header + js);
-writeFileSync(join(out, 'bundle.css'), css);
+// Release stamp: which library version and which tokens this bundle was built against.
+const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
+const tokensText = readFileSync(join(root, 'design/fdc-medical-group/tokens.json'), 'utf8');
+const tokensVersion = JSON.parse(tokensText).version;
+const tokensSha = createHash('sha256').update(tokensText).digest('hex').slice(0, 16);
+const stamp = `/* fdc-ui ${pkg.version} · tokens ${tokensVersion} (tokens.json sha256 ${tokensSha}) */\n`;
+
+writeFileSync(join(out, 'bundle.js'), header + stamp + js);
+writeFileSync(join(out, 'bundle.css'), stamp + css);
 writeFileSync(join(out, 'index.d.ts'), typesDoc());
 console.log(`Claude Design bundle: ${names.length} components, ${(js.length / 1024).toFixed(1)} KB js, ${(css.length / 1024).toFixed(1)} KB css → design/fdc-medical-group/components/`);
 

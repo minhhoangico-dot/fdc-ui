@@ -2,6 +2,59 @@
 
 Versions follow the FDC Medical Group design system in Claude Design (the master). Every new prop is optional: code written for 2.0 keeps working.
 
+## 2.2.0 — 2026-10-29
+
+Fixes from Astra's review: contrast, role tokens, fixed status colors, density, record states, and a checkable release.
+
+### Contrast (the check itself was the bug)
+- **Contrast is now checked as a matrix**: every text role × every surface it may be placed on, in both themes (138 checks).
+  - The old list held only the pairs someone thought of, so it missed a link on `surface-alt`.
+  - Ratios are never rounded up: 4.498:1 now fails.
+- `text-link` → `brand-700`:
+  - It was 4.498:1 (clinic) and 4.33:1 (nursing home) on `surface-alt`.
+  - Now 5.8:1 on `surface-alt` and 6.3:1 on white.
+- `leaf-700` (success green) `#577f20` → `#4f7419`:
+  - Found by the matrix: it was 4.36:1 on grey and 4.4:1 on the tints.
+  - Now ≥ 5.0:1 everywhere.
+- New `text-placeholder` (`ink-soft`) and `text-disabled` (`ink-subtle`); placeholders no longer use the disabled grey.
+
+### Tokens: palette → role → component
+- 21 new role tokens:
+  - text: `text-link-hover`, `text-brand`, `text-brand-strong`, `text-on-footer-muted`;
+  - surfaces: `surface-selected`, `surface-tint`, `surface-brand`, `surface-footer`, `surface-inverse`;
+  - borders and decoration: `border-brand`, `decor-ring`;
+  - actions: `action-primary-bg-active`, `action-secondary-fg`, `action-secondary-edge`;
+  - other: `hotline-bg`, `group-accent`, `status-warning-*`, …
+- All 47 palette uses in components replaced. `npm run lint:tokens` now fails if a component names a palette token (`brand-*`, `ink*`, `danger`, …).
+- Status colors are fixed across themes:
+  - `status-info-*` is always blue; it used to turn orange in the nursing-home theme, where orange reads as a warning.
+  - New `status-warning-*`, always amber.
+  - FormNotice `warning` uses the amber bar.
+
+### Density
+- `data-density="compact"` (new `src/tokens/density.css`, shipped with the components): 16px text through the new `font-size-body` token, 44px controls, 1440px container.
+- Density is independent of `data-theme`: a nursing-home staff tool is orange and compact.
+- Storybook has a "Mật độ" toolbar switch.
+
+### Components
+- **FieldRow** (new, layout): fields side by side with labels and inputs aligned through CSS subgrid, even when only some fields have a hint or an error. TextField parts carry `data-part`.
+- **ConfirmationPanel**:
+  - `steps` take explicit states (`{ label, state: 'done' | 'current' | 'todo' | 'failed' }`), so a later step is never shown as reached because an earlier one succeeded.
+  - A failed step is red, underlined and read as "Lỗi: …".
+- **Header compact**: the menu and tools join the row only from 1024px, so the bar stays one row on tablets (it wrapped to two rows at 768–900px).
+- Control and body text in Button, TextField, RadioGroup, SummaryList, DateInput, TimeSlotPicker, FormNotice, ConfirmationPanel, Dialog, ErrorSummary, ContactForm and BookingStep follow `font-size-body`.
+
+### Guidelines (Claude Design README)
+- Atomic levels: "one clear job, reuse what fits, no cycles". The old wording ("only from the level below") contradicted Frost and the code.
+- Components use roles, never the palette. The old "always use `brand-*`" sentence is gone.
+- A record-state table (Trạng thái nghiệp vụ): label, tone, the event that sets each state, allowed actions, next states.
+- Density, and "edges and spacing, not `shadow-card`, on staff screens".
+
+### Release
+- `npm run release` runs every check, builds the bundle and writes `design/fdc-medical-group/release.json` (versions + sha256 of each published file).
+- The bundle carries a stamp: `fdc-ui 2.2.0 · tokens 2.2 (tokens.json sha256 …)`.
+- After publishing, `npm run release -- --verify <readback>` proves Claude Design holds exactly the build.
+
 ## 2.1.0 — 2026-10-25
 
 Staff tools, from the hoso health-record app (approved by Minh on 25/10/2026). Replaces the "Proposed for fdc-ui" CSS patches in the hoso design: the app can drop `.fdc-yn` and the Button and RadioGroup overrides.

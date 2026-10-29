@@ -34,10 +34,10 @@ export type HeaderProps = {
   variant?: 'site' | 'compact';
   /** compact: the app's name next to the logo, e.g. "hoso" (Montserrat 700, 18px). */
   appName?: string;
-  /** compact: right-hand slot for system status, the signed-in person and "Đăng xuất". On phones it moves into the menu. */
+  /** compact: right-hand slot for system status, the signed-in person and "Đăng xuất". Below 1024px (phones, tablets) it moves into the menu. */
   tools?: ReactNode;
   /**
-   * compact: stick to the top and, on phones, shrink to a thin bar after scrolling down.
+   * compact: stick to the top and, below 1024px, shrink to a thin bar after scrolling down.
    * The thin bar shows `compactBar` (the person being worked on: name, date of birth, record code) and the menu button.
    */
   collapseOnScroll?: boolean;
@@ -182,7 +182,7 @@ export function Header({
               {compactBar}
             </div>
           ) : null}
-          {/* Menu and tools: in the row on wide screens, behind the menu button on phones. */}
+          {/* Menu and tools: in the row from 1024px, behind the menu button below that. */}
           <div id={`${id}-nav`} className={styles.Panel} data-open={menuOpen || undefined}>
             <nav className={styles.CompactNav} aria-label={navLabel}>
               {list}

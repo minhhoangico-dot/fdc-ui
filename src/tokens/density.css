@@ -1,0 +1,12 @@
+/*
+ * Density: the second switch, independent of the brand theme (data-theme).
+ * comfortable (default) = patients and families: the master's values (18px text, 48px controls, 1200px).
+ * compact = staff tools: 16px text, 44px controls (still a full tap target), wide layouts.
+ * Set data-density="compact" on the app root or on any region. Written by hand: tokens.json has no modes for layout.
+ */
+:root[data-density='compact'],
+[data-density='compact'] {
+  --font-size-body: 1rem;
+  --control-height: 2.75rem;
+  --container-max: 1440px;
+}

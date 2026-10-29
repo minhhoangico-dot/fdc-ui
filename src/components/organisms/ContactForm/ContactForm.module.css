@@ -18,6 +18,6 @@
 }
 .Intro {
   margin: 0;
-  font-size: 1.125rem;
+  font-size: var(--font-size-body);
   color: var(--text-muted);
 }

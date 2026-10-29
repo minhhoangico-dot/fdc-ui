@@ -1,209 +1,125 @@
 [
   {
-    "fg": "--text-default",
-    "bg": "--surface",
-    "note": "body text"
+    "fg": [
+      "--text-default",
+      "--text-muted",
+      "--text-link",
+      "--text-link-hover",
+      "--text-brand-strong",
+      "--text-placeholder",
+      "--status-success-text",
+      "--status-error-text"
+    ],
+    "bg": [
+      "--surface",
+      "--surface-alt",
+      "--surface-selected"
+    ],
+    "note": "every text role on every surface components may place it on"
   },
   {
-    "fg": "--text-default",
-    "bg": "--surface-alt",
-    "note": "body on alt sections"
-  },
-  {
-    "fg": "--text-default",
-    "bg": "--brand-200",
-    "note": "body on tinted sections"
+    "fg": [
+      "--text-default",
+      "--text-muted",
+      "--text-brand-strong"
+    ],
+    "bg": [
+      "--surface-tint",
+      "--brand-200"
+    ],
+    "note": "text on tinted sections and fills"
   },
   {
     "fg": "--text-default",
     "bg": "--brand-300",
-    "note": "ink on bright band"
+    "note": "ink on the bright band"
   },
   {
-    "fg": "--text-muted",
-    "bg": "--surface",
-    "note": "hints, captions"
+    "fg": [
+      "--text-default",
+      "--status-info-text",
+      "--text-link"
+    ],
+    "bg": "--status-info-bg",
+    "note": "pending panel"
   },
   {
-    "fg": "--text-muted",
-    "bg": "--surface-alt",
-    "note": "hints on alt"
-  },
-  {
-    "fg": "--text-muted",
-    "bg": "--brand-200",
-    "note": "muted on tint"
-  },
-  {
-    "fg": "--ink-subtle",
-    "bg": "--surface",
-    "note": "placeholder / disabled text"
-  },
-  {
-    "fg": "--text-on-action",
-    "bg": "--action-primary-bg",
-    "note": "primary button"
+    "fg": [
+      "--text-default",
+      "--status-warning-text",
+      "--text-link"
+    ],
+    "bg": "--status-warning-bg",
+    "note": "warning panel"
   },
   {
     "fg": "--text-on-action",
-    "bg": "--action-primary-bg-hover",
-    "note": "primary hover, clinic footer"
+    "bg": [
+      "--action-primary-bg",
+      "--action-primary-bg-hover",
+      "--action-primary-bg-active",
+      "--hotline-bg",
+      "--surface-brand",
+      "--surface-footer",
+      "--group-accent",
+      "--status-error-text",
+      "--status-success-text",
+      "--surface-inverse"
+    ],
+    "note": "white text on every solid fill"
   },
   {
-    "fg": "--text-on-action",
-    "bg": "--brand-800",
-    "note": "pressed"
-  },
-  {
-    "fg": "--text-on-action",
-    "bg": "--accent-cta",
-    "note": "hotline call button"
-  },
-  {
-    "fg": "--text-link",
-    "bg": "--surface",
-    "note": "links"
-  },
-  {
-    "fg": "--brand-700",
-    "bg": "--brand-50",
-    "note": "link hover on tint"
-  },
-  {
-    "fg": "--brand-800",
-    "bg": "--brand-200",
-    "note": "testimonial name"
-  },
-  {
-    "fg": "--brand-800",
-    "bg": "--brand-100",
-    "note": "avatar initials"
-  },
-  {
-    "fg": "--group-600",
-    "bg": "--surface",
-    "note": "value card title"
+    "fg": "--text-on-footer-muted",
+    "bg": "--surface-footer",
+    "note": "footer tagline and legal lines"
   },
   {
     "fg": "--hotline",
     "bg": "--surface",
-    "note": "hotline number"
+    "note": "hotline number (white backgrounds only)"
   },
   {
-    "fg": "--status-error-text",
-    "bg": "--surface",
-    "note": "field error"
-  },
-  {
-    "fg": "--status-error-text",
-    "bg": "--surface-alt",
-    "note": "error on alt"
-  },
-  {
-    "fg": "--status-success-text",
-    "bg": "--surface",
-    "note": "success text"
-  },
-  {
-    "fg": "--border-control",
-    "bg": "--surface",
+    "fg": "--text-brand",
+    "bg": [
+      "--surface",
+      "--surface-alt"
+    ],
     "min": 3,
-    "note": "input / tile border"
+    "note": "brand headings 20px bold+ and icons only"
   },
   {
-    "fg": "--border-control",
-    "bg": "--surface-alt",
+    "fg": [
+      "--border-control",
+      "--focus-ring",
+      "--border-brand",
+      "--action-secondary-edge",
+      "--action-primary-bg",
+      "--status-info-border",
+      "--status-warning-border",
+      "--status-error-text"
+    ],
+    "bg": [
+      "--surface",
+      "--surface-alt"
+    ],
     "min": 3,
-    "note": "input border on alt"
-  },
-  {
-    "fg": "--focus-ring",
-    "bg": "--surface",
-    "min": 3,
-    "note": "focus ring"
-  },
-  {
-    "fg": "--focus-ring",
-    "bg": "--surface-alt",
-    "min": 3,
-    "note": "focus ring on alt"
-  },
-  {
-    "fg": "--action-primary-bg",
-    "bg": "--surface",
-    "min": 3,
-    "note": "selected tile vs page"
-  },
-  {
-    "fg": "--text-on-action",
-    "bg": "--brand-700",
-    "note": "footer text"
-  },
-  {
-    "fg": "--brand-100",
-    "bg": "--brand-700",
-    "note": "footer tagline and legal lines"
-  },
-  {
-    "fg": "--text-on-action",
-    "bg": "--group-600",
-    "note": "CareCard non-urgent band"
-  },
-  {
-    "fg": "--text-on-action",
-    "bg": "--danger",
-    "note": "CareCard urgent/emergency band"
-  },
-  {
-    "fg": "--text-on-action",
-    "bg": "--ink",
-    "note": "CareCard emergency body"
-  },
-  {
-    "fg": "--danger",
-    "bg": "--surface",
-    "note": "CareCard 'Gọi 115 ngay' button"
-  },
-  {
-    "fg": "--text-on-action",
-    "bg": "--status-success-text",
-    "note": "ConfirmationPanel"
-  },
-  {
-    "fg": "--text-default",
-    "bg": "--brand-50",
-    "note": "selected RadioGroup tile"
-  },
-  {
-    "fg": "--status-info-text",
-    "bg": "--status-info-bg",
-    "note": "pending panel / info StatusTag text"
+    "note": "control edges, focus ring, bars (WCAG 1.4.11)"
   },
   {
     "fg": "--status-info-border",
     "bg": "--status-info-bg",
     "min": 3,
-    "note": "pending panel and info tag edge"
+    "note": "pending panel edge"
   },
   {
-    "fg": "--text-default",
-    "bg": "--status-info-bg",
-    "note": "body text in a pending panel"
-  },
-  {
-    "fg": "--brand-800",
-    "bg": "--surface",
-    "note": "secondary button text"
-  },
-  {
-    "fg": "--brand-600",
-    "bg": "--surface",
+    "fg": "--status-warning-border",
+    "bg": "--status-warning-bg",
     "min": 3,
-    "note": "secondary button inner edge"
+    "note": "warning panel edge"
   },
   {
     "fg": "--text-on-action",
-    "bg": "--brand-600",
-    "note": "strong StatusTag, current step"
+    "bg": "--status-info-border",
+    "note": "current step in a pending panel"
   }
 ]

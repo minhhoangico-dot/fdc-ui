@@ -1,7 +1,7 @@
 .FormNotice {
   margin: 0;
   font-family: var(--font-body);
-  font-size: 1.125rem;
+  font-size: var(--font-size-body);
   color: var(--text-muted);
 }
 .FormNotice:empty {
@@ -36,7 +36,7 @@
   line-height: 1.5;
 }
 .FormNotice:where([data-boxed][data-type='warning']) {
-  --notice-bar: var(--brand-600);
+  --notice-bar: var(--status-warning-border);
 }
 .FormNotice:where([data-boxed][data-type='error']) {
   --notice-bar: var(--status-error-text);

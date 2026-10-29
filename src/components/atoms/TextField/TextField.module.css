@@ -48,14 +48,14 @@
   background: var(--surface);
   color: var(--text-default);
   font-family: var(--font-body);
-  font-size: 1.125rem;
+  font-size: var(--font-size-body);
   line-height: 1.4;
 }
 textarea.Input {
   resize: vertical;
 }
 .Input::placeholder {
-  color: var(--ink-subtle);
+  color: var(--text-placeholder);
 }
 .Input:focus-visible {
   box-sizing: border-box;
@@ -65,7 +65,7 @@ textarea.Input {
 }
 .Input:disabled {
   background: var(--surface-alt);
-  color: var(--ink-subtle);
+  color: var(--text-disabled);
 }
 .TextField:where([data-invalid]) .Input {
   box-sizing: border-box;

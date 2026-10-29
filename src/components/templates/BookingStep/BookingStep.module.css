@@ -18,7 +18,7 @@
   align-self: flex-start;
   min-block-size: var(--target-min);
   color: var(--text-link);
-  font-size: 1.125rem;
+  font-size: var(--font-size-body);
   font-weight: 600;
   text-decoration: underline;
 }
@@ -53,7 +53,7 @@
 }
 .Hint {
   margin: 0;
-  font-size: 1.125rem;
+  font-size: var(--font-size-body);
   line-height: 1.55;
   color: var(--text-muted);
 }

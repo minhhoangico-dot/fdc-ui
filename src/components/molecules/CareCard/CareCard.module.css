@@ -1,7 +1,7 @@
 .CareCard {
   /* Group blue in every theme: in the nursing-home theme the brand orange would sit too close to urgent red. */
-  --care-band: var(--group-600);
-  --care-border: var(--group-600);
+  --care-band: var(--group-accent);
+  --care-border: var(--group-accent);
 
   box-sizing: border-box;
   overflow: hidden;
@@ -12,12 +12,12 @@
   color: var(--text-default);
 }
 .CareCard:where([data-level='urgent']) {
-  --care-band: var(--danger);
-  --care-border: var(--danger);
+  --care-band: var(--status-error-text);
+  --care-border: var(--status-error-text);
 }
 .CareCard:where([data-level='emergency']) {
-  --care-band: var(--danger);
-  --care-border: var(--ink);
+  --care-band: var(--status-error-text);
+  --care-border: var(--surface-inverse);
 }
 .Heading {
   box-sizing: border-box;
@@ -47,7 +47,7 @@
   margin: 0;
 }
 .CareCard:where([data-level='emergency']) .Body {
-  background: var(--ink);
+  background: var(--surface-inverse);
   color: var(--text-on-action);
 }
 .Call {
@@ -60,7 +60,7 @@
   padding: var(--space-10) var(--space-20);
   border-radius: var(--radius-sm);
   background: var(--surface);
-  color: var(--danger);
+  color: var(--status-error-text);
   font-size: 1.25rem;
   font-weight: 700;
   text-decoration: none;

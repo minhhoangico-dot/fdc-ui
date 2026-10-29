@@ -2,8 +2,8 @@
 
 The action button: 48px tall, 3px corners, sentence-case label (verb first: "Đặt lịch khám").
 
-- **neutral** (default) is the **secondary** button: white (`surface`) with a 2px `brand-600` edge drawn inside (so its size never changes) and `brand-800` text. Hover fills it with `action-primary-bg`. It never looks unavailable.
-- **primary**: `action-primary-bg` (blue in the clinic theme, orange in the nursing home theme) for the one main action of a screen state. Hover `action-primary-bg-hover`, pressed `brand-800`.
+- **neutral** (default) is the **secondary** button: white (`surface`) with a 2px `action-secondary-edge` drawn inside (so its size never changes) and `action-secondary-fg` text. Hover fills it with `action-primary-bg`. It never looks unavailable.
+- **primary**: `action-primary-bg` (blue in the clinic theme, orange in the nursing home theme) for the one main action of a screen state. Hover `action-primary-bg-hover`, pressed `action-primary-bg-active`.
 - **hotline**: pink (`accent-cta`) only for calling a hotline; pass `href="tel:…"`. It stays pink in both themes.
 - **Unavailable**: no fill, `ink-subtle` text, a 1px dashed `border-control` edge, a not-allowed cursor.
 

@@ -33,7 +33,7 @@
   align-items: center;
   justify-content: center;
   block-size: 5rem;
-  color: var(--brand-600);
+  color: var(--text-brand);
 }
 .Title {
   margin: var(--space-15) 0 0;
@@ -41,7 +41,7 @@
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 1.35;
-  color: var(--brand-600);
+  color: var(--text-brand);
 }
 .Excerpt {
   margin: var(--space-10) 0 0;

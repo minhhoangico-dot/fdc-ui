@@ -1,7 +1,7 @@
 .ValueCard {
   box-sizing: border-box;
   padding: var(--space-15) var(--space-20);
-  border: 1px solid var(--brand-600);
+  border: 1px solid var(--border-brand);
   border-radius: var(--radius-sm);
   background: var(--surface);
   text-align: center;
@@ -12,7 +12,7 @@
   font-family: var(--font-heading);
   font-size: 1.125rem;
   font-weight: 700;
-  color: var(--group-600);
+  color: var(--group-accent);
 }
 .Text {
   margin: var(--space-5) 0 0;

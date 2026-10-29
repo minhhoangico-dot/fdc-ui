@@ -53,7 +53,7 @@
   background: var(--surface);
   color: var(--text-default);
   font-family: var(--font-body);
-  font-size: 1.125rem;
+  font-size: var(--font-size-body);
   text-align: center;
   font-variant-numeric: tabular-nums;
 }

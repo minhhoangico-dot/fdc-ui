@@ -46,8 +46,30 @@ export const SuccessWithSteps: Story = {
     reference: 'HS-2610-0412',
     referenceLabel: 'Mã hồ sơ',
     headingLevel: 2,
-    steps: sendSteps,
-    currentStep: 2,
+    // Explicit states from real events: the department's receipt is in, the ministry's is not yet.
+    steps: [
+      { label: 'Chờ gửi', state: 'done' },
+      { label: 'Đang gửi', state: 'done' },
+      { label: 'Đã gửi lên Sở', state: 'done' },
+      { label: 'Bộ đã nhận', state: 'current' },
+    ],
     children: <p>Bộ Y tế thường nhận trong 1 giờ. Trạng thái tự cập nhật trên trang Việc của tôi.</p>,
+  },
+};
+
+/** Sending failed at the department: the failed step says so in words, and the next step never lights up. */
+export const SendFailed: Story = {
+  args: {
+    tone: 'pending',
+    title: 'Chưa gửi được lên Sở',
+    reference: undefined,
+    headingLevel: 2,
+    steps: [
+      { label: 'Chờ gửi', state: 'done' },
+      { label: 'Đang gửi', state: 'failed' },
+      { label: 'Đã gửi lên Sở', state: 'todo' },
+      { label: 'Bộ đã nhận', state: 'todo' },
+    ],
+    children: <p>Sở không trả lời sau 30 giây. Bấm Gửi lại, hoặc Nhờ Minh kiểm tra.</p>,
   },
 };

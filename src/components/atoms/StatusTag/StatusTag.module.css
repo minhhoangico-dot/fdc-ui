@@ -38,9 +38,9 @@
   --tag-edge: var(--status-info-bg);
 }
 .StatusTag:where([data-tone='strong']) {
-  --tag-bg: var(--brand-600);
+  --tag-bg: var(--surface-brand);
   --tag-fg: var(--text-on-action);
-  --tag-edge: var(--brand-600);
+  --tag-edge: var(--surface-brand);
 }
 .StatusTag:where([data-tone='success']) {
   --tag-fg: var(--status-success-text);

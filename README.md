@@ -28,7 +28,7 @@ Use the **Theme** button in the Storybook toolbar to see every component in the 
 | Level | Components |
 |---|---|
 | Tokens | `design/fdc-medical-group/tokens.json` (master copy) → `src/tokens/tokens.css` (generated) |
-| Layout | Stack, Inline |
+| Layout | Stack, Inline, FieldRow (aligned multi-column fields) |
 | Atoms | Button (secondary, primary, hotline; `disabledReason`), TextField, Icon (24 FDC glyphs), Avatar, TextLink, SkipLink, StatusTag, Kbd, VisuallyHidden |
 | Molecules | DateInput (Ngày/Tháng/Năm), PhoneInput, TimeSlotPicker, RadioGroup, SummaryList, CareCard, ConfirmationPanel, HotlineCard, WorkingHours, ServiceCard, SpecialtyTile, ValueCard, TestimonialCard, NewsCard, ServiceAccordion, FormNotice |
 | Organisms | Header (site, and `compact` for staff tools), Footer, Dialog (`wide`, `scrollBody`), IdleTimeoutDialog, ErrorSummary, ResultLookupForm, ContactForm |
@@ -51,7 +51,8 @@ Load the fonts once: Montserrat 600/700 for headings, Be Vietnam Pro 400/500/600
 
 - Patient and family screens: 18px body text, 48px buttons and fields, 44px minimum tap targets. Staff tools may use 16px (`body-sm`).
 - Headings Montserrat, text Be Vietnam Pro. Sentence-case button labels, verb first ("Đặt lịch khám").
-- Every color comes from a token; every text/background pair passes WCAG AA (4.5:1) in both themes.
+- Every color comes from a **role** token (`text-link`, `surface-selected`…), never the palette (`brand-700`); `npm run lint:tokens` enforces it. Every text role passes 4.5:1 on every surface it may sit on, in both themes (`npm run contrast`, a role × surface matrix).
+- Two independent switches: `data-theme` (clinic / nursing-home) and `data-density` (comfortable for patients, compact for staff tools).
 - Components never fetch data or position themselves; layout primitives own spacing.
 - Pink is only for the hotline. Errors are red **with words**, linked from an error summary.
 - Staff tools (hoso, FDC Manager):
@@ -79,7 +80,7 @@ npm run build:design                    # window.FDC bundle + css + types into d
 node scripts/check-design-previews.mjs  # renders every Claude Design preview card in both themes
 ```
 
-Then ask Claude to *"publish FDC components to Claude Design"*; it uploads `design/fdc-medical-group/` to the master.
+Then run `npm run release` (every check, the bundle, and `release.json` with the versions and file hashes) and ask Claude to *"publish FDC components to Claude Design"*. Claude uploads `design/fdc-medical-group/` to the master, reads the files back and runs `npm run release -- --verify <readback>`: the release counts only when every file matches.
 
 ## Checks
 
