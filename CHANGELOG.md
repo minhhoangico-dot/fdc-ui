@@ -7,7 +7,7 @@ Versions follow the FDC Medical Group design system in Claude Design (the master
 Fixes from Astra's review: contrast, role tokens, fixed status colors, density, record states, and a checkable release.
 
 ### Contrast (the check itself was the bug)
-- **Contrast is now checked as a matrix**: every text role × every surface it may be placed on, in both themes (138 checks).
+- **Contrast is now checked as a matrix**: every text role × every surface it may be placed on, in both themes (70 pairs per theme, 140 in all).
   - The old list held only the pairs someone thought of, so it missed a link on `surface-alt`.
   - Ratios are never rounded up: 4.498:1 now fails.
 - `text-link` → `brand-700`:
