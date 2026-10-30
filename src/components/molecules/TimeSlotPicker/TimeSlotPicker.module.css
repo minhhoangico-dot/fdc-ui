@@ -126,13 +126,15 @@
   text-decoration: line-through;
   color: var(--text-muted);
 }
-/* The 2px error edge is a 1px border plus a 1px inset shadow, as on every field, so a slot does not grow. */
-.TimeSlotPicker:where([data-invalid]) .Slot:not([data-taken]) {
+/* Error: one message and one red bar for the whole group, as on RadioGroup; the slots keep their normal edge. A red
+   box on every free slot would read as "all these times are wrong". */
+.TimeSlotPicker:where([data-invalid]) {
   box-sizing: border-box;
-  border-color: var(--status-error-text);
-  box-shadow: inset 0 0 0 calc(var(--border-width-strong) - 1px) var(--status-error-text);
+  border-inline-start: var(--border-width-heavy) solid var(--status-error-text);
+  padding-inline-start: var(--space-15);
 }
-/* The one focus rule for fields in error: a dark-ink ring, so the nursing-home orange never merges with the red edge. */
+/* The one focus rule for fields in error: a dark-ink ring, so the nursing-home orange never sits beside the red bar
+   as a second warning color. */
 .TimeSlotPicker:where([data-invalid]) .Slot:has(.Radio:focus-visible) {
   outline: var(--focus-ring-width) solid var(--text-default);
   outline-offset: var(--focus-ring-offset);

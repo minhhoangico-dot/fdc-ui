@@ -29,6 +29,19 @@ describe('Header', () => {
     render(<Header {...nursingHomeHeader} items={[{ label: 'Bảng giá', href: '#bang-gia', current: true }]} />);
     expect(screen.getByRole('link', { name: 'Bảng giá' })).toHaveAttribute('aria-current', 'page');
   });
+
+  it('keeps items that share an address apart (a placeholder "#"): no duplicate-key warning', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const items = [
+      { label: 'Việc của tôi', href: '#', current: true },
+      { label: 'Đợt khám', href: '#', children: [{ label: 'Rạng Đông', href: '#' }, { label: 'Hồng Hà', href: '#' }] },
+    ];
+    render(<Header {...nursingHomeHeader} items={items} />);
+    expect(screen.getByRole('link', { name: 'Việc của tôi' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Đợt khám' })).toBeInTheDocument();
+    expect(error.mock.calls.flat().join(' ')).not.toMatch(/same key/);
+    error.mockRestore();
+  });
 });
 
 describe('Header compact', () => {

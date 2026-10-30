@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { useState } from 'react';
 import { ConfirmationPanel, type ConfirmationTone } from './ConfirmationPanel';
 
 /** What a screen reader reads: the text without the parts hidden from it (the signs). */
@@ -18,6 +19,51 @@ describe('ConfirmationPanel', () => {
     expect(panel).toHaveAttribute('data-emphasis', 'strong');
     expect(panel).not.toHaveAttribute('data-pale');
     expect(panel.querySelector('[data-part="mark"]')).toBeNull();
+  });
+
+  it('focuses only on mount: turning focusOnMount on later does not take focus from a button in the panel', () => {
+    function Check() {
+      const [move, setMove] = useState(false);
+      return (
+        <ConfirmationPanel tone="attention" title="Chưa rõ kết quả" headingLevel={2} focusOnMount={move}>
+          <button type="button" onClick={() => setMove(true)}>
+            Kiểm tra lại trạng thái
+          </button>
+        </ConfirmationPanel>
+      );
+    }
+    render(<Check />);
+    const button = screen.getByRole('button', { name: 'Kiểm tra lại trạng thái' });
+    button.focus();
+    fireEvent.click(button);
+    expect(button).toHaveFocus();
+    expect(screen.getByRole('heading', { name: 'Chưa rõ kết quả' })).not.toHaveFocus();
+  });
+
+  it('a new panel (its own key) shown with focusOnMount takes focus', () => {
+    const { rerender } = render(<ConfirmationPanel key="unknown" tone="attention" title="Chưa rõ kết quả" headingLevel={2} focusOnMount={false} />);
+    expect(screen.getByRole('heading', { name: 'Chưa rõ kết quả' })).not.toHaveFocus();
+    rerender(<ConfirmationPanel key="accepted" emphasis="subtle" title="Sở đã tiếp nhận" headingLevel={2} focusOnMount />);
+    expect(screen.getByRole('heading', { name: 'Sở đã tiếp nhận' })).toHaveFocus();
+  });
+
+  it('without layout (no measure yet) the step line keeps the list, the layout that never leaves an arrow at a line end', () => {
+    render(
+      <ConfirmationPanel
+        tone="pending"
+        title="Chờ gửi lên Sở"
+        headingLevel={2}
+        focusOnMount={false}
+        steps={[
+          { label: 'Đã xem lại', state: 'done' },
+          { label: 'Chờ gửi', state: 'current' },
+        ]}
+      />,
+    );
+    const list = screen.getByRole('list', { name: 'Tiến trình' });
+    // jsdom has no layout: nothing is measured, so no row width is set and the CSS default (the list) holds.
+    expect(list.style.getPropertyValue('--steps-row')).toBe('');
+    expect(list).not.toHaveAttribute('data-measuring');
   });
 
   it('subtle: Sở đã tiếp nhận, a staff success that holds its explanation and code inside the panel', () => {

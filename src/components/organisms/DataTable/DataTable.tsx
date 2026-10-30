@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { cx } from '../../../utils/cx';
 import { formatViInteger } from '../../../utils/vi';
 import { Button } from '../../atoms/Button';
@@ -73,6 +73,9 @@ export type DataTableProps<Row> = {
   className?: string;
 };
 
+// Measured before paint, so a table that opens empty on a phone never shows its header cut at the edge for a frame.
+const useBrowserLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+
 /** The label of a stacked line: stackLabel, else a plain-text header; none for the row header or when hidden. */
 function stackLabelOf<Row>(c: DataTableColumn<Row>): string | undefined {
   if (c.rowHeader || c.hideLabelWhenStacked) return undefined;
@@ -84,8 +87,10 @@ function stackLabelOf<Row>(c: DataTableColumn<Row>): string | undefined {
  * The box scrolls sideways on narrow screens instead of the page, and becomes a keyboard-scrollable region
  * only when it actually overflows; with stackBelow="phone" each row becomes a block on phones instead.
  * Loading, empty and failed states keep the header so the page does not jump; their message sits under the table,
- * outside the sideways scroll, so it and "Tải lại" are always on screen. One polite live region, always on the page,
- * says the count, the empty result or the failure whenever it changes.
+ * outside the sideways scroll, so it and "Tải lại" are always on screen. With no rows nothing scrolls: where the
+ * header would not fit the box (a phone), it is kept for screen readers only, so it is never cut at the edge and
+ * the box is never a Tab stop. One polite live region, always on the page, says the count, the empty result or
+ * the failure whenever it changes.
  */
 export function DataTable<Row>({
   caption,
@@ -120,13 +125,26 @@ export function DataTable<Row>({
   // so a table that stacks states every role itself.
   const role = (name: string) => (stacked ? name : undefined);
   const empty = status === 'ready' && rows.length === 0;
-  const scrollable = overflows && status === 'ready' && rows.length > 0;
+  const hasRows = status === 'ready' && rows.length > 0;
+  // Too narrow for the table: with rows it scrolls sideways (a labelled region and a Tab stop); with none (loading,
+  // failed, nothing found) the header would only be cut at the edge, so it is kept for screen readers only.
+  const scrollable = overflows && hasRows;
+  const headless = overflows && !hasRows;
   const count = pagination ? rangeText(pagination) : `${formatViInteger(rows.length)} dòng`;
 
-  useEffect(() => {
+  useBrowserLayoutEffect(() => {
     const el = scroller.current;
-    if (!el) return;
-    const measure = () => setOverflows(el.scrollWidth > el.clientWidth + 1);
+    const t = table.current;
+    if (!el || !t) return;
+    // Always the table as it is with rows (its min width, the header shown), also while a message replaces them, so
+    // hiding the header cannot change the answer. The attribute comes back before the browser paints.
+    const measure = () => {
+      const hidden = t.hasAttribute('data-headless');
+      if (hidden) t.removeAttribute('data-headless');
+      const over = t.offsetWidth > el.clientWidth + 1;
+      if (hidden) t.setAttribute('data-headless', '');
+      setOverflows(over);
+    };
     measure();
     if (typeof ResizeObserver === 'undefined') return;
     const ro = new ResizeObserver(measure);
@@ -247,10 +265,13 @@ export function DataTable<Row>({
         ref={scroller}
         className={styles.Scroller}
         // Only a box that really scrolls to something needs to be a tab stop (WCAG 2.1.1). With no rows (loading,
-        // failed, nothing found) it would scroll only the column names: the message under it says what matters.
+        // failed, nothing found) it is not a scroll container at all: Chrome makes any overflowing scroller a Tab
+        // stop, even without tabindex, and the hidden header and caption overflow a stacked table of no height.
+        // The message under it says what matters.
         role={scrollable ? 'region' : undefined}
         aria-labelledby={scrollable ? captionId : undefined}
         tabIndex={scrollable ? 0 : undefined}
+        data-still={hasRows ? undefined : ''}
       >
         <table
           ref={table}
@@ -260,6 +281,7 @@ export function DataTable<Row>({
           role={role('table')}
           aria-busy={status === 'loading' || undefined}
           data-stack={stacked ? 'phone' : undefined}
+          data-headless={headless ? '' : undefined}
         >
           <caption id={captionId} className={showCaption ? styles.Caption : styles.HiddenCaption}>
             {caption}

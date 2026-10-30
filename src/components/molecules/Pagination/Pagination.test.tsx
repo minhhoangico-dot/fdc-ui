@@ -9,7 +9,16 @@ describe('Pagination', () => {
     expect(nav).toHaveTextContent('Hiển thị 1–50 trong 2.033 người');
     expect(nav).toHaveTextContent('Trang 1 / 41');
     expect(screen.queryByRole('link', { name: /Trước/ })).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Sau ›' })).toHaveAttribute('href', '?trang=2');
+    expect(screen.getByRole('link', { name: 'Sau' })).toHaveAttribute('href', '?trang=2');
+  });
+
+  it('names the controls by their words: the arrows are for the eye only', () => {
+    render(<Pagination page={12} pageSize={50} total={2033} getHref={(p) => `?trang=${p}`} />);
+    for (const name of ['Trước', 'Sau']) {
+      const link = screen.getByRole('link', { name });
+      expect(link).toHaveTextContent(name === 'Trước' ? '‹ Trước' : 'Sau ›');
+      expect(link.querySelector('[aria-hidden="true"]')).toHaveTextContent(name === 'Trước' ? '‹' : '›');
+    }
   });
 
   it('uses buttons when there are no addresses, and stops at the last page', async () => {
@@ -17,7 +26,7 @@ describe('Pagination', () => {
     render(<Pagination page={41} pageSize={50} total={2033} onPageChange={onPageChange} />);
     expect(screen.getByRole('navigation')).toHaveTextContent('Hiển thị 2.001–2.033 trong 2.033 dòng');
     expect(screen.queryByRole('button', { name: /Sau/ })).not.toBeInTheDocument();
-    await userEvent.click(screen.getByRole('button', { name: '‹ Trước' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Trước' }));
     expect(onPageChange).toHaveBeenCalledWith(40);
   });
 

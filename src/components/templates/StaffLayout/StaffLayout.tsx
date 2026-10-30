@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, type ReactNode, type RefObject } fr
 import { cx } from '../../../utils/cx';
 import { SkipLink } from '../../atoms/SkipLink';
 import { Header, type HeaderProps } from '../../organisms/Header';
+import { focusBox, focusScroll } from './focusInView';
 import styles from './StaffLayout.module.css';
 
 export type StaffLayoutProps = {
@@ -104,7 +105,10 @@ function useStickyBarSpace(root: RefObject<HTMLDivElement>, context: RefObject<H
   });
 }
 
-/** Room (px) kept between the top bars and a focused field's label when the helper below has to move it. */
+/**
+ * Room (px) the helper below keeps when it moves a focused field: its label under the top bars, and, on a screen too
+ * short for the usual 15px, at the least its ring above the action bar.
+ */
 const LABEL_GAP = 5;
 
 /**
@@ -120,21 +124,11 @@ function inStickyBar(el: HTMLElement, root: HTMLElement) {
 }
 
 /**
- * The top of a control's visible label (a field's label sits above its message line and box), else the control's
- * own top. A label that is not drawn (display: none, or visually hidden to 1px) does not count.
- */
-function labelTop(el: HTMLElement): number {
-  const labels = 'labels' in el ? Array.from((el as HTMLInputElement).labels ?? []) : [];
-  const shown = labels.map((l) => l.getBoundingClientRect()).filter((r) => r.width > 1 && r.height > 1);
-  return Math.min(el.getBoundingClientRect().top, ...shown.map((r) => r.top));
-}
-
-/**
  * Browsers scroll a focused text box only until its caret line shows, so the rest of a textarea can stay under the
- * action bar. After focus moves by keyboard, bring the whole control into the clear area between the bars when it
- * fits (scrollIntoView keeps the scroll padding), and then its label too, if a tall message line left the label
- * under a top bar. Pointer focus is left alone: scrolling between press and release would move the control away
- * from the pointer and lose the click.
+ * action bar, and they scroll a radio's small input, not the option around it that draws the ring. After focus
+ * moves by keyboard, bring the control with its ring into the clear area between the bars, and its label too (see
+ * focusScroll). Pointer focus is left alone: scrolling between press and release would move the control away from
+ * the pointer and lose the click.
  */
 function useKeyboardFocusInView(root: RefObject<HTMLDivElement>) {
   useEffect(() => {
@@ -149,20 +143,25 @@ function useKeyboardFocusInView(root: RefObject<HTMLDivElement>) {
     };
     const onFocusIn = (e: FocusEvent) => {
       const target = e.target;
+      // No scrollIntoView: no layout engine (jsdom), nothing to measure.
       if (!byKeyboard || !(target instanceof HTMLElement) || typeof target.scrollIntoView !== 'function') return;
       window.requestAnimationFrame(() => {
         if (document.activeElement !== target || inStickyBar(target, el)) return;
         const pad = getComputedStyle(document.documentElement);
-        const top = parseFloat(pad.scrollPaddingTop) || 0;
-        const bottom = window.innerHeight - (parseFloat(pad.scrollPaddingBottom) || 0);
-        const r = target.getBoundingClientRect();
-        if (r.height > bottom - top) return;
-        if (r.top < top || r.bottom > bottom) target.scrollIntoView({ block: 'nearest' });
-        // The label: 5px clear of the bars that stick at the top, as long as the control stays clear of the bottom.
         const html = document.documentElement.style;
-        const bars = (parseFloat(html.getPropertyValue('--header-space')) || 0) + (parseFloat(html.getPropertyValue('--context-bar-space')) || 0);
-        const under = bars + LABEL_GAP - labelTop(target);
-        if (under > 0 && target.getBoundingClientRect().bottom + under <= bottom) window.scrollBy(0, -under);
+        const space = (name: string) => parseFloat(html.getPropertyValue(name));
+        const padBottom = parseFloat(pad.scrollPaddingBottom) || 0;
+        const actionBar = space('--action-bar-space');
+        const d = focusScroll(
+          focusBox(target),
+          {
+            top: (space('--header-space') || 0) + (space('--context-bar-space') || 0) + LABEL_GAP,
+            // Not measured yet (no ResizeObserver): the scroll padding's own value stands in for the bar.
+            bottom: window.innerHeight - (Number.isNaN(actionBar) ? padBottom : actionBar + LABEL_GAP),
+          },
+          { top: parseFloat(pad.scrollPaddingTop) || 0, bottom: window.innerHeight - padBottom },
+        );
+        if (d) window.scrollBy(0, d);
       });
     };
     document.addEventListener('keydown', onKey, true);

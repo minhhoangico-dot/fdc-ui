@@ -41,9 +41,11 @@
     grid-template-areas: 'crumb crumb' 'name actions' 'facts facts' 'record record';
   }
 }
+/* The breadcrumb's row is its own: the link's 44px box starts 5px under the bar's top edge and ends 5px above the
+   name, so its focus ring (3px, 1px off the box) shows whole, clear of the header above and the name below. */
 .Breadcrumb {
   grid-area: crumb;
-  margin-block-end: calc(var(--space-5) * -1);
+  margin-block-end: var(--space-5);
 }
 /* The name, then the state right after it; the state wraps under the name when the row is too narrow. */
 .NameLine {
@@ -112,9 +114,6 @@
    ("RD26-0006", as in the Header's thin bar; screen readers still hear "Mã lượt khám"). At 390px that is two lines
    (sex, date of birth, CCCD / code, company), so the first field of a form starts higher. */
 @media (max-width: 39.99rem) {
-  .Breadcrumb {
-    margin-block-start: calc(var(--space-5) * -1);
-  }
   .NameLine {
     gap: var(--space-5) var(--space-10);
   }

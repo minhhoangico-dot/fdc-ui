@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { NumberField } from './NumberField';
@@ -151,6 +152,41 @@ describe('NumberField one message line', () => {
     const input = screen.getByRole('textbox');
     expect(input).not.toHaveAttribute('aria-invalid');
     expect(reserved(input)).toContain('Điền mạch');
+  });
+
+  it('shows its own message once the page drops its "Điền …" for a filled field', async () => {
+    // The page's contract: an "Điền …" only while the field is empty, even while its summary stays until the next press.
+    function Page() {
+      const [text, setText] = useState('');
+      return (
+        <NumberField
+          label="Mạch"
+          unit="lần/phút"
+          example="78"
+          min={30}
+          max={250}
+          normalRange={[60, 100]}
+          value={text}
+          onValueChange={(_, t) => setText(t)}
+          error={text.trim() ? undefined : 'Điền mạch'}
+        />
+      );
+    }
+    render(<Page />);
+    const input = screen.getByRole('textbox');
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+    await userEvent.type(input, '112');
+    // The amber tag, not an error: no red edge, not invalid; the line still keeps the page error's room.
+    expect(input).not.toHaveAttribute('aria-invalid');
+    expect(input.closest('[data-component="TextField"]')).not.toHaveAttribute('data-invalid');
+    expect(input).toHaveAccessibleDescription(/Cao/);
+    expect(input).not.toHaveAccessibleDescription(/Điền mạch/);
+    expect(reserved(input)).toContain('Điền mạch');
+    await userEvent.clear(input);
+    await userEvent.type(input, '300');
+    await userEvent.tab();
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+    expect(input).toHaveAccessibleDescription(exactly('lần/phút Lỗi: Từ 30 đến 250'));
   });
 
   it('shows no hint for a value that was already filled in', () => {

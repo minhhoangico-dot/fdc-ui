@@ -28,21 +28,32 @@
   text-wrap: pretty;
 }
 
-/* The batch in one line: plain words, bold only on the numbers. Each figure is a chunk that never breaks; the "·"
-   is drawn after a chunk (hidden from screen readers), so a wrapped line never starts or ends with a lone dot. */
+/* The batch in one line: plain words, bold only on the numbers. Each figure is a chunk that never breaks. The "·"
+   (hidden from screen readers) sits in the gap before every chunk but the first; a chunk that starts a line has its
+   dot outside the line's left edge, where it is clipped (as SaveStatus does), so no line starts or ends with a dot.
+   The line shares its row with the actions while its widest figure fits beside them, and wraps there rather than
+   pushing the buttons to a row of their own. */
 .Stats {
+  flex: 1 1 0;
   display: flex;
   flex-wrap: wrap;
-  column-gap: var(--space-10);
+  column-gap: var(--space-20);
   margin: 0;
   color: var(--text-muted);
+  overflow: hidden;
+  overflow: clip visible;
 }
 .Stats > span {
+  position: relative;
   white-space: nowrap;
 }
-.Stats > span:not(:last-child)::after {
+.Stats > span + span::before {
+  content: '·';
   content: '·' / '';
-  margin-inline-start: var(--space-10);
+  position: absolute;
+  inset-inline-end: 100%;
+  inline-size: var(--space-20);
+  text-align: center;
 }
 .Stats strong {
   font-weight: 600;

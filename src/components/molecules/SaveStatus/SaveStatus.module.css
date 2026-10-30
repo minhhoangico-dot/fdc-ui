@@ -20,16 +20,25 @@
   min-inline-size: 0;
 }
 
-/* The polite region: the state's words, then the last save time as a chunk of its own that never breaks.
+/* The line: the state's words, then the last save time as a chunk of its own that never breaks.
    Between the two, a dot drawn in the gap in front of the time. When the time wraps to the next line its dot
-   falls outside the region's left edge and is clipped, so no line starts or ends with a dot. */
-.Live {
+   falls outside the line's left edge and is clipped, so no line starts or ends with a dot. */
+.Line {
   display: inline-flex;
   flex-wrap: wrap;
   column-gap: var(--space-15);
   max-inline-size: 100%;
   overflow: hidden;
   overflow: clip visible;
+}
+/* The polite region when the line shows a count: heard, not seen (the words show beside it, for the eye only). */
+.Heard {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 .Aside {
   position: relative;

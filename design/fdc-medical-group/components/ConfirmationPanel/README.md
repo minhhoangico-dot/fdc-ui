@@ -2,7 +2,7 @@
 
 The end of a flow, or where it stands: a panel with the result ("Đã đặt lịch khám", "Sở đã tiếp nhận") and the reference code, an optional step line, then what happens next.
 
-It moves focus to its heading so screen readers announce the result. **A focused title keeps one name; put a countdown in the text under it** ("Chờ gửi lên Sở", then "Còn 27 giây để hủy." in the text): a heading whose name changed every second would be announced again and again while it has focus. Always say what happens next ("Chúng tôi sẽ gọi … trong vòng 30 phút"), what to bring, and how to change or cancel with the hotline. The code is large and selectable so people can read it over the phone, and it **never breaks across lines**: in a narrow column it gets a little smaller instead (below 22rem on pale panels, below 17rem on the strong one). Inside a page that already has an h1, set `headingLevel={2}`.
+It moves focus to its heading when it appears, so screen readers announce the result. **`focusOnMount` is read once, when the panel mounts**: a later change never moves focus, so a panel already on screen does not pull focus off a button in it ("Kiểm tra lại trạng thái" stays focused and busy while the page asks). Show each new result as a new panel (a `key` per result) with `focusOnMount` set when it appears. **A focused title keeps one name; put a countdown in the text under it** ("Chờ gửi lên Sở", then "Còn 27 giây để hủy." in the text): a heading whose name changed every second would be announced again and again while it has focus. Always say what happens next ("Chúng tôi sẽ gọi … trong vòng 30 phút"), what to bring, and how to change or cancel with the hotline. The code is large and selectable so people can read it over the phone, and it **never breaks across lines**: in a narrow column it gets a little smaller instead (below 22rem on pale panels, below 17rem on the strong one). Inside a page that already has an h1, set `headingLevel={2}`.
 
 **`tone`** says what the result is:
 - **`success`** (default): done and confirmed. Green is only ever for success.
@@ -22,7 +22,9 @@ Pass **`steps`** for a short step line, each with an explicit **state set from a
 - **todo**: `text-muted` on pale panels; plain white on the strong panel, where grey would not be readable.
 - **failed**: red words after a "!" in a red circle (a white pill on the strong panel). No underline: a wavy red line reads as a spelling mark.
 
-Each step also starts with its **state in words for screen readers**, hidden on screen: "Xong:", "Hiện tại:", "Bước sau:", "Lỗi:" (props `donePrefix`, `currentPrefix`, `todoPrefix`, `failedPrefix`). The arrows are glued to the end of each step, so a wrapped line never starts with "→".
+Each step also starts with its **state in words for screen readers**, hidden on screen: "Xong:", "Hiện tại:", "Bước sau:", "Lỗi:" (props `donePrefix`, `currentPrefix`, `todoPrefix`, `failedPrefix`).
+
+**One row while it fits, otherwise a list.** The steps sit on one row with "→" between them while the whole row fits the panel. When it does not (a phone, a narrow column), they become a list, one step per line, **without arrows**: the signs and the state words give the order, the signs line up in one column and a step still to come starts where the words start. So no line ever begins or ends with "→". The panel measures the row once (and again when fonts finish loading) and CSS compares it with the panel's width (container query units), so the switch follows the width with no script; until it is measured, the list.
 
 | Moment (staff) | Panel | Steps |
 |---|---|---|

@@ -1,5 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { recordGroups, records } from '../../../fixtures/ksk';
+import { formatViInteger } from '../../../utils/vi';
 import { RadioGroup } from './RadioGroup';
+
+// The record list's groups and counts, from the same fixture as the page (Cần điền hoặc sửa · 1.019 … Tất cả · 2.033).
+const listGroups = recordGroups.map((g) => ({
+  value: g.value,
+  label: `${g.label} · ${formatViInteger(records.filter((r) => !g.statuses.length || g.statuses.includes(r.status)).length)}`,
+}));
 
 const meta = {
   title: 'Molecules/RadioGroup',
@@ -87,14 +95,7 @@ export const FilterPills: Story = {
     layout: 'wrap',
     density: 'compact',
     defaultValue: 'can-lam',
-    options: [
-      { value: 'can-lam', label: 'Cần điền hoặc sửa · 1.017' },
-      { value: 'xem-lai', label: 'Sẵn sàng xem lại · 412' },
-      { value: 'dang-cho', label: 'Đang chờ · 96' },
-      { value: 'dang-gui', label: 'Đang gửi · 3' },
-      { value: 'da-gui', label: 'Đã gửi · 505' },
-      { value: 'tat-ca', label: 'Tất cả · 2.033' },
-    ],
+    options: listGroups,
   },
   parameters: { density: 'compact' },
 };

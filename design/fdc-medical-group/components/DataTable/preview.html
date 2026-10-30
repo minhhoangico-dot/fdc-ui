@@ -1,4 +1,4 @@
-<!-- @dsCard group="Organisms" height=540 subtitle="records for staff: name first, state tag, next step, paging; steady columns; stacks on phones" -->
+<!-- @dsCard group="Organisms" height=570 subtitle="records for staff: name first, state tag, next step, paging; steady columns; stacks on phones" -->
 <div id="root" style="padding:16px" data-density="compact"></div>
 <script>
 var h = React.createElement, F = window.FDC;
@@ -18,7 +18,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(h(F.DataTable, {
   // Every column but the last has a width, so no column moves when a filter changes the rows.
   columns: [
     {key: 'stt', header: 'STT', align: 'end', width: '4.5rem', nowrap: true, cell: function (r) { return r.stt; }},
-    {key: 'name', header: 'Họ tên', rowHeader: true, width: 'max(25vw, 12rem)', cell: function (r) {
+    {key: 'name', header: 'Họ tên', rowHeader: true, width: 'clamp(12rem, calc(46.875vw - 10.5rem), max(25vw, 20rem))', cell: function (r) {
       return h(React.Fragment, null, h('a', {href: '#', style: {color: 'var(--text-link)', fontWeight: 600}}, r.name),
         h('div', {style: facts}, r.facts.map(function (f) { return h('span', {key: f, style: nowrap}, f, ' '); })));
     }},

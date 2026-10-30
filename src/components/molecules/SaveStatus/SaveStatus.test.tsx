@@ -3,15 +3,20 @@ import userEvent from '@testing-library/user-event';
 import { SaveStatus } from './SaveStatus';
 
 const root = (c: HTMLElement) => c.querySelector('[data-component="SaveStatus"]') as HTMLElement;
+/** What a screen reader reads from the line, in order: the text outside aria-hidden parts. */
+const heard = (el: Element): string =>
+  Array.from(el.childNodes)
+    .map((n) => (n.nodeType === Node.TEXT_NODE ? n.textContent : n instanceof Element && n.getAttribute('aria-hidden') !== 'true' ? heard(n) : ''))
+    .join('');
 
 describe('SaveStatus', () => {
   it('counts unsaved fields with the last save time', () => {
-    render(<SaveStatus status={{ state: 'unsaved', count: 8, lastSavedAt: '09:12' }} />);
-    const status = screen.getByRole('status');
+    const { container } = render(<SaveStatus status={{ state: 'unsaved', count: 8, lastSavedAt: '09:12' }} />);
     // The dot between the two is drawn in the gap (CSS), so a wrapped line never starts or ends with it.
-    expect(status).toHaveTextContent(/^8 ô chưa lưuLưu lần cuối 09:12$/);
+    expect(heard(root(container))).toBe('8 ô chưa lưuLưu lần cuối 09:12');
     expect(screen.getByText('8 ô chưa lưu')).toBeInTheDocument();
     expect(screen.getByText('Lưu lần cuối 09:12')).toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveTextContent(/^ô chưa lưu$/);
   });
 
   it('shows saving and saved', () => {
@@ -82,16 +87,48 @@ describe('SaveStatus v2.4 conflict', () => {
   it('asks to settle the conflicting values, with the last save time, politely', () => {
     const { container } = render(<SaveStatus status={{ state: 'conflict', count: 2, lastSavedAt: '09:12' }} />);
     expect(root(container)).toHaveAttribute('data-state', 'conflict');
-    const status = screen.getByRole('status');
-    expect(status).toHaveTextContent('Cần xử lý 2 giá trị trước khi lưu');
-    expect(status).toHaveTextContent('Lưu lần cuối 09:12');
+    expect(screen.getByText('Cần xử lý 2 giá trị trước khi lưu')).toBeInTheDocument();
+    expect(heard(root(container))).toBe('Cần xử lý 2 giá trị trước khi lưuLưu lần cuối 09:12');
+    expect(screen.getByRole('status')).toHaveTextContent(/^Cần xử lý$/);
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
   it('never says it is saved: no "Đã lưu", no check mark', () => {
     const { container } = render(<SaveStatus status={{ state: 'conflict', count: 1 }} />);
-    const status = screen.getByRole('status');
-    expect(status).toHaveTextContent(/^Cần xử lý 1 giá trị trước khi lưu$/);
+    expect(heard(root(container))).toBe('Cần xử lý 1 giá trị trước khi lưu');
     expect(root(container)).not.toHaveTextContent(/Đã lưu|✓/);
+  });
+});
+
+describe('SaveStatus v2.4 reads moments, not counts', () => {
+  it('a new count changes the line, not what the polite region says; a new state does', () => {
+    const { container, rerender } = render(<SaveStatus status={{ state: 'saved', at: '09:12' }} />);
+    const status = screen.getByRole('status');
+    expect(status).toHaveTextContent(/^Đã lưu 09:12$/);
+    rerender(<SaveStatus status={{ state: 'unsaved', count: 1, lastSavedAt: '09:12' }} />);
+    expect(status).toHaveTextContent(/^ô chưa lưu$/);
+    const said = status.innerHTML;
+    for (const count of [2, 3, 12]) {
+      rerender(<SaveStatus status={{ state: 'unsaved', count, lastSavedAt: '09:12' }} />);
+      expect(screen.getByRole('status')).toBe(status);
+      expect(status.innerHTML).toBe(said);
+      expect(screen.getByText(`${count} ô chưa lưu`)).toBeInTheDocument();
+      expect(heard(root(container))).toBe(`${count} ô chưa lưuLưu lần cuối 09:12`);
+    }
+    rerender(<SaveStatus status={{ state: 'saving' }} />);
+    expect(status).toHaveTextContent(/^Đang lưu…$/);
+    rerender(<SaveStatus status={{ state: 'conflict', count: 2 }} />);
+    expect(status).toHaveTextContent(/^Cần xử lý$/);
+    rerender(<SaveStatus status={{ state: 'conflict', count: 1 }} />);
+    expect(status).toHaveTextContent(/^Cần xử lý$/);
+    expect(screen.getByText('Cần xử lý 1 giá trị trước khi lưu')).toBeInTheDocument();
+  });
+
+  it('the words with a count show once for the eye and are heard once, in their order', () => {
+    const { container } = render(<SaveStatus status={{ state: 'unsaved', count: 3 }} />);
+    const shown = screen.getByText('3 ô chưa lưu');
+    expect(shown).toHaveAttribute('aria-hidden', 'true');
+    expect(shown.closest('[role="status"]')).toBeNull();
+    expect(heard(root(container))).toBe('3 ô chưa lưu');
   });
 });

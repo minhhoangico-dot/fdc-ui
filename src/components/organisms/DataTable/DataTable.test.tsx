@@ -114,6 +114,54 @@ describe('DataTable', () => {
     expect(within(row).getByRole('cell', { name: rows[0].recordCode })).toBeInTheDocument();
   });
 
+  it('with no rows is never a scroll container or a Tab stop, so Chrome cannot make it one either', () => {
+    const scrollerOf = (container: HTMLElement) => container.querySelector<HTMLElement>('[data-component="DataTable"] > div')!;
+    const { container, rerender } = render(<DataTable {...base} rows={[]} status="loading" stackBelow="phone" />);
+    for (const status of ['loading', 'error', 'ready'] as const) {
+      rerender(<DataTable {...base} rows={[]} status={status} stackBelow="phone" />);
+      expect(scrollerOf(container)).toHaveAttribute('data-still');
+      expect(scrollerOf(container)).not.toHaveAttribute('tabindex');
+      expect(scrollerOf(container)).not.toHaveAttribute('role');
+    }
+    rerender(<DataTable {...base} rows={rows} stackBelow="phone" />);
+    expect(scrollerOf(container)).not.toHaveAttribute('data-still');
+  });
+
+  describe('in a box narrower than the table', () => {
+    // jsdom has no layout: the table is 768px wide (48rem), its box 300px (a phone).
+    let restore: () => void;
+    beforeEach(() => {
+      const offset = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetWidth')!;
+      const client = Object.getOwnPropertyDescriptor(Element.prototype, 'clientWidth')!;
+      Object.defineProperty(HTMLElement.prototype, 'offsetWidth', { configurable: true, get() { return this.tagName === 'TABLE' ? 768 : 0; } });
+      Object.defineProperty(Element.prototype, 'clientWidth', { configurable: true, get() { return 300; } });
+      restore = () => {
+        Object.defineProperty(HTMLElement.prototype, 'offsetWidth', offset);
+        Object.defineProperty(Element.prototype, 'clientWidth', client);
+      };
+    });
+    afterEach(() => restore());
+
+    it('scrolls sideways as a labelled region with rows, and keeps the header', () => {
+      render(<DataTable {...base} rows={rows} />);
+      const region = screen.getByRole('region', { name: 'Người cần điền hoặc sửa' });
+      expect(region).toHaveAttribute('tabindex', '0');
+      expect(screen.getByRole('table')).not.toHaveAttribute('data-headless');
+    });
+
+    it('with no rows keeps the header for screen readers only, so it is never cut at the edge', () => {
+      const { rerender } = render(<DataTable {...base} rows={[]} status="error" errorText="Không tải được danh sách: mất mạng." />);
+      const table = screen.getByRole('table');
+      expect(table).toHaveAttribute('data-headless');
+      expect(within(table).getAllByRole('columnheader')).toHaveLength(5);
+      expect(screen.queryByRole('region')).not.toBeInTheDocument();
+      // The rows come back: the header shows again and the box scrolls sideways.
+      rerender(<DataTable {...base} rows={rows} />);
+      expect(screen.getByRole('table')).not.toHaveAttribute('data-headless');
+      expect(screen.getByRole('region')).toHaveAttribute('tabindex', '0');
+    });
+  });
+
   it('keeps its roles while it stacks and shows a message', () => {
     const { container } = render(<DataTable {...base} rows={[]} status="loading" stackBelow="phone" />);
     expect(screen.getByRole('table')).toHaveAttribute('aria-busy', 'true');

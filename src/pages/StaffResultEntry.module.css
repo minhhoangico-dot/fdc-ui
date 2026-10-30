@@ -161,11 +161,16 @@
 }
 
 /* The conflict's question takes focus on Ctrl + S or Ctrl + Enter during a conflict: the ring shows where focus went.
-   :focus, not :focus-visible: browsers do not count a Ctrl combination as keyboard use, so :focus-visible would not match. */
+   The page sets data-ring for those two moves only (a click on the notice's words focuses it too, tabIndex -1, and a
+   ring there would make the notice look selected or clickable), and drops it when focus leaves. Not :focus-visible:
+   browsers do not count a Ctrl combination as keyboard use, so it would not match. */
 .Conflict {
   border-radius: var(--radius-sm);
 }
 .Conflict:focus {
+  outline: none;
+}
+.Conflict[data-ring]:focus {
   outline: var(--focus-ring-width) solid var(--focus-ring);
   outline-offset: var(--focus-ring-offset);
 }
@@ -180,6 +185,25 @@
 }
 .PendingNotice {
   flex: 1 1 20rem;
+}
+/* "Còn 20 giây để hủy.": bold as on the review page's panel, with figures of one width so the line does not twitch
+   as the seconds run down. */
+.Seconds {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The record's state in the context bar: the tag names the state ("Cần điền"), the count follows as muted text, as
+   under the tag in the list. Whole chunks set apart by space; the count goes under the tag when the row is too narrow. */
+.State {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-10);
+}
+.StateCount {
+  color: var(--text-muted);
+  white-space: nowrap;
 }
 
 /* The action bar. Phones: the save line, then one row of buttons side by side, each label on one line ("Xem lại",

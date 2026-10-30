@@ -118,7 +118,8 @@ export function Header({
         const subOpen = openSub === i;
         const isCurrent = item.current || item.children?.some((c) => c.current);
         return (
-          <li key={item.href} className={styles.Item} data-current={isCurrent || undefined}>
+          // Keyed by words and address: two items can share an address (a placeholder "#" while a page is built).
+          <li key={`${item.label} ${item.href}`} className={styles.Item} data-current={isCurrent || undefined}>
             {hasSub ? (
               <>
                 <button
@@ -134,7 +135,7 @@ export function Header({
                 </button>
                 <ul id={`${id}-sub-${i}`} className={styles.Sub} hidden={!subOpen}>
                   {item.children!.map((c) => (
-                    <li key={c.href}>
+                    <li key={`${c.label} ${c.href}`}>
                       <a className={styles.SubLink} href={c.href} aria-current={c.current ? 'page' : undefined}>
                         {c.label}
                       </a>

@@ -41,9 +41,10 @@ export const recordColumns: Array<DataTableColumn<KskRecord>> = [
     header: 'Họ tên',
     rowHeader: true,
     // A length, so the column keeps its width whatever the rows hold (a percentage mixed with rem is treated as
-    // auto and moves with the rows): a quarter of the screen, and never under 12rem (the name and two lines of
-    // facts at 768px, or in a table that scrolls sideways on a phone).
-    width: 'max(25vw, 12rem)',
+    // auto and moves with the rows). 12rem up to 768px (the name and two lines of facts, or a table that scrolls
+    // sideways on a phone), so "Việc tiếp theo" keeps its room on a tablet; then it grows to 19.5rem at 1024px,
+    // where the facts ("Nam  Sinh 12/04/1985  CCCD …0001", 280px) fit one line; from 1280px a quarter of the screen.
+    width: 'clamp(12rem, calc(46.875vw - 10.5rem), max(25vw, 20rem))',
     cell: (r) => (
       <>
         <a href={`#ho-so-${r.recordCode}`} style={{ color: 'var(--text-link)', fontWeight: 600 }}>

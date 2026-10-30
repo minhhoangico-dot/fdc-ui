@@ -39,7 +39,9 @@ export type NumberFieldProps = {
   /**
    * An error from the page, e.g. a required field still empty after pressing "Xem lại". Wins over the field's own
    * checks and shows in the same line, as given. Keep it short ("Điền mạch", "Điền tâm thu"): the line is one line
-   * in a 9rem column; the error summary can keep its own short name.
+   * in a 9rem column; the error summary can keep its own short name. Pass an "Điền …" only while the field is empty:
+   * once something is typed, the line shows the field's own message ("Cao" tag, range error) even if the page keeps
+   * its summary until the next press. The line keeps the room of the last page error, so dropping it moves nothing.
    */
   error?: string;
   /** Fixed help text instead of the automatic "Chưa điền" / "ví dụ 78"; an error or a "Cao" tag takes its place. */

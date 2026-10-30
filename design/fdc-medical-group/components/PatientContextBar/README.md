@@ -2,7 +2,7 @@
 
 Who is being worked on, always in view on a staff form: the name as the page heading (`headingLevel`, default 1) with the record's state right after it (a StatusTag), then the facts that tell people apart, and the way to the previous or next person. A Breadcrumb sits above the name.
 
-**Rows**: the breadcrumb; the name and its state, with the previous/next buttons at the end of the same row from 40rem up; the facts. So from 1024px, where the bar sticks, it is about 120px tall at every width and never grows a row of buttons under the facts (version 2.4; it was 185px at 1024px). When the row is too narrow the state wraps under the name.
+**Rows**: the breadcrumb; the name and its state, with the previous/next buttons at the end of the same row from 40rem up; the facts. So from 1024px, where the bar sticks, it is about 130px tall at every width and never grows a row of buttons under the facts (version 2.4; it was 185px at 1024px). When the row is too narrow the state wraps under the name. The breadcrumb's row is its own: its link's 44px box starts 5px under the bar's top edge and ends 5px above the name, so the link's focus ring (3px, 1px off the box) shows whole, clear of the header above it and of the name below it, at every width (version 2.4; this costs 10px, 15px on a phone).
 
 **Facts** (version 2.4) are whole chunks set apart by space, never by "·" (a dot left at a line end reads like a stray mark): sex unlabelled ("Nữ"), "Sinh 07/07/1990 (36 tuổi)", "CCCD …0006" (last four digits only), "Mã lượt khám **RD26-0006**" (`recordCodeLabel`, the code bold as the value), then the company or ward unlabelled. Each chunk stays on one line; only the company wraps inside itself.
 

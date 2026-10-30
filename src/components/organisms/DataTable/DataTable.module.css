@@ -18,11 +18,32 @@
   outline: var(--focus-ring-width) solid var(--focus-ring);
   outline-offset: 1px;
 }
+/* No rows (loading, failed, nothing found): nothing to scroll to, so not a scroll container. Chrome makes an
+   overflowing scroller a Tab stop even without tabindex; the hidden caption and header would overflow a stacked
+   table of no height by 1px. */
+.Scroller:where([data-still]) {
+  overflow: hidden;
+  overflow: clip;
+}
 .Table {
   inline-size: 100%;
   /* minWidth comes in as --table-min, so phones can drop it when the rows stack. */
   min-inline-size: var(--table-min, 48rem);
   border-collapse: collapse;
+}
+/* No rows, and the box is narrower than the table (a phone without stacking): the header would be cut at the edge,
+   so it stays for screen readers only and the message under it is all that shows. Where the header fits it stays. */
+.Table:where([data-headless]) {
+  position: relative;
+  min-inline-size: 0;
+}
+.Table:where([data-headless]) > thead {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 .Caption {
   padding: var(--space-15) var(--space-15) var(--space-10);
@@ -221,9 +242,12 @@ th.Cell > a:first-child:focus-visible {
   }
   .Table:where([data-stack='phone']) th.Cell {
     order: -1;
-    /* The stretched name link covers this cell, so the cell is the tap target: never under 44px. */
-    min-block-size: var(--target-min);
     margin-block-end: var(--space-5);
+  }
+  /* A stretched name link covers this cell, so the cell is the tap target: never under 44px. A title without a
+     link (a lab test, a question) keeps the height of its text. */
+  .Table:where([data-stack='phone']) th.Cell:has(> a:first-child) {
+    min-block-size: var(--target-min);
   }
   /* Label and value share a line while both fit; a value that cannot shrink moves under its label. A line without a
      label keeps the empty label column, so its value (a status tag) lines up with the other values. */
@@ -242,5 +266,15 @@ th.Cell > a:first-child:focus-visible {
   .Table:where([data-stack='phone']) .StackValue {
     flex: 1 1 7.5rem;
     overflow-wrap: anywhere;
+  }
+}
+/* The smallest phones (320px): the longest state tag ("Sẵn sàng xem lại", 139px) still fits in the value column.
+   The label column is 7rem (the longest label, "Việc tiếp theo", is 110px) and the block's sides 10px. */
+@media (max-width: 21.99rem) {
+  .Table:where([data-stack='phone']) .Row {
+    padding-inline: var(--space-10);
+  }
+  .Table:where([data-stack='phone']) .StackLabel {
+    flex-basis: 7rem;
   }
 }

@@ -165,8 +165,14 @@
 /* Step line, e.g. Đã xem lại → Đã gửi lên Sở → Sở đã tiếp nhận → Chờ Bộ xác nhận. Each step has a sign as well as
    words: done "✓", the step being waited for a small clock in the info color (never a dashed edge, which means an
    unavailable button), failed "!" in a red circle. Each step also starts with its state in words for screen readers.
-   Steps still to come are muted where the panel is pale. */
+   Steps still to come are muted where the panel is pale.
+   One row with arrows while it fits; when it does not, a list, one step per line, without arrows (the signs and the
+   state words give the order), so no line ever starts or ends with "→". The component measures the row once
+   (--steps-row, in rem) and the steps compare it with the room they have (100cqi of this list): the switch follows
+   the panel's width with no script. Until it is measured, the list. */
 .Steps {
+  --steps-row: 999rem;
+  container-type: inline-size;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -181,14 +187,31 @@
 .ConfirmationPanel:where([data-pale]) .Steps {
   justify-content: flex-start;
 }
+/* While the component measures: one row, unwrapped, every step at its own width. */
+.Steps[data-measuring] {
+  --steps-row: 0rem;
+  flex-wrap: nowrap;
+}
+.Steps[data-measuring] > .Step {
+  flex-shrink: 0;
+}
 .Step {
   display: inline-flex;
   align-items: center;
   gap: var(--space-10);
+  /* (--steps-row - 100cqi) is negative while the row fits: each step at its own width. When the row does not fit,
+     each step takes the whole width, so the steps stack one per line. */
+  min-inline-size: clamp(0px, (var(--steps-row) - 100cqi) * 999, 100%);
+}
+/* The strong panel is centred; so is each step when they stack. */
+.ConfirmationPanel:where(:not([data-pale])) .Step {
+  justify-content: center;
 }
 .Step:not(:last-child)::after {
-  /* The arrow ends a step, so a wrapped line never starts with a lone "→". */
   content: '→' / '';
+  /* No width, so not shown, when the steps stack. */
+  max-inline-size: clamp(0px, (100cqi - var(--steps-row)) * 999, 1.5em);
+  overflow: hidden;
 }
 /* Top-aligned, so if a long label wraps, its sign stays on the first line. */
 .StepLabel {
@@ -196,13 +219,20 @@
   align-items: flex-start;
   gap: 0.3em;
 }
-/* One line tall (the step line's line-height is 1.5), with the sign centred in it. */
+/* One line tall (the step line's line-height is 1.5), with the sign centred in it. When the steps stack, the signs
+   take one width (the red circle's), so the words line up. */
 .StepMark {
   flex: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   block-size: 1.5em;
+  min-inline-size: clamp(0px, (var(--steps-row) - 100cqi) * 999, 1.125em);
+}
+/* Stacked on a pale panel, a step still to come has no sign: its words start where the others' words start
+   (the sign's 1.125em and the label's 0.3em gap). */
+.ConfirmationPanel:where([data-pale]) .Step:where([data-state='todo']) .StepLabel {
+  padding-inline-start: clamp(0px, (var(--steps-row) - 100cqi) * 999, 1.425em);
 }
 .Clock {
   inline-size: 1em;

@@ -71,6 +71,10 @@ function RecordList({ records = allRecords, initialGroup = 'can-lam', initialQue
 
   // "làm được ngay": fill or fix, review, and check an unknown outcome (it waits for staff, not for the department).
   const now = records.filter((r) => actionableStatuses.includes(r.status)).length;
+  // An unknown outcome is work for staff but sits in Đang gửi, so the figure says where it is: then the groups add up
+  // (1.019 Cần điền hoặc sửa + 253 Sẵn sàng xem lại + 1 in Đang gửi = 1.273).
+  const unknown = records.filter((r) => r.status === 'Chưa rõ kết quả').length;
+  const unknownGroup = recordGroups.find((g) => g.statuses.includes('Chưa rõ kết quả'))?.label;
   // The first record to fill or fix that nobody else has open.
   const nextUp = records.find((r) => inGroup('can-lam')(r) && !r.openBy);
 
@@ -134,14 +138,15 @@ function RecordList({ records = allRecords, initialGroup = 'can-lam', initialQue
 
       <div className={styles.Toolbar}>
         {ready ? (
-          // Each figure is one unbreakable chunk; the dot is glued to the chunk before it, so no line starts or ends
-          // with a lone "·".
+          // Each figure is one unbreakable chunk; the "·" sits in the gap before a chunk and is clipped when that
+          // chunk starts a line, so no line starts or ends with a dot.
           <p className={`${styles.Stats} ${styles.WideOnly}`}>
             <span>
               Cả đợt <strong>{formatViInteger(records.length)}</strong> người
             </span>{' '}
             <span>
               <strong>{formatViInteger(now)}</strong> làm được ngay
+              {unknown > 0 && unknownGroup ? ` (${formatViInteger(unknown)} chưa rõ kết quả ở nhóm ${unknownGroup})` : null}
             </span>{' '}
             <span>
               <strong>{formatViInteger(counts['dang-cho'])}</strong> đang chờ
@@ -201,18 +206,23 @@ const liveRegion = (canvasElement: HTMLElement) => within(canvasElement.querySel
 
 /**
  * The working list: people to fill in or fix (a refusal from the department is work to redo, so it is here too),
- * 50 a page, with a long name, a missing ID and a record open elsewhere.
+ * 50 a page, with a long name, a missing ID and a record open elsewhere. The batch line adds up with the groups:
+ * 1.019 to fill or fix + 253 to review + the one unknown outcome, which sits in Đang gửi and says so.
  */
-export const CanLam: Story = {};
+export const CanLam: Story = {
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelector('[class*="Stats"]')).toHaveTextContent('1.273 làm được ngay (1 chưa rõ kết quả ở nhóm Đang gửi)');
+  },
+};
 
-/** All 2.033 people: 41 pages; "Sau ›" moves on and the table's live region says the new range once. */
+/** All 2.033 people: 41 pages; "Sau ›" (named "Sau": the arrow is not read) moves on and the table's live region says the new range once. */
 export const TatCa: Story = {
   args: { initialGroup: 'tat-ca' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const nav = canvas.getByRole('navigation', { name: 'Trang của danh sách' });
     await expect(nav).toHaveTextContent('Hiển thị 1–50 trong 2.033 người');
-    await userEvent.click(within(nav).getByRole('button', { name: 'Sau ›' }));
+    await userEvent.click(within(nav).getByRole('button', { name: 'Sau' }));
     await expect(nav).toHaveTextContent('Hiển thị 51–100 trong 2.033 người');
     await waitFor(() => expect(liveRegion(canvasElement)).toHaveTextContent('Tất cả: hiển thị 51–100 trong 2.033 người.'));
     // Only the table's region speaks: the range line under it is not a second live region.
@@ -241,11 +251,17 @@ export const TimTrongTatCa: Story = {
   },
 };
 
-/** No match anywhere in the batch: the table says why and how to get back, and the live region says it too. */
+/**
+ * No match anywhere in the batch: the table says why and how to get back, and the live region says it too. With no
+ * rows the table's box is not a scroll container, so Tab goes from the actions straight past it.
+ */
 export const KhongKhop: Story = {
   args: { initialQuery: 'Hằng Nga' },
   play: async ({ canvasElement }) => {
     await waitFor(() => expect(liveRegion(canvasElement)).toHaveTextContent('Không có ai khớp “Hằng Nga” trong cả đợt.'));
+    const scroller = canvasElement.querySelector<HTMLElement>('[data-component="DataTable"] > div')!;
+    await expect(scroller).not.toHaveAttribute('tabindex');
+    await expect(['clip', 'hidden']).toContain(getComputedStyle(scroller).overflowX);
   },
 };
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, userEvent, within } from '@storybook/test';
+import { recordGroups, records } from '../../../fixtures/ksk';
 import { formatViInteger } from '../../../utils/vi';
 import { Select } from './Select';
 
@@ -12,15 +13,12 @@ const healthClasses = [
   { value: 'V', label: 'Loại V · Rất yếu' },
 ];
 
-// The record list's six groups with their counts (2.033 people in the batch).
-const groups = [
-  { value: 'can-lam', label: 'Cần điền hoặc sửa', count: 1017 },
-  { value: 'xem-lai', label: 'Sẵn sàng xem lại', count: 412 },
-  { value: 'dang-cho', label: 'Đang chờ', count: 96 },
-  { value: 'dang-gui', label: 'Đang gửi', count: 3 },
-  { value: 'da-gui', label: 'Đã gửi', count: 505 },
-  { value: 'tat-ca', label: 'Tất cả', count: 2033 },
-];
+// The record list's six groups with their counts, from the same fixture as the page (2.033 people in the batch).
+const groups = recordGroups.map((g) => ({
+  value: g.value,
+  label: g.label,
+  count: records.filter((r) => !g.statuses.length || g.statuses.includes(r.status)).length,
+}));
 
 const meta = {
   title: 'Atoms/Select',
@@ -68,7 +66,7 @@ export const Disabled: Story = { args: { disabled: true, defaultValue: 'II', hin
 
 /**
  * The record list's filter on a phone: six tiles would fill the screen, so the same choice
- * collapses to one Select with the count in each option ("Cần điền hoặc sửa · 1.017").
+ * collapses to one Select with the count in each option ("Cần điền hoặc sửa · 1.019").
  */
 export const ListFilter: Story = {
   render: function ListFilter() {

@@ -1,4 +1,4 @@
-import { createElement, useEffect, useRef, type ReactNode } from 'react';
+import { createElement, useEffect, useLayoutEffect, useRef, type ReactNode, type RefObject } from 'react';
 import { cx } from '../../../utils/cx';
 import { VisuallyHidden } from '../../atoms/VisuallyHidden';
 import styles from './ConfirmationPanel.module.css';
@@ -23,7 +23,11 @@ export type ConfirmationPanelProps = {
   referenceLabel?: string;
   /** What happens next, how to change or cancel, and the buttons for the next step. */
   children?: ReactNode;
-  /** Move focus to the title when shown (after a submit). Default true. */
+  /**
+   * Move focus to the title when the panel is shown (after a submit). Default true. Read once, when the panel
+   * mounts: a later change does not move focus, so a panel already on screen never takes focus from a button in
+   * it. For a new result, show a new panel (a `key` per result) with `focusOnMount` set when it appears.
+   */
   focusOnMount?: boolean;
   /**
    * What the result is. Every tone except a strong success is a pale panel: a tint, a sign in a circle before the
@@ -50,6 +54,8 @@ export type ConfirmationPanelProps = {
    * later steps are plain event names ("Bộ xác nhận"):
    * [{ label: 'Sở đã tiếp nhận', state: 'done' }, { label: 'Chờ Bộ xác nhận', state: 'current' }].
    * Plain strings with `currentStep` still work (earlier steps are then shown as done).
+   * The steps sit on one row with an arrow between them while the row fits the panel; when it does not (a phone, a
+   * narrow column), they become a list, one step per line, without arrows: the signs and the state words give the order.
    */
   steps?: Array<string | ConfirmationStep>;
   /** For plain-string steps: index of the current step (0-based). */
@@ -79,6 +85,36 @@ function WaitMark() {
   );
 }
 
+const browserLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+
+/**
+ * The width the step line needs on one row, in rem (the list's font size), written to `--steps-row`. CSS compares it with the
+ * panel's width (container query units), so the line stays one row while it fits and becomes a list when it does not.
+ * Measured before paint, and again when fonts finish loading; until then the list is the safe layout.
+ */
+function useStepRow(ref: RefObject<HTMLOListElement>, key: string) {
+  browserLayoutEffect(() => {
+    const list = ref.current;
+    if (!list) return undefined;
+    const measure = () => {
+      list.style.removeProperty('--steps-row');
+      // data-measuring lays the steps out on one row, unwrapped, at their own widths.
+      list.setAttribute('data-measuring', '');
+      const items = Array.from(list.children);
+      const gap = parseFloat(getComputedStyle(list).columnGap) || 0;
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      const width = items.reduce((sum, item) => sum + item.getBoundingClientRect().width, 0) + gap * Math.max(items.length - 1, 0);
+      list.removeAttribute('data-measuring');
+      // Not laid out (hidden, or no layout as in tests): keep the list.
+      if (width > 0) list.style.setProperty('--steps-row', `${((width + 1) / rem).toFixed(3)}rem`);
+    };
+    measure();
+    const fonts = typeof document !== 'undefined' ? document.fonts : undefined;
+    fonts?.addEventListener?.('loadingdone', measure);
+    return () => fonts?.removeEventListener?.('loadingdone', measure);
+  }, [ref, key]);
+}
+
 /**
  * The finish of a flow, or its waiting state: a clear panel with the title, the reference code,
  * an optional step line, then what happens next.
@@ -102,9 +138,14 @@ export function ConfirmationPanel({
   className,
 }: ConfirmationPanelProps) {
   const ref = useRef<HTMLHeadingElement>(null);
+  // Only the value at mount counts: turning focusOnMount on later must not pull focus off a button in the panel.
+  const focusFirst = useRef(focusOnMount);
   useEffect(() => {
-    if (focusOnMount) ref.current?.focus();
-  }, [focusOnMount]);
+    if (focusFirst.current) ref.current?.focus();
+  }, []);
+  const listRef = useRef<HTMLOListElement>(null);
+  const stepsKey = (steps ?? []).map((step) => (typeof step === 'string' ? step : `${step.label}\u0000${step.state}`)).join('\u0001');
+  useStepRow(listRef, `${stepsKey}\u0002${currentStep ?? ''}`);
   // Only a strong success is the solid green panel; every other panel is pale and holds its explanation
   // ("Chị có thể hủy."). The strong panel puts the explanation under the panel, on the page.
   const pale = tone !== 'success' || emphasis === 'subtle';
@@ -136,7 +177,7 @@ export function ConfirmationPanel({
           </p>
         ) : null}
         {steps?.length ? (
-          <ol className={styles.Steps} aria-label={stepsLabel}>
+          <ol ref={listRef} className={styles.Steps} aria-label={stepsLabel}>
             {steps.map((step, i) => {
               const label = typeof step === 'string' ? step : step.label;
               const state: StepState | undefined =

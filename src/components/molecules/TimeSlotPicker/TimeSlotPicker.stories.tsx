@@ -19,7 +19,25 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 export const Selected: Story = { args: { defaultValue: '09:30' } };
-export const Error: Story = { args: { error: 'Chọn một giờ khám còn trống' } };
+/** One message and one red bar for the group; the slots keep their normal edge; a focused slot takes the dark-ink ring. */
+export const Error: Story = {
+  args: { error: 'Chọn một giờ khám còn trống' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const group = canvas.getByRole('group', { name: 'Chọn giờ khám, thứ Bảy 24/10' });
+    const red = getComputedStyle(group.querySelector('[data-part="error"]')!).color;
+    await expect(getComputedStyle(group).borderInlineStartWidth).toBe('3px');
+    await expect(getComputedStyle(group).borderInlineStartColor).toBe(red);
+    for (const slot of group.querySelectorAll('label')) {
+      await expect(getComputedStyle(slot).borderTopColor).not.toBe(red);
+      await expect(getComputedStyle(slot).boxShadow).toBe('none');
+    }
+    await userEvent.tab();
+    const focused = canvas.getByRole('radio', { name: '07:30' });
+    await expect(focused).toHaveFocus();
+    await expect(getComputedStyle(focused.closest('label')!).outlineColor).toBe(getComputedStyle(group.querySelector('legend')!).color);
+  },
+};
 export const FullyBooked: Story = { args: { slots: day.map((s) => ({ ...s, taken: true })) } };
 export const PhoneWidth: Story = { parameters: { viewport: { defaultViewport: 'mobile1' } } };
 export const PickWithMouse: Story = {

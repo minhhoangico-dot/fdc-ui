@@ -24,7 +24,7 @@ import { staffHeader } from '../fixtures/staff';
 import { formatViNumber, parseViNumber } from '../utils/vi';
 import styles from './StaffResultEntry.module.css';
 
-/** No-break space: keeps a "·" on the line of the words before it, and "còn 22 giây" in one piece. */
+/** No-break space: keeps a short phrase in one piece ("tâm thu", "Còn 22 giây để hủy."). */
 const NBSP = '\u00A0';
 
 const grades = ['I', 'II', 'III', 'IV', 'V'].map((g, i) => ({ value: String(i + 1), label: `Loại ${g}` }));
@@ -168,14 +168,29 @@ function PendingSend({ name, seconds }: PendingSendProps) {
     link.current?.focus();
   }, [phase]);
 
-  const text =
+  // The moment in words without seconds, so nothing in it goes stale: the live status says it, and the notice says
+  // the same once the window is over.
+  const moment =
     phase === 'waiting'
-      ? `${name}: chờ gửi lên Sở${NBSP}· còn${NBSP}${left}${NBSP}giây`
+      ? `${name} đang chờ gửi lên Sở; còn hủy được.`
       : phase === 'cancelled'
         ? `Đã hủy gửi. Hồ sơ ${name} mở lại để sửa, chưa có gì lên Sở.`
         : `${name} đã chuyển sang Đang gửi.`;
-  // The moment in words without seconds, so nothing in it goes stale.
-  const moment = phase === 'waiting' ? `${name} đang chờ gửi lên Sở; còn hủy được.` : text;
+  // While waiting, two sentences as on the review page's panel, never joined by a "·" that could end a line. The
+  // seconds are one unbreakable chunk, so a line never ends with "Còn" or starts with "giây".
+  const text: ReactNode =
+    phase === 'waiting' ? (
+      <>
+        {name}: chờ gửi lên Sở.{' '}
+        <strong className={styles.Seconds}>
+          Còn{NBSP}
+          {left}
+          {NBSP}giây{NBSP}để{NBSP}hủy.
+        </strong>
+      </>
+    ) : (
+      moment
+    );
 
   useEffect(() => {
     // A live region speaks what changes: the start a moment after the page opens, each end at once; then it is emptied.
@@ -227,8 +242,14 @@ type EntryProps = {
   pendingSend?: PendingSendProps;
 };
 
-/** What a press of "Xem lại" or "Lưu" found missing: links for the summary, and each field's own message. */
-type Review = { scope: 'here' | 'others'; items: Array<{ fieldId: string; text: string; message?: string }> };
+/**
+ * What a press of "Xem lại" or "Lưu" found missing: links for the summary, and each field's own message. For the
+ * other parts, `count` is the part's items left and `short` the link's words on a phone ("Tiền sử (17)").
+ */
+type Review = {
+  scope: 'here' | 'others';
+  items: Array<{ fieldId: string; text: string; short?: string; count?: number; message?: string }>;
+};
 
 function ResultEntry({ part: openPart = 'the-luc', initial = savedAtOpen, typed = {}, diagnoses = [], offline, conflict, pendingSend }: EntryProps) {
   const [part, setPart] = useState<PartKey>(openPart);
@@ -245,9 +266,12 @@ function ResultEntry({ part: openPart = 'the-luc', initial = savedAtOpen, typed 
   const [reviewCount, setReviewCount] = useState(0);
   const [justReviewed, setJustReviewed] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
+  // The conflict's question shows its ring only when Ctrl + S or Ctrl + Enter moved focus there, not after a click on it.
+  const [conflictRing, setConflictRing] = useState(false);
   const timer = useRef<number>();
   const pendingFocus = useRef<{ id: string; block: ScrollLogicalPosition } | null>(null);
   const summaryBox = useRef<HTMLDivElement>(null);
+  const conflictBlock = useRef<HTMLElement>(null);
   const phoneUp = useMedia(PHONE_UP);
 
   /** Focus `id` once the next render is on screen (a part switched in, or the conflict block gone). */
@@ -282,7 +306,17 @@ function ResultEntry({ part: openPart = 'the-luc', initial = savedAtOpen, typed 
     if (scope === 'here') {
       return here.length ? { scope, items: here.map((f) => ({ fieldId: f.id, text: f.name, message: `Điền ${f.label}` })) } : null;
     }
-    return others.length ? { scope, items: others.map((p) => ({ fieldId: anchorOf(p), text: `${p.label}: còn ${missingOf(p)}` })) } : null;
+    return others.length
+      ? {
+          scope,
+          items: others.map((p) => {
+            const count = missingOf(p);
+            // On a phone the name without its number: "3. Tiền sử (17)" and "5. Lâm sàng (25)" need 280px, more than
+            // the 268px a 320px phone gives them, so each took a row of its own.
+            return { fieldId: anchorOf(p), text: `${p.label}: còn ${count}`, short: `${p.label.replace(/^\d+\.\s*/, '')} (${count})`, count };
+          }),
+        }
+      : null;
   };
 
   const switchPart = (key: PartKey, focusId?: string) => {
@@ -291,10 +325,28 @@ function ResultEntry({ part: openPart = 'the-luc', initial = savedAtOpen, typed 
     if (focusId) focusAfterRender(focusId, focusId === PART_HEADING ? 'nearest' : 'center');
   };
 
+  /**
+   * Ctrl + S or Ctrl + Enter during a conflict: focus goes to the question, with its ring. When the question and both
+   * its answers fit between the bars (StaffLayout's scroll padding), the three come on screen together, scrolled only
+   * as far as needed: centring the question alone left "Giữ" under the action bar of a 320px phone. When they do not
+   * fit (a phone on its side), the question is centred, as before.
+   */
+  const focusConflict = () => {
+    setConflictRing(true);
+    const question = document.getElementById(CONFLICT);
+    const block = conflictBlock.current;
+    if (!question) return;
+    question.focus({ preventScroll: true });
+    const pad = getComputedStyle(document.documentElement);
+    const room = window.innerHeight - (parseFloat(pad.scrollPaddingTop) || 0) - (parseFloat(pad.scrollPaddingBottom) || 0);
+    if (block && block.getBoundingClientRect().height <= room) block.scrollIntoView?.({ block: 'nearest' });
+    else question.scrollIntoView?.({ block: 'center' });
+  };
+
   const doSave = () => {
     if (conflictOpen) {
       // Nothing is saved while the weight is undecided: go to the question, not to one of its answers.
-      focusField(CONFLICT);
+      focusConflict();
       return;
     }
     // "Lưu" checks again too: an open summary drops what is filled now (it never changes while typing).
@@ -320,7 +372,7 @@ function ResultEntry({ part: openPart = 'the-luc', initial = savedAtOpen, typed 
   const openReview = () => {
     if (conflictOpen) {
       // The only thing to do while the weight is undecided is to decide it (record state "Cần xử lý").
-      focusField(CONFLICT);
+      focusConflict();
       return;
     }
     setReviewCount((c) => c + 1);
@@ -354,7 +406,17 @@ function ResultEntry({ part: openPart = 'the-luc', initial = savedAtOpen, typed 
     if (justReviewed && reviewCount && !mediaMatches(PHONE_UP)) summaryBox.current?.scrollIntoView?.({ block: 'start' });
   }, [justReviewed, reviewCount]);
 
+  /** The page's "Điền …" for a field, as the last press of "Xem lại" or "Lưu" left it. */
   const errorFor = (id: string) => (review?.scope === 'here' ? review.items.find((e) => e.fieldId === id)?.message : undefined);
+  /**
+   * The same, for a field with one message line that keeps its room (the NumberFields, "Lời khuyên"): only while the
+   * field is still empty. Once something is typed the line shows the field's own message instead ("Cao · bình
+   * thường 60–100", or "Từ 30 đến 250" after leaving), with no red edge from the page; the line keeps its room, so
+   * nothing moves. Emptied again, it says "Điền …" again until the next press. The summary does not change (it is read
+   * once), and a choice group keeps its error until the next press: its error line has no reserved room, and dropping
+   * it would move the options under the pointer.
+   */
+  const lineErrorFor = (id: string) => (values[id]?.trim() ? undefined : errorFor(id));
 
   // One save line: a conflict or an unsaved change is never reported as saved. On a phone the conflict line keeps to
   // one line, so the last save time is left out there.
@@ -444,7 +506,7 @@ function ResultEntry({ part: openPart = 'the-luc', initial = savedAtOpen, typed 
     id,
     value: values[id] ?? '',
     onValueChange: (_: number | null, text: string) => set(id)(text),
-    error: errorFor(id),
+    error: lineErrorFor(id),
   });
 
   const adviceFilled = Boolean(values['loi-khuyen']?.trim());
@@ -479,10 +541,16 @@ function ResultEntry({ part: openPart = 'the-luc', initial = savedAtOpen, typed 
             { label: 'Người 6 / 2.033' },
           ]}
           status={
+            // The tag names the state only, as in the list; the count is muted text beside it (under it when the row
+            // is too narrow), never joined to it by a "·".
             conflictOpen ? (
-              <StatusTag tone="attention">Cần xử lý · 1 giá trị</StatusTag>
+              <span className={styles.State}>
+                <StatusTag tone="attention">Cần xử lý</StatusTag> <span className={styles.StateCount}>1 giá trị</span>
+              </span>
             ) : totalMissing ? (
-              <StatusTag>Cần điền · còn {totalMissing} mục</StatusTag>
+              <span className={styles.State}>
+                <StatusTag>Cần điền</StatusTag> <span className={styles.StateCount}>còn {totalMissing} mục</span>
+              </span>
             ) : (
               <StatusTag>Sẵn sàng xem lại</StatusTag>
             )
@@ -547,12 +615,14 @@ function ResultEntry({ part: openPart = 'the-luc', initial = savedAtOpen, typed 
             key={reviewCount}
             layout="inline"
             focusOnMount={justReviewed}
+            // The other parts on a phone: a heading of one line and short links, two to a row ("Tiền sử (17)"), so
+            // the block stays small (129px at 320px, as at 390). From 40rem the words in full, on one row.
             title={
               review.scope === 'here'
                 ? `Còn ${review.items.length} mục chưa điền`
-                : `Còn ${others.reduce((n, p) => n + missingOf(p), 0)} mục ở ${others.length} phần khác`
+                : `Còn ${review.items.reduce((n, e) => n + (e.count ?? 0), 0)} mục ở ${review.items.length} phần${phoneUp ? ' khác' : ''}`
             }
-            errors={review.items.map(({ fieldId, text }) => ({ fieldId, text }))}
+            errors={review.items.map(({ fieldId, text, short }) => ({ fieldId, text: !phoneUp && short ? short : text }))}
           />
         </div>
       ) : null}
@@ -569,9 +639,18 @@ function ResultEntry({ part: openPart = 'the-luc', initial = savedAtOpen, typed 
         {part === 'the-luc' ? (
           <div className={styles.Fields}>
             {conflictOpen ? (
-              <Stack gap={10}>
-                {/* The question takes focus on Ctrl + S or Ctrl + Enter; both answers are described by it. */}
-                <div id={CONFLICT} tabIndex={-1} role="group" aria-labelledby={CONFLICT} className={styles.Conflict}>
+              <Stack ref={conflictBlock} gap={10}>
+                {/* The question takes focus on Ctrl + S or Ctrl + Enter, with a ring; both answers are described by it.
+                    A click on its words focuses it too (tabIndex -1), without a ring: it is not a control. */}
+                <div
+                  id={CONFLICT}
+                  tabIndex={-1}
+                  role="group"
+                  aria-labelledby={CONFLICT}
+                  className={styles.Conflict}
+                  data-ring={conflictRing || undefined}
+                  onBlur={() => setConflictRing(false)}
+                >
                   <FormNotice
                     boxed
                     notice={{
@@ -691,8 +770,8 @@ function ResultEntry({ part: openPart = 'the-luc', initial = savedAtOpen, typed 
               onChange={(e) => set('dien-giai')(e.target.value)}
             />
             {/* One message line that keeps its room, as in a NumberField: "Chưa điền" while empty, the example while
-                the field has focus, nothing once filled and left, the error alone after a press of "Xem lại". Nothing
-                under it moves. */}
+                the field has focus, nothing once filled and left, the error alone after a press of "Xem lại" while it
+                is still empty. Nothing under it moves. */}
             <TextField
               id="loi-khuyen"
               label="Lời khuyên"
@@ -705,7 +784,7 @@ function ResultEntry({ part: openPart = 'the-luc', initial = savedAtOpen, typed 
               onChange={(e) => set('loi-khuyen')(e.target.value)}
               onFocus={() => setFocused('loi-khuyen')}
               onBlur={() => setFocused(null)}
-              error={errorFor('loi-khuyen')}
+              error={lineErrorFor('loi-khuyen')}
             />
           </div>
         )}
@@ -785,28 +864,55 @@ export const XemLaiKhiConThieu: Story = {
 };
 
 /**
- * After "Xem lại" the errors stay as they were while the person types and leaves fields: nothing moves, the summary
- * keeps its links. The next press of "Lưu" (Ctrl + S) or "Xem lại" updates both, without taking focus from the field.
+ * After "Xem lại" the summary stays as it was while the person types and leaves fields (it was read once), and nothing
+ * above or below a field moves. A field filled since then drops the page's "Điền …" and its line shows the field's own
+ * message: the amber "Cao" for a pulse of 112 (no red edge), "Từ 50 đến 300" on leaving a pressure of 350. A field
+ * still empty keeps "Điền …". The next press of "Lưu" (Ctrl + S) or "Xem lại" updates the summary, without taking
+ * focus from the field.
  */
 export const XemLaiRoiDien: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: 'Xem lại trước khi gửi' }));
     const pulse = canvas.getByRole('textbox', { name: 'Mạch' });
+    const systolic = canvas.getByRole('textbox', { name: 'Tâm thu' });
+    const diastolic = canvas.getByRole('textbox', { name: 'Tâm trương' });
+    const grade = canvas.getByRole('group', { name: 'Phân loại thể lực' });
     // Measured from the top of the main area, so a page scroll or the header shrinking does not count as a move.
     const main = canvasElement.querySelector('main') as HTMLElement;
-    const offset = () => pulse.getBoundingClientRect().top - main.getBoundingClientRect().top;
-    const before = offset();
-    await userEvent.type(pulse, '78');
+    const tops = () => [pulse, systolic, diastolic, grade].map((el) => el.getBoundingClientRect().top - main.getBoundingClientRect().top);
+    const before = tops();
+
+    await userEvent.type(pulse, '112');
+    await expect(pulse).not.toHaveAttribute('aria-invalid');
+    await expect(pulse).toHaveAccessibleDescription(/Cao/);
+    await expect(pulse).not.toHaveAccessibleDescription(/Điền mạch/);
+    await expect(tops()).toEqual(before);
     await userEvent.tab();
-    await expect(offset()).toBe(before);
-    // Read once: an alert when it appeared, a group named by its heading once focus has left it.
+    await expect(pulse).toHaveAccessibleDescription(/Cao/);
+
+    await userEvent.type(systolic, '350');
+    await userEvent.tab();
+    await expect(systolic).toHaveAttribute('aria-invalid', 'true');
+    await expect(systolic).toHaveAccessibleDescription(/Từ.50 đến.300/);
+    await expect(systolic).not.toHaveAccessibleDescription(/Điền/);
+    await userEvent.clear(systolic);
+    await userEvent.type(systolic, '145');
+    await userEvent.tab();
+    await expect(systolic).not.toHaveAttribute('aria-invalid');
+    await expect(systolic).toHaveAccessibleDescription(/Cao/);
+
+    // Still empty: the page's error stays until the next press.
+    await expect(diastolic).toHaveAttribute('aria-invalid', 'true');
+    await expect(diastolic).toHaveAccessibleDescription(/Điền tâm.trương/);
+    await expect(tops()).toEqual(before);
+    // Read once: an alert when it appeared, a group named by its heading once focus has left it; its links unchanged.
     await expect(canvas.queryByRole('alert')).not.toBeInTheDocument();
     await expect(within(canvas.getByRole('group', { name: 'Còn 4 mục chưa điền' })).getAllByRole('link')).toHaveLength(4);
-    await expect(pulse).toHaveAccessibleDescription(/Điền mạch/);
+
     await userEvent.click(pulse);
     await userEvent.keyboard('{Control>}s{/Control}');
-    await waitFor(() => expect(within(canvas.getByRole('group', { name: 'Còn 3 mục chưa điền' })).getAllByRole('link')).toHaveLength(3));
+    await waitFor(() => expect(within(canvas.getByRole('group', { name: 'Còn 2 mục chưa điền' })).getAllByRole('link')).toHaveLength(2));
     await expect(pulse).toHaveFocus();
     await expect(pulse).not.toHaveAttribute('aria-invalid');
   },
@@ -836,17 +942,24 @@ export const HaiNguoiCungSua: Story = { args: { conflict: true } };
 
 /**
  * Ctrl + S during the conflict saves nothing and moves focus to the question, not to one of its answers, so a single
- * Enter never overwrites a colleague's value. Both answers are described by the question.
+ * Enter never overwrites a colleague's value; the ring shows where focus went. Both answers are described by the
+ * question. A click on the question's words focuses it too, without a ring: it is not a control.
  */
 export const HaiNguoiCungSuaBamLuu: Story = {
   args: { conflict: true },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    const question = canvas.getByRole('group', { name: /chị Mai vừa lưu 53 kg/ });
+    await userEvent.click(question);
+    await expect(question).toHaveFocus();
+    await expect(question).not.toHaveAttribute('data-ring');
+    await expect(getComputedStyle(question).outlineStyle).toBe('none');
     const height = canvas.getByRole('textbox', { name: 'Chiều cao' });
     await userEvent.click(height);
     await userEvent.keyboard('{Control>}s{/Control}');
-    const question = canvas.getByRole('group', { name: /chị Mai vừa lưu 53 kg/ });
     await expect(question).toHaveFocus();
+    await waitFor(() => expect(question).toHaveAttribute('data-ring'));
+    await expect(getComputedStyle(question).outlineStyle).toBe('solid');
     await expect(canvas.getByRole('textbox', { name: 'Cân nặng' })).toHaveAttribute('readonly');
     for (const name of ['Dùng 53 kg của chị Mai', 'Giữ 52,5 kg của tôi']) {
       await expect(canvas.getByRole('button', { name })).toHaveAccessibleDescription(/hoso không tự ghi đè/);

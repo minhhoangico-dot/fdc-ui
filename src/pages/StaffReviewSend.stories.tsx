@@ -128,7 +128,12 @@ function partRows(phase: Phase): SummaryRow[] {
       key: '1. Hành chính',
       value: (
         <span className={styles.Lines}>
-          <span>Nam, sinh 15/03/1990, CCCD …0004</span>
+          {/* Whole chunks set apart by space, so the ID never breaks after its "…". */}
+          <span className={styles.Facts}>
+            <span>Nam</span>
+            <span>Sinh 15/03/1990</span>
+            <span>CCCD …0004</span>
+          </span>
           <span>Phường Đại Mỗ, Hà Nội</span>
           <span>Kỹ sư, nhóm nghề Nhà chuyên môn bậc cao {code('2')}</span>
         </span>
@@ -307,11 +312,16 @@ function NextPerson({ line, variant = 'primary' }: { line?: ReactNode; variant?:
   );
 }
 
+/** The visible note while Minh is asked; the record keeps its own state and tag, so the reason to act stays in view. */
+const ASKED_MINH = 'Đã nhờ Minh kiểm tra lúc 09:42. Minh trả lời trong hoso; chị làm người khác trong lúc chờ.';
+
 type NoticeOutcomeProps = {
   tone: Extract<ConfirmationTone, 'error' | 'attention'>;
   title: string;
   steps: ConfirmationStep[];
   focusOnMount: boolean;
+  /** Says a moment in the page's status line (asking Minh, taking it back). */
+  onSay: (text: string) => void;
   /** What happened and what comes next, in sentences. */
   children: ReactNode;
   /** The main button: open the part to fix, or check the status. */
@@ -322,17 +332,25 @@ type NoticeOutcomeProps = {
  * A refusal or an unknown outcome: a pale panel whose title is the state (an h2, so heading navigation finds it),
  * the department's words, the main button, asking Minh (which can be taken back), and the way on to the next person.
  */
-function NoticeOutcome({ tone, title, steps: outcomeSteps, focusOnMount, children, primary }: NoticeOutcomeProps) {
+function NoticeOutcome({ tone, title, steps: outcomeSteps, focusOnMount, onSay, children, primary }: NoticeOutcomeProps) {
   const [asked, setAsked] = useState(false);
   return (
     <ConfirmationPanel tone={tone} headingLevel={2} title={title} steps={outcomeSteps} focusOnMount={focusOnMount}>
       {children}
       <Inline gap={10}>
         {primary}
-        {/* The same button changes its words, so focus stays on it. */}
-        <Button onClick={() => setAsked((v) => !v)}>{asked ? 'Hủy yêu cầu' : 'Nhờ Minh kiểm tra'}</Button>
+        {/* The same button changes its words, so focus stays on it; the page's status line says what happened. */}
+        <Button
+          onClick={() => {
+            setAsked(!asked);
+            onSay(asked ? 'Đã hủy yêu cầu nhờ Minh.' : ASKED_MINH);
+          }}
+        >
+          {asked ? 'Hủy yêu cầu' : 'Nhờ Minh kiểm tra'}
+        </Button>
       </Inline>
-      <FormNotice notice={asked ? { type: 'info', text: 'Đã nhờ Minh kiểm tra lúc 09:42. Minh trả lời trong hoso; chị làm người khác trong lúc chờ.' } : null} />
+      {/* Not live: the page's status line says it once. */}
+      <FormNotice live={false} notice={asked ? { type: 'info', text: ASKED_MINH } : null} />
       <NextPerson variant="neutral" />
     </ConfirmationPanel>
   );
@@ -362,6 +380,8 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
   // went away. A page opened on a result does not jump.
   const [moveFocus, setMoveFocus] = useState(false);
   // The one status line that is always on the page: it announces the moments (start, end, cancel), never the seconds.
+  // When focus moves to a new heading, the heading names the moment and the line says only the rest; when focus
+  // stays where it was, the line says the whole moment.
   const [said, setSaid] = useState('');
   const outcomeRef = useRef<HTMLDivElement>(null);
   const cancelledRef = useRef<HTMLHeadingElement>(null);
@@ -371,9 +391,10 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
     if (phase !== 'waiting') return undefined;
     if (left <= 0) {
       // "Hủy gửi" goes away with the window: if focus was in the panel, the next panel's heading takes it.
-      setMoveFocus(Boolean(outcomeRef.current?.contains(document.activeElement)));
+      const moved = Boolean(outcomeRef.current?.contains(document.activeElement));
+      setMoveFocus(moved);
       setPhase('sending');
-      setSaid('Đã chuyển sang Đang gửi');
+      setSaid(moved ? 'Không hủy được nữa.' : 'Đang gửi lên Sở, không hủy được nữa.');
       return undefined;
     }
     const t = window.setTimeout(() => setLeft((s) => s - 1), 1000);
@@ -387,12 +408,18 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
     return () => window.clearTimeout(t);
   }, [said]);
 
-  // "Kiểm tra lại trạng thái": in this sample the department answers that it holds the record.
+  // "Kiểm tra lại trạng thái": in this sample the department answers that it holds the record. Focus stays on the
+  // busy button while the page asks; only the answer moves it, to the new panel's heading, and only if focus was
+  // still in the panel that goes away.
   useEffect(() => {
     if (!checking) return undefined;
     const t = window.setTimeout(() => {
+      const moved = Boolean(outcomeRef.current?.contains(document.activeElement));
+      setMoveFocus(moved);
       setChecking(false);
       setPhase('accepted');
+      // The heading "Sở đã tiếp nhận" is the answer; said again only when focus did not go to it.
+      setSaid(moved ? '' : 'Sở đã tiếp nhận hồ sơ.');
     }, 800);
     return () => window.clearTimeout(t);
   }, [checking]);
@@ -426,7 +453,8 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
               setPhase('review');
               setLeft(undoSeconds);
               setCancelled(true);
-              setSaid('Đã hủy gửi. Chưa có gì lên Sở; hồ sơ mở lại để chị sửa.');
+              // Focus goes to the heading "Đã hủy gửi"; the line says the rest.
+              setSaid('Chưa có gì lên Sở; hồ sơ mở lại để chị sửa.');
             }}
           >
             Hủy gửi
@@ -473,6 +501,7 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
         title="Bị từ chối"
         steps={steps.rejected}
         focusOnMount={moveFocus}
+        onSay={setSaid}
         primary={
           <Button variant="primary" href="#">
             Mở phần 7. Kết luận để sửa
@@ -493,14 +522,15 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
         title="Chưa rõ kết quả"
         steps={steps.unknown}
         focusOnMount={moveFocus}
+        onSay={setSaid}
         primary={
           <Button
             variant="primary"
             loading={checking}
             loadingLabel="Đang hỏi Sở…"
             onClick={() => {
-              setMoveFocus(true);
               setChecking(true);
+              setSaid('Đang hỏi Sở…');
             }}
           >
             Kiểm tra lại trạng thái
@@ -586,7 +616,9 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
         }
       />
 
-      <VisuallyHidden role="status">{said}</VisuallyHidden>
+      <VisuallyHidden role="status" data-part="page-status">
+        {said}
+      </VisuallyHidden>
       <div ref={outcomeRef} className={styles.OutcomeSlot}>
         {outcome}
       </div>
@@ -659,7 +691,8 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
                 setCancelled(false);
                 setMoveFocus(true);
                 setPhase('waiting');
-                setSaid(`Chờ gửi lên Sở, còn ${undoSeconds} giây để hủy`);
+                // Focus goes to the heading "Chờ gửi lên Sở"; the line says the rest.
+                setSaid(`Còn ${undoSeconds} giây để hủy.`);
               }}
             >
               Gửi lên Sở: Ngô Văn Nam
@@ -678,6 +711,9 @@ const meta = {
 } satisfies Meta<typeof ReviewSend>;
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+/** The page's status line, found by its part name rather than its role, which other parts of a page may also have. */
+const pageStatus = (canvasElement: HTMLElement) => canvasElement.querySelector<HTMLElement>('[data-part="page-status"]')!;
 
 /** Before sending: what differs from normal, every part with its source, and why the send button cannot be pressed yet. */
 export const XemLai: Story = {};
@@ -716,7 +752,7 @@ export const CuonDenNutGui: Story = {
 /**
  * Ticked and sent: a 30-second undo window in pale blue (started, not finished), and the way on to the next person.
  * Focus moves to the panel's heading, whose name stays "Chờ gửi lên Sở" while the seconds run in the text under it;
- * the page's status line says the start once.
+ * the page's status line says only what the heading does not: "Còn 30 giây để hủy."
  */
 export const ChoGui: Story = {
   play: async ({ canvasElement }) => {
@@ -726,7 +762,7 @@ export const ChoGui: Story = {
     await userEvent.click(canvas.getByRole('button', { name: 'Gửi lên Sở: Ngô Văn Nam' }));
     const heading = canvas.getByRole('heading', { name: 'Chờ gửi lên Sở' });
     await expect(heading).toHaveFocus();
-    await expect(canvas.getByText('Chờ gửi lên Sở, còn 30 giây để hủy')).toBeInTheDocument();
+    await expect(pageStatus(canvasElement)).toHaveTextContent(/^Còn 30 giây để hủy\.$/);
     await expect(canvas.getByRole('button', { name: 'Hủy gửi' })).toBeInTheDocument();
     await expect(canvas.getByRole('link', { name: `Người sau: ${NEXT_PERSON}` })).toBeInTheDocument();
     // The record's tag says the state once; the countdown lives only in the panel's text.
@@ -736,7 +772,7 @@ export const ChoGui: Story = {
   },
 };
 
-/** "Hủy gửi" in the undo window: focus goes to the "Đã hủy gửi" heading and the status line says nothing was sent. */
+/** "Hủy gửi" in the undo window: focus goes to the "Đã hủy gửi" heading and the status line says the rest: nothing was sent. */
 export const HuyGui: Story = {
   args: { initialTicked: true },
   play: async ({ canvasElement }) => {
@@ -744,14 +780,15 @@ export const HuyGui: Story = {
     await userEvent.click(canvas.getByRole('button', { name: 'Gửi lên Sở: Ngô Văn Nam' }));
     await userEvent.click(canvas.getByRole('button', { name: 'Hủy gửi' }));
     await expect(canvas.getByRole('heading', { name: 'Đã hủy gửi' })).toHaveFocus();
-    await expect(canvas.getByText('Đã hủy gửi. Chưa có gì lên Sở; hồ sơ mở lại để chị sửa.')).toBeInTheDocument();
+    await expect(pageStatus(canvasElement)).toHaveTextContent(/^Chưa có gì lên Sở; hồ sơ mở lại để chị sửa\.$/);
     await expect(canvas.getByRole('button', { name: 'Gửi lên Sở: Ngô Văn Nam' })).toBeInTheDocument();
   },
 };
 
 /**
  * The window runs out while focus is on "Hủy gửi" (3 seconds here): the button goes, focus moves to the
- * "Đang gửi lên Sở" heading, and the status line says "Đã chuyển sang Đang gửi" once.
+ * "Đang gửi lên Sở" heading, and the status line says only "Không hủy được nữa." (focus elsewhere on the page stays
+ * there, and the line says the whole moment: "Đang gửi lên Sở, không hủy được nữa.").
  */
 export const HetGioHuy: Story = {
   args: { initialTicked: true, undoSeconds: 3 },
@@ -760,7 +797,7 @@ export const HetGioHuy: Story = {
     await userEvent.click(canvas.getByRole('button', { name: 'Gửi lên Sở: Ngô Văn Nam' }));
     canvas.getByRole('button', { name: 'Hủy gửi' }).focus();
     await waitFor(() => expect(canvas.getByRole('heading', { name: 'Đang gửi lên Sở' })).toHaveFocus(), { timeout: 6000 });
-    await expect(canvas.getByText('Đã chuyển sang Đang gửi')).toBeInTheDocument();
+    await expect(pageStatus(canvasElement)).toHaveTextContent(/^Không hủy được nữa\.$/);
   },
 };
 
@@ -775,6 +812,60 @@ export const BiTuChoi: Story = { args: { initialPhase: 'rejected', initialTicked
 
 /** No answer in time: the department may hold the record, so check the status or ask Minh; there is no "Gửi lại". */
 export const ChuaRoKetQua: Story = { args: { initialPhase: 'unknown', initialTicked: true } };
+
+/**
+ * "Kiểm tra lại trạng thái": the button stays focused and busy ("Đang hỏi Sở…", also said in the status line); only
+ * the answer moves focus, to the heading of the new panel "Sở đã tiếp nhận", and the status line then says nothing more.
+ */
+export const KiemTraLaiTrangThai: Story = {
+  args: { initialPhase: 'unknown', initialTicked: true },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const check = canvas.getByRole('button', { name: 'Kiểm tra lại trạng thái' });
+    await userEvent.click(check);
+    // While the page asks, focus stays on the busy button: the old heading is not read again.
+    await expect(check).toHaveFocus();
+    await expect(check).toHaveAttribute('aria-busy', 'true');
+    await expect(check).toHaveAccessibleName('Đang hỏi Sở…');
+    await expect(pageStatus(canvasElement)).toHaveTextContent(/^Đang hỏi Sở…$/);
+    await expect(canvas.getByRole('heading', { name: 'Chưa rõ kết quả' })).not.toHaveFocus();
+    await waitFor(() => expect(canvas.getByRole('heading', { name: 'Sở đã tiếp nhận' })).toHaveFocus(), { timeout: 3000 });
+    await expect(pageStatus(canvasElement)).toBeEmptyDOMElement();
+    await expect(canvas.getByText('SYT-HN-2026-118204')).toBeInTheDocument();
+  },
+};
+
+/**
+ * "Nhờ Minh kiểm tra" on a refused record: the record keeps its state and tag (the reason to act stays in view) and a
+ * note says when Minh was asked. The same button becomes "Hủy yêu cầu" and keeps focus; the page's status line says
+ * each moment once: the note, then "Đã hủy yêu cầu nhờ Minh.", then the note again.
+ */
+export const NhoMinhKiemTra: Story = {
+  args: { initialPhase: 'rejected', initialTicked: true },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const panel = within(canvas.getByRole('heading', { name: 'Bị từ chối' }).closest<HTMLElement>('[data-component="ConfirmationPanel"]')!);
+    const ask = panel.getByRole('button', { name: 'Nhờ Minh kiểm tra' });
+    const note = /^Đã nhờ Minh kiểm tra lúc 09:42\. Minh trả lời trong hoso; chị làm người khác trong lúc chờ\.$/;
+    await userEvent.click(ask);
+    await expect(ask).toHaveFocus();
+    await expect(ask).toHaveAccessibleName('Hủy yêu cầu');
+    await expect(pageStatus(canvasElement)).toHaveTextContent(note);
+    await expect(panel.getByText(note)).toBeVisible();
+    // The note is not a second live region: the status line alone says it.
+    await expect(panel.getByText(note).closest('[role="status"]')).toBeNull();
+    const who = canvas.getByRole('region', { name: 'Người đang làm' });
+    await expect(within(who).getByText('Bị từ chối')).toBeInTheDocument();
+    await userEvent.click(ask);
+    await expect(ask).toHaveFocus();
+    await expect(ask).toHaveAccessibleName('Nhờ Minh kiểm tra');
+    await expect(pageStatus(canvasElement)).toHaveTextContent(/^Đã hủy yêu cầu nhờ Minh\.$/);
+    await expect(panel.queryByText(note)).not.toBeInTheDocument();
+    // Asked again: the line changes again, so it is said again.
+    await userEvent.click(ask);
+    await expect(pageStatus(canvasElement)).toHaveTextContent(note);
+  },
+};
 
 /** Someone changed the record after it was opened: nothing was sent; the notice names the change, then send again. */
 export const BanDaDoi: Story = { args: { initialPhase: 'stale', initialTicked: true } };

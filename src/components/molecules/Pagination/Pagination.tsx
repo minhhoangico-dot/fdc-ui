@@ -43,6 +43,7 @@ export function rangeText({ page, pageSize, total, itemLabel = 'dòng' }: Pick<P
 /**
  * "Hiển thị 1–50 trong 2.033 người · ‹ Trước · Trang 1 / 41 · Sau ›".
  * Says what is shown and how much there is; only Previous and Next, so the control never grows with the list.
+ * The arrows are hidden from screen readers: the controls are named "Trước" and "Sau".
  * Renders nothing when the list is empty (the table says so instead).
  */
 export function Pagination({
@@ -95,11 +96,24 @@ export function Pagination({
       </p>
       {pages > 1 ? (
         <div className={styles.Controls}>
-          {control(current - 1, <>‹ {previousLabel}</>, 'prev')}
+          {/* The arrows are for the eye; screen readers hear "Trước" and "Sau", not the symbols. */}
+          {control(
+            current - 1,
+            <>
+              <span aria-hidden="true">‹</span> {previousLabel}
+            </>,
+            'prev',
+          )}
           <span className={styles.Page}>
             Trang {formatViInteger(current)} / {formatViInteger(pages)}
           </span>
-          {control(current + 1, <>{nextLabel} ›</>, 'next')}
+          {control(
+            current + 1,
+            <>
+              {nextLabel} <span aria-hidden="true">›</span>
+            </>,
+            'next',
+          )}
         </div>
       ) : null}
     </nav>
