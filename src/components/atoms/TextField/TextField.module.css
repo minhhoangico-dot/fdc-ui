@@ -37,13 +37,16 @@
 }
 .Control {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-10);
+  gap: var(--space-5) var(--space-10);
 }
+/* The box never shrinks below room for a few digits and its unit; in a narrow column the `after` tag
+   ("Cao") wraps under the box instead of squeezing it. */
 .Box {
   position: relative;
-  flex: 1 1 auto;
-  min-inline-size: 0;
+  flex: 1 1 7rem;
+  min-inline-size: min(100%, 7rem);
 }
 .Unit {
   position: absolute;

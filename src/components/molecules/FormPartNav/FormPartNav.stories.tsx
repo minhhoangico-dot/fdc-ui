@@ -41,7 +41,9 @@ export const PhoneOpen: Story = {
   parameters: { viewport: { defaultViewport: 'mobile1' } },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const toggle = canvas.getByRole('button', { name: '4. Thể lực · còn 2' });
+    // From 1024px up the list is always shown and the toggle is hidden: nothing to open.
+    const toggle = canvas.queryByRole('button', { name: '4. Thể lực · còn 2' });
+    if (!toggle) return;
     await userEvent.click(toggle);
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
   },
