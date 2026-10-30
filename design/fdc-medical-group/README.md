@@ -8,8 +8,8 @@ The system follows atomic design. Each component has one clear job, reuses whate
 
 - **Tokens** (colors, type, spacing, radius, shadow) are the single source of truth, in two tiers: the **palette** (`brand-700`, `ink-soft`, `info-600`…) and **roles** that point at it (`text-link`, `surface-selected`, `action-secondary-edge`, `status-info-bg`…). **Components use roles only, never the palette**: `brand-700` is the color, `text-link` is the role, the component uses `text-link`. Then moving the link color cannot repaint a button or a heading by accident. A script fails the build if a component names a palette token.
 - **Layout** owns spacing between things: Stack, Inline, FieldRow (fields side by side, labels and inputs aligned). No component sets its own outer margin.
-- **Atoms** use only tokens: Button, TextField, Icon, Avatar, TextLink, SkipLink, StatusTag, Kbd.
-- **Molecules** combine atoms into one-job blocks: DateInput, PhoneInput, TimeSlotPicker, RadioGroup, SummaryList, CareCard, ConfirmationPanel, HotlineCard, WorkingHours, ServiceCard, SpecialtyTile, ValueCard, TestimonialCard, NewsCard, ServiceAccordion, FormNotice; for staff tools NumberField (a measurement with its unit), Combobox (choose a coded item by name or code), SaveStatus, Pagination, Breadcrumb.
+- **Atoms** use only tokens: Button, TextField, Select, Checkbox, Icon, Avatar, TextLink, SkipLink, StatusTag, Kbd.
+- **Molecules** combine atoms into one-job blocks: DateInput, PhoneInput, TimeSlotPicker, RadioGroup, SummaryList, CareCard, ConfirmationPanel, HotlineCard, WorkingHours, ServiceCard, SpecialtyTile, ValueCard, TestimonialCard, NewsCard, ServiceAccordion, FormNotice; for staff tools NumberField (a measurement with its unit), Combobox (choose a coded item by name or code), CodeList (several coded items, e.g. diagnoses), FormPartNav (the parts of a long form), SaveStatus, Pagination, Breadcrumb.
 - **Organisms** are distinct sections: Header (with a `compact` variant for staff tools), Footer, Dialog, IdleTimeoutDialog, ErrorSummary, ResultLookupForm, ContactForm; for staff tools DataTable (a list of records with paging) and PatientContextBar (who is being worked on).
 - **Templates** lay out a page with slots: SiteLayout (skip link, header, main, footer), BookingStep (one question per page) and StaffLayout (compact header, context bar, side column, sticky action bar). The booking flow is: service → who it is for → time → details → check answers (SummaryList) → confirmation (ConfirmationPanel), with IdleTimeoutDialog guarding the session.
 
@@ -39,40 +39,50 @@ Staff tools (FDC Manager, hoso, reception) are used all day by trained people, o
 - **An empty field is neutral, not an error.** Show a grey hint: "Chưa điền · ví dụ 78". Show red only when a typed value is wrong, or after the user presses check or review and something is still missing. A group of choices reports its error once for the whole group: one message and one red bar, not a red box on every option.
 - **Two different counts, two different names:** "mục còn thiếu" (things still to do) and "ô chưa lưu" (changes not yet saved). Never mix them in one number.
 - **Name first, code after in brackets and lighter:** "Tăng huyết áp (I10)", "Nhà chuyên môn về sức khỏe (22)". A code never stands alone.
+- **Status tags are tinted words, never outlined boxes.** A StatusTag has a pale fill and a small dot, so it never looks like a button next to real buttons.
+- **A value outside the normal range is not an input error.** It gets the `attention` tag ("Cao", "Thấp": amber, `status-warning`); red is kept for values that are wrong or missing. The ranges and whether a very abnormal value needs a confirmation step are set by a doctor, not by the interface.
 - **Green is only for success.** Work that was started but is not finished ("Chờ gửi · còn 27 giây") uses `status-info` (pale blue, the same in both themes). Warnings use `status-warning` (amber, the same in both themes, never the nursing-home orange).
 - **Bold only emphasizes a value.** Anything that needs attention gets a word label (StatusTag: "Cao", "Nhập tay"); bold or color is never the only signal.
 - **No single-letter shortcuts:** with Telex Vietnamese typing they fire by accident. Use Ctrl combinations only, and show the hint where it applies with Kbd ("Ctrl + S lưu").
 - **One-row header** (Header `compact`) to leave height for the work. On phones it shrinks while scrolling but always keeps the current person's name, date of birth and record code in view.
 - **Long lists page clearly:** "Hiển thị 1–50 trong 2.033 · ‹ Trước · Sau ›".
 - **Compact density** (`data-density="compact"`) on staff tools; separate blocks with background, edges and spacing, not `shadow-card` (keep shadows for things that float: menus, dialogs).
-- **Three sample staff screens** show the rules together (Storybook › Pages › Nhân viên, with mock data): the record list (DataTable, 50 a page, filter by group, search without tone marks), result entry (PatientContextBar, NumberField, SaveStatus, the main button changing with the moment) and review before sending (SummaryList with details, the undo window, a refused send). Each has a phone view and its failure states: no network, nothing found, a failed save, a refused send.
-- **The main button follows the moment:** unsaved changes → "Lưu"; saved but items missing → "Tiếp tục điền"; complete → "Xem lại trước khi gửi". The send button names who is sent: "Gửi lên Sở: Ngô Văn Nam".
+- **Three sample staff screens** show the rules together (Storybook › Pages › Nhân viên, with mock data): the record list (DataTable, 50 a page, filter by group, search without tone marks), result entry (PatientContextBar, FormPartNav, NumberField, CodeList, SaveStatus, the main button changing with the moment) and review before sending (SummaryList with details, the undo window, a refusal, an unknown outcome). Each has a phone view and its failure states: no network, nothing found, a failed save, a refused send.
+- **The main button follows the moment:** unsaved changes → "Lưu" (after a failed save, "Lưu lại"); saved but items missing → "Đến mục còn thiếu"; complete → "Xem lại trước khi gửi". Never let the button someone keeps pressing turn into a real send. The send button names who is sent: "Gửi lên Sở: Ngô Văn Nam".
+- **One save line tells the truth.** SaveStatus shows exactly one of: unsaved (n ô chưa lưu), saving, saved, failed, or conflict ("Cần xử lý 1 giá trị trước khi lưu", when someone else saved the same field). It never shows "Đã lưu" while a conflict or unsaved change is open.
+- **Sending never blocks the next person.** During the undo window ("Chờ gửi · còn 30 giây") staff move on to the next person; the record waiting to be sent stays findable, with "Hủy gửi", at the top of the next page and in the list.
+- **Never offer "Gửi lại" when the outcome is unknown.** If the department did not answer, the department may still have received it: check the status first or ask Minh. Only a refusal with a reason opens the record for a fix and a resend.
+- **Several diagnoses, and the doctor's own words.** Diagnoses are a list (CodeList: name first, code after, add and remove), next to a free-text field for the wording on the paper form; not every remark has to become an ICD code.
+- **On phones the work comes first.** The parts of a long form collapse into one picker (FormPartNav: "4. Thể lực · còn 2"); lists show each record as a compact block (DataTable `stackBelow="phone"`) with search before filters; filters collapse into a Select.
+- **Edges are light, emphasis is rare.** Blocks are separated by a pale `border` edge and space; the strong `border-control` edge is for inputs and the chosen option; bold is for names, values and the main action.
 - **One bar holds the top of the screen:** from 1024px up a sticky PatientContextBar; below it the compact Header's thin bar with name, date of birth and code. Focused fields are never hidden under a sticky bar.
 - **Lists and searches:** search accepts text without tone marks ("ton nu" finds "Tôn Nữ"); an empty result says why and how to get back; a failed load says what failed and keeps the filters.
 - **Design notes and implementation rules live outside the interface.** On screen, keep only the sentence that helps the user act now.
 
 ### Trạng thái nghiệp vụ (record states)
 
-Each state is one real event. Never show a later state because an earlier one succeeded: "Đã gửi" does not mean "Sở đã nhận"; only the department's receipt does.
+Each state is one real event. Never show a later state because an earlier one succeeded: "Đã gửi" does not mean "Sở đã tiếp nhận"; only the department's receipt does. Version 2.4 split the old "Gửi lỗi" into "Bị từ chối" and "Chưa rõ kết quả", because resending a record the department may already hold creates a duplicate.
 
 | State | StatusTag tone | Means (the event that sets it) | Allowed actions | Next |
 |---|---|---|---|---|
 | Chưa điền | muted | Record created, nothing typed | Điền | Đang điền |
 | Còn thiếu (n mục) | neutral | Saved, n required items empty | Điền tiếp | Sẵn sàng xem lại |
 | Ô chưa lưu (n ô) | info | Changes typed, not written yet | Lưu (Ctrl + S), Bỏ thay đổi | Đang lưu |
+| Cần xử lý (n giá trị) | attention | Someone else saved the same field after this page was opened | Choose one value ("Dùng 53 kg của chị Mai" / "Giữ 52,5 kg của tôi") | Ô chưa lưu |
 | Đang lưu | info | Save request sent | none | Đã lưu / Lưu lỗi |
 | Đã lưu | success | Server confirmed the write | Sửa, Xem lại | — |
 | Lưu lỗi | error | Server refused or network failed | Lưu lại | Đang lưu |
 | Cần sửa | error | Check found a wrong value | Sửa | Còn thiếu / Sẵn sàng xem lại |
 | Sẵn sàng xem lại | neutral | Saved, nothing missing, no errors | Xem lại trước khi gửi (Ctrl + Enter) | Chờ gửi |
-| Chờ gửi · còn n giây | info | User confirmed; the undo window runs | Hủy | Đang gửi / Sẵn sàng xem lại |
-| Đang gửi | info | Sent to the department, no answer yet | none | Đã gửi lên Sở / Gửi lỗi |
-| Đã gửi lên Sở | success | Department returned a receipt code | Xem mã | Bộ đã nhận |
-| Bộ đã nhận | success | Ministry confirmed receipt | Xem mã | — |
-| Gửi lỗi | error | Department refused or no answer | Gửi lại, Nhờ Minh kiểm tra | Đang gửi |
+| Chờ gửi · còn n giây | info | User confirmed; the undo window runs (staff may already work on the next person) | Hủy gửi | Đang gửi / Sẵn sàng xem lại |
+| Đang gửi | info | Sent to the department, no answer yet | none | Sở đã tiếp nhận / Bị từ chối / Chưa rõ kết quả |
+| Sở đã tiếp nhận | success | Department returned a receipt code | Xem mã | Bộ đã xác nhận |
+| Bộ đã xác nhận | success | Ministry confirmed receipt | Xem mã | — |
+| Bị từ chối | error | Department refused and gave a reason | Mở phần cần sửa, Nhờ Minh kiểm tra | Cần sửa → Sẵn sàng xem lại |
+| Chưa rõ kết quả | attention | No answer in time, or the connection broke after sending: the department may have received it | Kiểm tra lại trạng thái, Nhờ Minh kiểm tra. **Never "Gửi lại"** until the status is known | Sở đã tiếp nhận / Bị từ chối |
 | Chờ Minh kiểm tra | info | Staff asked for help | Hủy yêu cầu | per Minh's decision |
 
-ConfirmationPanel `steps` take an explicit state per step (`{ label, state }`), so the step line shows only what has actually happened.
+ConfirmationPanel `steps` take an explicit state per step (`{ label, state }`), so the step line shows only what has actually happened: done steps carry a ✓, the step being waited for is an outline ("Chờ Bộ xác nhận"), never a filled pill that looks finished. Staff screens use `emphasis="subtle"` (pale green panel); the solid green panel is for the patient's booking confirmation.
 
 ## Visual foundations
 
