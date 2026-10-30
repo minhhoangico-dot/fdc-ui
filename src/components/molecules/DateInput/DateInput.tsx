@@ -88,9 +88,15 @@ export function DateInput({
         </span>
       ) : null}
       {error ? (
-        <span id={errorId} className={styles.Error}>
-          <VisuallyHidden>{errorPrefix} </VisuallyHidden>
-          {error}
+        <span id={errorId} className={styles.Error} data-part="error">
+          {/* The type as a sign, not only red (as TextField): in the nursing-home theme red sits next to the orange brand. */}
+          <span className={styles.Mark} aria-hidden="true" data-part="mark">
+            !
+          </span>
+          <span className={styles.ErrorText}>
+            <VisuallyHidden>{errorPrefix} </VisuallyHidden>
+            {error}
+          </span>
         </span>
       ) : null}
       <div className={styles.Parts}>
