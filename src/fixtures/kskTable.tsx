@@ -3,18 +3,26 @@ import { StatusTag, type StatusTagTone } from '../components/atoms/StatusTag';
 import type { DataTableColumn } from '../components/organisms/DataTable';
 import type { KskRecord, RecordStatus } from './ksk';
 
-/** Record state → StatusTag tone, as in the README's table of record states. */
+/**
+ * Record state → StatusTag tone, as in the README's table of record states (v2.4): green only once the department
+ * has a receipt, red only for what must be fixed, amber for an unknown outcome (check, do not resend).
+ */
 export const statusTone: Record<RecordStatus, StatusTagTone> = {
   'Cần điền': 'neutral',
   'Cần sửa': 'error',
   'Sẵn sàng xem lại': 'neutral',
   'Đang chờ': 'info',
+  'Chờ gửi': 'info',
   'Đang gửi': 'info',
-  'Đã gửi lên Sở': 'success',
-  'Gửi lỗi': 'error',
+  'Sở đã tiếp nhận': 'success',
+  'Bị từ chối': 'error',
+  'Chưa rõ kết quả': 'attention',
 };
 
 const muted = { color: 'var(--text-muted)' } as const;
+/** Facts that tell people apart, set apart by space rather than "·"; each fact stays on one line. */
+const facts = { display: 'flex', flexWrap: 'wrap', columnGap: 'var(--space-15)', color: 'var(--text-muted)' } as const;
+const fact = { whiteSpace: 'nowrap' } as const;
 
 export const recordColumns: Array<DataTableColumn<KskRecord>> = [
   { key: 'stt', header: 'STT', cell: (r) => r.stt.toLocaleString('vi-VN'), align: 'end', width: '4.5rem', nowrap: true },
@@ -27,10 +35,11 @@ export const recordColumns: Array<DataTableColumn<KskRecord>> = [
         <a href={`#ho-so-${r.recordCode}`} style={{ color: 'var(--text-link)', fontWeight: 600 }}>
           {r.name}
         </a>
-        <div style={muted}>
-          {r.sex} · {r.birthDate} · {r.idEnd ? `CCCD …${r.idEnd}` : 'Chưa có CCCD'}
+        {/* The spaces between the facts are for screen readers; on screen the gap separates them. */}
+        <div style={facts}>
+          <span style={fact}>{r.sex}</span> <span style={fact}>Sinh {r.birthDate}</span>{' '}
+          <span style={fact}>{r.idEnd ? `CCCD …${r.idEnd}` : 'Chưa có CCCD'}</span>
         </div>
-        {r.role ? <div style={muted}>{r.role}</div> : null}
       </>
     ),
   },
@@ -39,6 +48,8 @@ export const recordColumns: Array<DataTableColumn<KskRecord>> = [
     key: 'status',
     header: 'Trạng thái',
     width: '12rem',
+    // On phones the tag's words say it all ("Cần điền · còn 61 mục"), so its line needs no label.
+    hideLabelWhenStacked: true,
     cell: (r) => (
       <StatusTag tone={statusTone[r.status]} size="sm">
         {r.status === 'Cần điền' || r.status === 'Cần sửa' ? `${r.status} · còn ${r.missing} mục` : r.status}

@@ -2,7 +2,21 @@
 // Every person is invented. Names include long ones and near-duplicates on purpose; some fields are missing.
 import type { ComboboxOption } from '../components/molecules/Combobox';
 
-export type RecordStatus = 'Cần điền' | 'Cần sửa' | 'Sẵn sàng xem lại' | 'Đang chờ' | 'Đang gửi' | 'Đã gửi lên Sở' | 'Gửi lỗi';
+/**
+ * Record states as the list shows them (README, record states, v2.4). Each is one real event: "Đang gửi" is not
+ * "Sở đã tiếp nhận", and the old "Gửi lỗi" is split into "Bị từ chối" (the department gave a reason: fix and resend)
+ * and "Chưa rõ kết quả" (no answer: the department may hold it, so check before anything is resent).
+ */
+export type RecordStatus =
+  | 'Cần điền'
+  | 'Cần sửa'
+  | 'Sẵn sàng xem lại'
+  | 'Đang chờ'
+  | 'Chờ gửi'
+  | 'Đang gửi'
+  | 'Sở đã tiếp nhận'
+  | 'Bị từ chối'
+  | 'Chưa rõ kết quả';
 
 export type KskRecord = {
   stt: number;
@@ -24,11 +38,14 @@ export type KskRecord = {
 
 /** The groups the list is filtered by, with the statuses each one holds. */
 export const recordGroups: Array<{ value: string; label: string; statuses: RecordStatus[] }> = [
-  { value: 'can-lam', label: 'Cần điền hoặc sửa', statuses: ['Cần điền', 'Cần sửa'] },
+  // A refusal comes back with a reason, so it is work to do again: it sits with the records to fill or fix.
+  { value: 'can-lam', label: 'Cần điền hoặc sửa', statuses: ['Cần điền', 'Cần sửa', 'Bị từ chối'] },
   { value: 'xem-lai', label: 'Sẵn sàng xem lại', statuses: ['Sẵn sàng xem lại'] },
-  { value: 'dang-cho', label: 'Đang chờ', statuses: ['Đang chờ', 'Gửi lỗi'] },
-  { value: 'dang-gui', label: 'Đang gửi', statuses: ['Đang gửi'] },
-  { value: 'da-gui', label: 'Đã gửi', statuses: ['Đã gửi lên Sở'] },
+  // Waiting for someone else: HIS, Minh, or the department's answer when the outcome is unknown.
+  { value: 'dang-cho', label: 'Đang chờ', statuses: ['Đang chờ', 'Chưa rõ kết quả'] },
+  // A record in its undo window ("Chờ gửi") stays findable here, so it can still be cancelled.
+  { value: 'dang-gui', label: 'Đang gửi', statuses: ['Chờ gửi', 'Đang gửi'] },
+  { value: 'da-gui', label: 'Đã gửi', statuses: ['Sở đã tiếp nhận'] },
   { value: 'tat-ca', label: 'Tất cả', statuses: [] },
 ];
 
@@ -36,13 +53,15 @@ const hand: KskRecord[] = [
   { stt: 1, name: 'Vũ Đức Khánh', sex: 'Nam', birthDate: '12/04/1985', idEnd: '0001', company: 'Công ty TNHH Rạng Đông', role: 'Trưởng phòng', recordCode: 'RD26-0001', status: 'Cần điền', next: 'Nhập phường / xã cư trú', missing: 61 },
   { stt: 2, name: 'Lê Thị Hà', sex: 'Nữ', birthDate: '03/09/1992', idEnd: '0002', company: 'Công ty TNHH Rạng Đông', role: 'Kế toán', recordCode: 'RD26-0002', status: 'Cần sửa', next: 'Kiểm tra lại số CCCD với năm sinh 1992', missing: 30 },
   { stt: 3, name: 'Tôn Nữ Hoàng Bảo Ngọc Phương Thảo', sex: 'Nữ', birthDate: '21/12/1978', idEnd: '0003', company: 'Công ty Cổ phần Bóng đèn Phích nước Rạng Đông – Chi nhánh Bắc Ninh', role: 'Nhân viên kiểm soát chất lượng sản phẩm', recordCode: 'RD26-0003', status: 'Cần điền', next: 'Chọn Không hoặc Có cho 17 câu tiền sử', missing: 47, openBy: 'Chị Mai đang mở' },
-  { stt: 4, name: 'Ngô Văn Nam', sex: 'Nam', birthDate: '15/03/1990', idEnd: '0004', company: 'Công ty TNHH Rạng Đông', role: 'Kỹ sư', recordCode: 'RD26-0004', status: 'Sẵn sàng xem lại', next: 'Xem lại trước khi gửi', missing: 0 },
+  { stt: 4, name: 'Ngô Văn Nam', sex: 'Nam', birthDate: '15/03/1990', idEnd: '0004', company: 'Công ty TNHH Rạng Đông', role: 'Kỹ sư', recordCode: 'RD26-0004', status: 'Chờ gửi', next: 'Chờ gửi · còn 22 giây · Hủy gửi được', missing: 0 },
   { stt: 5, name: 'Phạm Văn Nam', sex: 'Nam', birthDate: '08/08/1990', idEnd: '0005', company: 'Công ty TNHH Rạng Đông', role: 'Trưởng phòng', recordCode: 'RD26-0005', status: 'Đang chờ', next: 'Chờ Minh: chọn người HIS (2 người gần trùng tên)', missing: 60 },
   { stt: 6, name: 'Đặng Thanh Chi', sex: 'Nữ', birthDate: '07/07/1990', idEnd: '0006', company: 'Công ty TNHH Rạng Đông', role: 'Nhân viên văn phòng', recordCode: 'RD26-0006', status: 'Cần điền', next: 'Nhập mạch và huyết áp', missing: 3 },
   { stt: 7, name: 'Nguyễn Thị Mai Anh', sex: 'Nữ', birthDate: '29/02/1996', company: 'Công ty TNHH Rạng Đông', recordCode: 'RD26-0007', status: 'Cần điền', next: 'Nhập số CCCD', missing: 62 },
-  { stt: 8, name: 'Đỗ Đức Bình', sex: 'Nam', birthDate: '15/06/1995', idEnd: '0008', company: 'Công ty TNHH Rạng Đông', role: 'Kỹ sư', recordCode: 'RD26-0008', status: 'Gửi lỗi', next: 'Sở trả lại: thiếu kết luận phân loại sức khỏe', missing: 1 },
-  { stt: 9, name: 'Trần Ngọc Phương', sex: 'Nữ', birthDate: '30/11/1979', idEnd: '0009', company: 'Công ty TNHH Rạng Đông', role: 'Trưởng phòng', recordCode: 'RD26-0009', status: 'Đang gửi', next: 'Chờ Sở trả lời', missing: 0 },
-  { stt: 10, name: 'Hoàng Minh Đức', sex: 'Nam', birthDate: '02/01/1991', idEnd: '0010', company: 'Công ty TNHH Rạng Đông', role: 'Lái xe', recordCode: 'RD26-0010', status: 'Đã gửi lên Sở', next: 'Mã Sở: SYT-HN-2026-118204', missing: 0 },
+  { stt: 8, name: 'Đỗ Đức Bình', sex: 'Nam', birthDate: '15/06/1995', idEnd: '0008', company: 'Công ty TNHH Rạng Đông', role: 'Kỹ sư', recordCode: 'RD26-0008', status: 'Bị từ chối', next: 'Sở trả lại: thiếu kết luận phân loại sức khỏe', missing: 1 },
+  { stt: 9, name: 'Trần Ngọc Phương', sex: 'Nữ', birthDate: '30/11/1979', idEnd: '0009', company: 'Công ty TNHH Rạng Đông', role: 'Trưởng phòng', recordCode: 'RD26-0009', status: 'Chưa rõ kết quả', next: 'Đã gửi 09:31, Sở chưa trả lời: kiểm tra trạng thái, chưa gửi lại', missing: 0 },
+  { stt: 10, name: 'Hoàng Minh Đức', sex: 'Nam', birthDate: '02/01/1991', idEnd: '0010', company: 'Công ty TNHH Rạng Đông', role: 'Lái xe', recordCode: 'RD26-0010', status: 'Sở đã tiếp nhận', next: 'Mã Sở: SYT-HN-2026-118204', missing: 0 },
+  // Near-duplicate of Phạm Văn Nam (RD26-0005): "pham van nam" finds both; birth date and CCCD tell them apart.
+  { stt: 11, name: 'Phạm Văn Năm', sex: 'Nam', birthDate: '18/08/1991', idEnd: '0011', company: 'Công ty TNHH Rạng Đông', role: 'Công nhân', recordCode: 'RD26-0011', status: 'Cần điền', next: 'Nhập mạch và huyết áp', missing: 3 },
 ];
 
 const family = ['Nguyễn', 'Trần', 'Lê', 'Phạm', 'Hoàng', 'Vũ', 'Võ', 'Đặng', 'Bùi', 'Đỗ', 'Hồ', 'Ngô', 'Dương', 'Lý'];
@@ -55,12 +74,12 @@ const nexts: Array<[RecordStatus, string, number]> = [
   ['Cần điền', 'Nhập ngày giờ khám', 62],
   ['Cần sửa', 'Thị lực mắt phải 12/10: kiểm tra lại', 1],
   ['Sẵn sàng xem lại', 'Xem lại trước khi gửi', 0],
-  ['Đã gửi lên Sở', 'Đã có mã Sở', 0],
-  ['Đã gửi lên Sở', 'Đã có mã Sở', 0],
+  ['Sở đã tiếp nhận', 'Đã có mã Sở', 0],
+  ['Sở đã tiếp nhận', 'Đã có mã Sở', 0],
   ['Đang chờ', 'Chờ HIS duyệt kết quả xét nghiệm', 12],
 ];
 
-/** A deterministic list of `count` records: the ten hand-written ones first, then generated ones. */
+/** A deterministic list of `count` records: the eleven hand-written ones first, then generated ones. */
 export function makeRecords(count: number): KskRecord[] {
   const out = hand.slice(0, count);
   for (let i = out.length; i < count; i += 1) {
@@ -77,7 +96,7 @@ export function makeRecords(count: number): KskRecord[] {
       role: roles[i % roles.length],
       recordCode: `RD26-${n}`,
       status,
-      next: status === 'Đã gửi lên Sở' ? `Mã Sở: SYT-HN-2026-${String(110000 + i)}` : next,
+      next: status === 'Sở đã tiếp nhận' ? `Mã Sở: SYT-HN-2026-${String(110000 + i)}` : next,
       missing,
     });
   }

@@ -45,3 +45,17 @@
   min-block-size: var(--target-min);
   color: var(--text-muted);
 }
+/* Collapsed on phones: only the way back to the parent, as "‹ Rạng Đông KSK 2026". The full trail stays in the
+   accessibility tree only where it is visible, so screen readers on a phone hear the same single link. */
+@media (max-width: 39.99rem) {
+  .Breadcrumb:where([data-collapse]) .Item:not([data-parent]) {
+    display: none;
+  }
+  .Breadcrumb:where([data-collapse]) .Item[data-parent] .Separator {
+    display: none;
+  }
+  .Breadcrumb:where([data-collapse]) .Item[data-parent] .Link::before {
+    content: '‹' / '';
+    padding-inline-end: var(--space-5);
+  }
+}

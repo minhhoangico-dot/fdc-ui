@@ -28,6 +28,11 @@ export type PatientContextBarProps = {
   actions?: ReactNode;
   /** The name is the page's heading. Default 1. */
   headingLevel?: 1 | 2;
+  /**
+   * bar (default) = a full-width bar with a bottom edge, under the header; block = no edge and no fill of its own, for
+   * placing inside a bordered block on a page (the review page), never sticky.
+   */
+  variant?: 'bar' | 'block';
   /** Stay at the top while the form scrolls, from 1024px up. Below that the compact Header's thin bar (collapseOnScroll + compactBar) does this job. */
   sticky?: boolean;
   className?: string;
@@ -53,6 +58,7 @@ export function PatientContextBar({
   actions,
   headingLevel = 1,
   sticky,
+  variant = 'bar',
   className,
 }: PatientContextBarProps) {
   const Heading = `h${headingLevel}` as const;
@@ -75,10 +81,10 @@ export function PatientContextBar({
     ) : null,
   ].filter(Boolean);
   return (
-    <section aria-label="Người đang làm" className={cx(styles.PatientContextBar, className)} data-component="PatientContextBar" data-sticky={sticky || undefined}>
+    <section aria-label="Người đang làm" className={cx(styles.PatientContextBar, className)} data-component="PatientContextBar" data-sticky={(sticky && variant !== 'block') || undefined} data-variant={variant}>
       <div className={styles.Inner}>
         <div className={styles.Who}>
-          {breadcrumb?.length ? <Breadcrumb items={breadcrumb} className={styles.Breadcrumb} /> : null}
+          {breadcrumb?.length ? <Breadcrumb items={breadcrumb} collapseOnPhone className={styles.Breadcrumb} /> : null}
           <div className={styles.NameLine}>
             <Heading className={styles.Name}>{name}</Heading>
             {/* A real space between facts, so copied text and screen readers do not run them together. */}

@@ -37,3 +37,10 @@ it('can be a level-2 heading and skips the age when the date cannot be read', ()
   expect(screen.queryByText(/tuổi/)).not.toBeInTheDocument();
   expect(screen.getByText(/^Sinh 1992$/)).toBeInTheDocument();
 });
+
+it('has a block variant for use inside a bordered block, never sticky', () => {
+  render(<PatientContextBar variant="block" sticky name="Ngô Văn Nam" birthDate="15/03/1990" recordCode="RD26-0004" headingLevel={2} />);
+  const region = screen.getByRole('region', { name: 'Người đang làm' });
+  expect(region).toHaveAttribute('data-variant', 'block');
+  expect(region).not.toHaveAttribute('data-sticky');
+});

@@ -9,3 +9,5 @@ Who is being worked on, always in view on a staff form: the name as the page hea
 **Phones** (below 40rem): the name is 1.25rem (1.5rem from 40rem up), the spacing is tighter, and "Người trước" / "Người sau cần làm" share one row in two equal columns (their words may wrap to two lines) instead of stacking, about 35–55px less than two stacked buttons.
 
 With `sticky` it stays at the top while the form scrolls, from 1024px up. Below that, the compact Header's thin bar (`collapseOnScroll` + `compactBar`) keeps the name, date of birth and code in view instead, so only one bar holds the top of the screen at any width. Place it in StaffLayout's `context` slot; on a review page it can sit inside the content with `headingLevel={2}`.
+
+`variant="block"` drops the bar's own bottom edge and fill (never sticky), for placing the person inside a bordered block on a page such as the review page, so the block has one edge, not two. On phones the breadcrumb collapses to "‹ parent".

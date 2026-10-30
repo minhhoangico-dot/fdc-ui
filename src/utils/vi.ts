@@ -27,9 +27,9 @@ export function parseViNumber(text: string): number | null {
   return Number(t.replace(',', '.'));
 }
 
-/** 52.5 → "52,5"; keeps at most `decimals` digits after the comma. */
-export function formatViNumber(n: number, decimals = 1): string {
-  return n.toLocaleString('vi-VN', { maximumFractionDigits: decimals, useGrouping: false });
+/** 52.5 → "52,5"; keeps at most `decimals` digits after the comma, and at least `minDecimals` (21 → "21,0" for a BMI). */
+export function formatViNumber(n: number, decimals = 1, minDecimals = 0): string {
+  return n.toLocaleString('vi-VN', { minimumFractionDigits: Math.min(minDecimals, decimals), maximumFractionDigits: decimals, useGrouping: false });
 }
 
 /** Age in whole years on `today` for a date written dd/mm/yyyy; null when the date cannot be read. */

@@ -2,6 +2,49 @@
 
 Versions follow the FDC Medical Group design system in Claude Design (the master). Every new prop is optional: code written for 2.0 keeps working.
 
+## 2.4.0 — 2026-10-30
+
+Answers to an outside review of the 2.3 staff screens by ChatGPT and Gemini (business rules first, then looks and phones). Every finding was checked against the code before acting; one was wrong (table cells were already top-aligned) and was not changed.
+
+### Business rules (the costly ones)
+- **Send outcomes split.** "Gửi lỗi" is now "Bị từ chối" (the department refused and gave a reason: fix, then resend) and "Chưa rõ kết quả" (no answer: the department may already hold the record, so check the status or ask Minh, never "Gửi lại"). "Đã gửi lên Sở" is renamed "Sở đã tiếp nhận", "Bộ đã nhận" "Bộ đã xác nhận". Master README states table updated.
+- **Conflicts are never shown as saved.** SaveStatus `conflict`: "Cần xử lý 1 giá trị trước khi lưu", amber; the save button explains why it cannot save until a value is chosen.
+- **Sending never blocks the next person.** During "Chờ gửi" the review page offers "Sang người sau cần làm"; the next person's page shows "Ngô Văn Nam: chờ gửi lên Sở · còn 22 giây" with "Hủy gửi"; the list finds records waiting to be sent.
+- **Several diagnoses and the doctor's words.** New CodeList (name first, code after, add and remove) plus a free-text field for the wording on the paper form.
+- **The step line tells the truth.** "Sở đã tiếp nhận" ✓ with its code; "Chờ Bộ xác nhận" is an outline, never a filled pill that looks finished.
+
+### New components
+- **Checkbox** and **Select** (atoms). The review page's tick box is now a system component; the list filter collapses into a Select on phones.
+- **CodeList** (molecule): several coded items for one question.
+- **FormPartNav** (molecule): the parts of a long form; full side list from 1024px, one "4. Thể lực · còn 2" toggle on phones.
+
+### Changes
+- **Tokens 2.4:** `success-50`, `danger-50` with roles `status-success-bg`, `status-error-bg`. Contrast matrix 88 pairs per theme (176), all passing. The lint forbids `success-*` and `danger-*` in components.
+- **StatusTag:** tinted fills with a dot, never a dark edge (tags no longer look like buttons), weight 500; new tone `attention` (amber) for values outside the normal range; long tags wrap instead of overflowing.
+- **NumberField:** "Cao"/"Thấp" use `attention`, not red. The hint says only what helps: "Chưa điền · ví dụ 78" while empty, only "ví dụ 78" next to an error or while typing, nothing once filled and left.
+- **FormNotice:** a sign per type ("!", "i", "✓") as well as color (the nursing-home orange sits close to red and amber); boxed notices tinted by type; `text` may be rich; `live={false}` for countdowns.
+- **ConfirmationPanel:** `emphasis="subtle"` for staff screens; done steps ✓, the waited-for step outlined; the arrow ends a step so a wrapped line never starts with "→".
+- **RadioGroup:** `variant="pills"` for list filters; `row` options never shrink below their words.
+- **ErrorSummary:** `layout="inline"` keeps the form in view on staff screens.
+- **DataTable:** `stackBelow="phone"` shows each record as a block (explicit ARIA roles), slightly tighter rows.
+- **PatientContextBar:** facts set apart by space, not "·" ("Sinh 07/07/1990 (36 tuổi)", "CCCD …0006", "Mã lượt khám RD26-0006"); smaller and tighter on phones with the two buttons on one row; `variant="block"`; the breadcrumb collapses to "‹ parent" on phones.
+- **Breadcrumb:** the "›" ends an item; `collapseOnPhone`.
+- **TextField:** read-only fields (BMI) look read-only. **Kbd:** lighter keycaps. **FieldRow:** aligns Combobox and Select too (it skipped Combobox in 2.3). **StaffLayout:** tighter rhythm on phones. **Header** compact: the menu button keeps "Menu" when open, so the bar stays one row at 320px.
+- `formatViNumber(n, decimals, minDecimals)` for fixed decimals ("21,0").
+
+### Sample pages
+- **Danh sách hồ sơ:** search under the title; filter pills on desktop, a Select on phones; records as blocks on phones; every typed word must match; near-duplicate "Phạm Văn Năm" and a hint when matches sit in another group; mode "Bạn nhập liệu · Minh duyệt gửi"; the header says which batch auto-send runs for.
+- **Nhập kết quả:** FormPartNav; conflict state; "Lưu lại" after a failure (no second retry button); "Đến mục còn thiếu"; BMI read-only "21,0"; blood pressure as one group; inline error summary; CodeList and the doctor's words; multiline advice; new stories MatMangChuaLuu and SauKhiGui.
+- **Xem lại trước khi gửi:** SoDaTiepNhan, BiTuChoi, ChuaRoKetQua (no resend) replace DaGuiLenSo and GuiLoi; "Sang người sau cần làm" during the undo window; the stale notice names the change ("Cân nặng 52,5 → 53 kg"); HIS source next to the lab row; the tick box names what to compare.
+
+### Process
+- **Usability test protocol** `docs/usability-test-v2.4.md` (Vietnamese): one 60–75 minute session per staff member, eight tasks on the sample pages, timings, errors, understanding of states, Giữ / Sửa / Làm lại thresholds.
+- The visual review no longer reports text inside a visually hidden table header as clipped (skill fix).
+
+### Decisions kept open for Minh
+- Dashed edge for unavailable buttons: kept (approved 25/10); a reviewer read it as a drop zone.
+- Normal ranges and any confirmation for very abnormal values: example ranges only; a doctor sets them.
+
 ## 2.3.0 — 2026-10-29
 
 Three sample staff screens from the hoso app, and the components they needed. Tokens: no value changes (version only).

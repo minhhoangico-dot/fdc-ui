@@ -158,7 +158,8 @@ export function Header({
       onClick={() => setMenuOpen((v) => !v)}
     >
       <Icon name="navigation-menu" size={20} />
-      <span>{menuOpen ? closeMenuLabel : menuLabel}</span>
+      {/* The compact bar keeps "Menu" (state is in aria-expanded) so the one-row bar does not wrap at 320px. */}
+      <span>{menuOpen && !compact ? closeMenuLabel : menuLabel}</span>
     </button>
   );
 

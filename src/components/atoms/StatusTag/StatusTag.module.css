@@ -19,7 +19,8 @@
   font-size: 1rem;
   font-weight: 500;
   line-height: 1.5;
-  white-space: nowrap;
+  /* Short tags stay on one line; a long one wraps inside its container instead of running past it. */
+  overflow-wrap: anywhere;
   vertical-align: middle;
 }
 .StatusTag:where([data-size='sm']) {

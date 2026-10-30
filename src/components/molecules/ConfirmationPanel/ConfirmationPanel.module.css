@@ -136,7 +136,8 @@
   align-items: center;
   gap: var(--space-10);
 }
-.Step + .Step::before {
+.Step:not(:last-child)::after {
+  /* The arrow ends a step, so a wrapped line never starts with a lone "→". */
   content: '→' / '';
 }
 .Step:where([data-state='done']) .StepLabel {

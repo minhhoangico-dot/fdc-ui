@@ -19,6 +19,7 @@ it('formats numbers the Vietnamese way', () => {
   expect(formatViInteger(2033)).toBe('2.033');
   expect(formatViNumber(52.5)).toBe('52,5');
   expect(formatViNumber(78)).toBe('78');
+  expect(formatViNumber(21.03, 1, 1)).toBe('21,0');
 });
 
 it('computes age from dd/mm/yyyy', () => {

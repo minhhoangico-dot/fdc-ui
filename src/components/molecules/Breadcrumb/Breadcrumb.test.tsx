@@ -16,3 +16,10 @@ it('ends each item but the last with a hidden separator, so a wrapped line never
   for (const li of items.slice(0, -1)) expect(li.lastElementChild).toHaveAttribute('aria-hidden', 'true');
   expect(items[0].firstElementChild?.tagName).toBe('A');
 });
+
+it('marks the parent so a phone can show only the way back', () => {
+  render(<Breadcrumb collapseOnPhone items={[{ label: 'Việc của tôi', href: '/' }, { label: 'Rạng Đông KSK 2026', href: '/dot' }, { label: 'Người 6 / 2.033' }]} />);
+  expect(screen.getByRole('navigation')).toHaveAttribute('data-collapse', 'true');
+  const items = within(screen.getByRole('list')).getAllByRole('listitem');
+  expect(items.map((li) => li.hasAttribute('data-parent'))).toEqual([false, true, false]);
+});

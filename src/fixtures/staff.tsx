@@ -9,7 +9,11 @@ export const staffHeader: StaffLayoutProps['header'] = {
   items: [{ label: 'Việc của tôi', href: '#', current: true }],
   tools: (
     <>
-      <StatusTag tone="success">Gửi tự động đang chạy</StatusTag>
+      {/* Says which batch auto-send runs for, so nobody reads it as "this batch is being sent".
+          In the phone menu at 320px it may wrap instead of running off the screen. */}
+      <StatusTag tone="success" size="sm" style={{ whiteSpace: 'normal' }}>
+        Gửi tự động: đang chạy cho F.D.I KSK 2026
+      </StatusTag>
       <span>Chị Lan</span>
       <a href="#" style={{ display: 'inline-flex', alignItems: 'center', minBlockSize: 'var(--target-min)', color: 'var(--text-link)', fontWeight: 600 }}>
         Đăng xuất

@@ -1,0 +1,144 @@
+/* Nhập kết quả: layout the page needs beyond inline styles. Role tokens only. */
+
+/* The part being filled: a white block with a light edge on the grey work surface. Tighter on phones. */
+.Part {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+  padding: var(--space-15);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+@media (min-width: 40rem) {
+  .Part {
+    padding: var(--space-20);
+  }
+}
+
+/* The fields of a part. Measurements hold two or three digits, so the block stays narrow instead of
+   stretching every box across the screen. */
+.Fields {
+  container: fields / inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+  max-inline-size: 44rem;
+}
+
+/* Mạch beside the blood-pressure group (Tâm thu, Tâm trương). Five shared row tracks: group label, field label,
+   hint, error, box. Each field takes four of them through subgrid (the data-part contract FieldRow uses), so labels
+   line up with labels and boxes with boxes, whichever field has a hint or an error.
+   Narrow: Mạch on its own line (its unit and a "Cao" tag need the width), the two pressures side by side under it. */
+.Vitals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--space-20);
+  row-gap: 0;
+}
+.Vitals .Field {
+  display: grid;
+  grid-row: span 4;
+  grid-template-rows: subgrid;
+  row-gap: var(--space-5);
+}
+.Vitals .Field > [data-part='label'] {
+  grid-row: 1;
+}
+.Vitals .Field > [data-part='hint'] {
+  grid-row: 2;
+  align-self: start;
+}
+.Vitals .Field > [data-part='error'] {
+  grid-row: 3;
+  align-self: start;
+}
+.Vitals .Field > [data-part='control'] {
+  grid-row: 4;
+  align-self: start;
+}
+.Vitals > .Field {
+  grid-column: 1 / -1;
+}
+.Pressure {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-row: span 5;
+  grid-template-columns: subgrid;
+  grid-template-rows: subgrid;
+  row-gap: var(--space-5);
+  margin-block-start: var(--space-20);
+}
+.Pressure > .Field {
+  grid-row: 2 / span 4;
+}
+.GroupLabel {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  color: var(--text-default);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+/* Three equal columns, the same as the row above (Chiều cao · Cân nặng · BMI): Mạch in the first, the group in
+   the other two. Wide enough that "112 lần/phút" and its "Cao" tag fit Mạch's column. */
+@container fields (min-width: 40rem) {
+  .Vitals {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .Vitals > .Field {
+    grid-column: 1;
+    grid-row: 2 / span 4;
+  }
+  .Pressure {
+    grid-column: 2 / span 2;
+    grid-row: 1 / span 5;
+    margin-block-start: 0;
+  }
+}
+
+/* The previous person's record in its undo window, at the top of the next person's page: the notice and its
+   "Hủy gửi" button on one line, the button under the notice on a phone. Focus lands here when the button goes. */
+.Pending {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-10) var(--space-15);
+}
+.Pending:focus {
+  outline: none;
+}
+.PendingNotice {
+  flex: 1 1 20rem;
+}
+
+/* The action bar on a phone is two lines, so the form keeps most of the screen: the counts and the save line,
+   then the buttons. Below 360px "ở 4 phần" goes (the part picker has each part's count), so "Còn 48 mục" and
+   "✓ Đã lưu 09:12" still share the first line. */
+@media (max-width: 22.49rem) {
+  .PartsCount {
+    display: none;
+  }
+}
+/* The screen's buttons. Phones: a line of their own in equal halves; labels may wrap, with a narrower inner edge
+   so "Xem lại trước khi gửi" takes two lines at 320px, not three. From 40rem: their natural width, beside the save line. */
+.Actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: var(--space-10);
+  inline-size: 100%;
+}
+@media (max-width: 39.99rem) {
+  .Actions [data-component='Button'] {
+    padding-inline: var(--space-10);
+  }
+}
+@media (min-width: 40rem) {
+  .Actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    inline-size: auto;
+  }
+}

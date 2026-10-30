@@ -5,3 +5,5 @@ Where a staff page sits: "Việc của tôi › Rạng Đông KSK 2026 › Ngư�
 The "›" ends each item but the last (inside its list item, hidden from screen readers), so a wrapped line always starts with a place, never with a separator.
 
 Staff tools only: public pages are shallow and use the header menu. PatientContextBar shows one above the person's name.
+
+`collapseOnPhone` (used by PatientContextBar): below 640px only the way back to the parent shows, as "‹ Rạng Đông KSK 2026", so a long trail does not take three lines on a phone.

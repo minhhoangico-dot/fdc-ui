@@ -44,3 +44,9 @@ describe('FormNotice', () => {
     expect(note).toHaveTextContent('Chưa gửi được.');
   });
 });
+
+it('can stay quiet for text that changes by itself, such as a countdown', () => {
+  const { container } = render(<FormNotice live={false} notice={{ text: 'Ngô Văn Nam: chờ gửi lên Sở · còn 22 giây' }} />);
+  expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  expect(container).toHaveTextContent('còn 22 giây');
+});

@@ -7,6 +7,10 @@
   line-height: 1.4;
   color: var(--text-default);
 }
+.PatientContextBar:where([data-variant='block']) {
+  border-block-end: 0;
+  background: transparent;
+}
 @media (min-width: 64rem) {
   .PatientContextBar:where([data-sticky]) {
     position: sticky;

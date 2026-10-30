@@ -1,0 +1,61 @@
+/* Danh sách hồ sơ: the page's own layout only (title size, which filter control shows at which width).
+   Role tokens only; the components bring their own look. 40rem matches DataTable's stackBelow="phone". */
+
+.Title {
+  margin: 0;
+  font-family: var(--font-heading);
+  /* Phones: smaller, so the search and the first record fit on the first screen. */
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text-default);
+}
+
+.Search {
+  max-inline-size: 36rem;
+}
+
+/* The batch in one line: plain words, bold only on the numbers. */
+.Stats {
+  margin: 0;
+  color: var(--text-muted);
+}
+.Stats strong {
+  font-weight: 600;
+  color: var(--text-default);
+}
+
+/* Above the table: the batch line on the left, the actions on the right (from 40rem); they wrap on narrow screens. */
+.Toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-10) var(--space-20);
+}
+
+/* "Còn 1 người khớp … ở nhóm khác": a line of text and one button, no box. */
+.Elsewhere {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5) var(--space-15);
+  margin: 0;
+}
+
+/* Exactly one filter control per width: pills from 40rem, a Select below. */
+@media (max-width: 39.99rem) {
+  .WideOnly {
+    display: none;
+  }
+}
+@media (min-width: 40rem) {
+  .Title {
+    font-size: 2rem;
+  }
+  .PhoneOnly {
+    display: none;
+  }
+  .Actions {
+    margin-inline-start: auto;
+  }
+}

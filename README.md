@@ -21,16 +21,16 @@ Open this repo in Claude Code and describe the work ("thêm màn hình tra cứu
 - `.claude/skills/atomic-design-system/`: the design-system skill with the FDC brand profile (`references/brands/fdc.md`), used for every UI task.
 - `.claude/agents/design-review.md`: a read-only reviewer that renders the stories, measures them and writes a ranked report with screenshots.
 
-Use the **Theme** button in the Storybook toolbar to see every component in the clinic (blue) and nursing-home (orange) themes. Start with **Pages › Đặt lịch khám › Toàn bộ quy trình** to walk through the whole booking flow, built only from these parts inside the real clinic header and footer. For staff tools, see **Pages › Nhân viên**: the record list, result entry and review before sending (compact density, mock data).
+Use the **Theme** button in the Storybook toolbar to see every component in the clinic (blue) and nursing-home (orange) themes. Start with **Pages › Đặt lịch khám › Toàn bộ quy trình** to walk through the whole booking flow, built only from these parts inside the real clinic header and footer. For staff tools, see **Pages › Nhân viên**: the record list, result entry and review before sending (compact density, mock data). Before building real hoso screens from them, run the staff usability test in [docs/usability-test-v2.4.md](docs/usability-test-v2.4.md) (Vietnamese; 60–75 minutes per person, mock data only).
 
 ## What's inside
 
 | Level | Components |
 |---|---|
 | Tokens | `design/fdc-medical-group/tokens.json` (master copy) → `src/tokens/tokens.css` (generated) |
-| Layout | Stack, Inline, FieldRow (aligned multi-column fields) |
-| Atoms | Button (secondary, primary, hotline; `disabledReason`), TextField (`unit`, `after`), Icon (24 FDC glyphs), Avatar, TextLink, SkipLink, StatusTag, Kbd, VisuallyHidden |
-| Molecules | DateInput (Ngày/Tháng/Năm), PhoneInput, TimeSlotPicker, RadioGroup, SummaryList, CareCard, ConfirmationPanel, HotlineCard, WorkingHours, ServiceCard, SpecialtyTile, ValueCard, TestimonialCard, NewsCard, ServiceAccordion, FormNotice; staff: NumberField, Combobox, SaveStatus, Pagination, Breadcrumb |
+| Layout | Stack, Inline, FieldRow (aligned multi-column fields: TextField, NumberField, Combobox, Select) |
+| Atoms | Button (secondary, primary, hotline; `disabledReason`), TextField (`unit`, `after`), Select, Checkbox, Icon (24 FDC glyphs), Avatar, TextLink, SkipLink, StatusTag, Kbd, VisuallyHidden |
+| Molecules | DateInput (Ngày/Tháng/Năm), PhoneInput, TimeSlotPicker, RadioGroup, SummaryList, CareCard, ConfirmationPanel, HotlineCard, WorkingHours, ServiceCard, SpecialtyTile, ValueCard, TestimonialCard, NewsCard, ServiceAccordion, FormNotice; staff: NumberField, Combobox, CodeList, FormPartNav, SaveStatus, Pagination, Breadcrumb |
 | Organisms | Header (site, and `compact` for staff tools), Footer, Dialog (`wide`, `scrollBody`), IdleTimeoutDialog, ErrorSummary, ResultLookupForm, ContactForm; staff: DataTable, PatientContextBar |
 | Templates | SiteLayout, BookingStep, StaffLayout |
 | Pages (Storybook only) | Đặt lịch khám: the full flow (service → who → time → details → check answers → confirmation) with session timeout; single steps with stress cases; Khi nào cần đi khám (care advice); Nhân viên: danh sách hồ sơ, nhập kết quả, xem lại trước khi gửi |

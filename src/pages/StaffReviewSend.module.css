@@ -1,0 +1,146 @@
+/* Xem lại trước khi gửi: the page's own layout only (title size, the person block, the result line, blocks).
+   Role tokens only; the components bring their own look. 40rem matches the phone break of SummaryList and DataTable. */
+
+/* The head (breadcrumb, title, person, result) is tight, so the result and the data under it stay in view. */
+.Head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+.Title {
+  margin: 0;
+  font-family: var(--font-heading);
+  /* Phones: smaller, so the person and the result fit on the first screen. */
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text-default);
+}
+
+/* The person: one light block; the context bar inside uses variant="block", so the block has one edge, not two. */
+.Person {
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+/* Exam, signer and last save: whole chunks set apart by space (like the bar's facts), lined up with the bar's text. */
+.Meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-15);
+  margin: 0;
+  padding: 0 var(--space-15) var(--space-10);
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.Meta strong {
+  font-weight: 600;
+  color: var(--text-default);
+}
+
+/* A white block with a light edge on the grey work surface. Tighter on phones. */
+.Block {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  padding: var(--space-15);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+.Block > p {
+  margin: 0;
+}
+.H2 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text-default);
+}
+
+/* A result that is a notice (refused, unknown, changed): the notice, then its buttons; no white box around it. */
+.Outcome {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+.Outcome:focus,
+.Focus:focus {
+  /* Focus is moved here by script after a change, so screen readers read it; it is not a control. */
+  outline: none;
+}
+
+/* A sentence and its button on one line while they fit; the button goes under the words on a phone. */
+.Line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-10) var(--space-15);
+  margin: 0;
+}
+
+/* The points that differ from normal. */
+.List {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin: 0;
+  padding-inline-start: var(--space-20);
+}
+
+/* A code after its name: in brackets and lighter ("Tăng huyết áp (I10)"). */
+.Code {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+.Muted {
+  color: var(--text-muted);
+}
+/* Words that read wrong when split, such as "X-quang". */
+.Whole {
+  white-space: nowrap;
+}
+
+/* A value of several facts, one group per line, so no "·" is left at a line end. */
+.Lines {
+  display: flex;
+  flex-direction: column;
+}
+
+/* The send row: the sentence about signing, then the buttons. Not boxed: it ends the page. */
+.Send {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+.Send > p {
+  margin: 0;
+}
+
+/* Exactly one breadcrumb per width: the full trail from 40rem, a shorter one below. */
+@media (max-width: 39.99rem) {
+  .WideOnly {
+    display: none;
+  }
+}
+@media (min-width: 40rem) {
+  .PhoneOnly {
+    display: none;
+  }
+  .Title {
+    font-size: 2rem;
+  }
+  .Block {
+    gap: var(--space-15);
+    padding: var(--space-20);
+  }
+  .H2 {
+    font-size: 1.375rem;
+  }
+}
