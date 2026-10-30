@@ -174,3 +174,64 @@
   font-size: 1rem;
 }
 
+
+/* Pills: list filters ("Cần điền hoặc sửa · 1.017"), drawn so a filter never looks like a form question.
+   The native radio stays in the page, visually hidden, for arrow keys and screen readers; the label's overlay
+   keeps the whole pill clickable, and the focus ring is drawn on the pill (.Option:has(.Input:focus-visible) above).
+   Last in the file so these rules win over the compact ones at the same specificity. */
+.RadioGroup:where([data-variant='pills']) .Options {
+  gap: var(--space-10);
+}
+.RadioGroup:where([data-variant='pills']) .Option {
+  align-items: center;
+  gap: 0;
+  min-block-size: var(--target-min);
+  padding: var(--space-5) var(--space-15);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+}
+.RadioGroup:where([data-variant='pills']) .Option:hover:not([data-disabled], [data-checked]) {
+  border-color: var(--border-brand);
+  background: var(--surface);
+}
+/* Checked: tinted fill, a brand edge drawn 2px wide (the inset shadow adds the second pixel, so nothing moves)
+   and bold text. The heavier edge and the weight mark the choice without relying on color. */
+.RadioGroup:where([data-variant='pills']) .Option:where([data-checked]) {
+  border-color: var(--border-brand);
+  background: var(--surface-selected);
+  box-shadow: inset 0 0 0 calc(var(--border-width-strong) - 1px) var(--border-brand);
+}
+.RadioGroup:where([data-variant='pills']) .Option:where([data-disabled]) {
+  border-style: dashed;
+}
+.RadioGroup:where([data-variant='pills']) .Input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.RadioGroup:where([data-variant='pills']) .Text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-default);
+}
+.RadioGroup:where([data-variant='pills']) .Option:where([data-checked]) .Text {
+  font-weight: 600;
+  color: var(--text-brand-strong);
+}
+.RadioGroup:where([data-variant='pills']) .Option:where([data-disabled]) .Text {
+  color: var(--text-disabled);
+}
+/* Forced colors drop the fill and the inset shadow: mark the checked pill with the system highlight instead. */
+@media (forced-colors: active) {
+  .RadioGroup:where([data-variant='pills']) .Option:where([data-checked]) {
+    background: Highlight;
+  }
+  .RadioGroup:where([data-variant='pills']) .Option:where([data-checked]) .Text {
+    color: HighlightText;
+  }
+}

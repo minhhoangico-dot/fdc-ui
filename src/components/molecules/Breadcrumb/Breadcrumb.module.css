@@ -16,6 +16,7 @@
   align-items: center;
   min-inline-size: 0;
 }
+/* Ends each item but the last, so a wrapped line starts with a place, never with "›". */
 .Separator {
   padding: 0 var(--space-5);
   color: var(--text-muted);

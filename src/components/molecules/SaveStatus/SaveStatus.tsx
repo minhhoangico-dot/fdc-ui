@@ -10,6 +10,11 @@ export type SaveStatusState =
   | { state: 'unsaved'; count: number; lastSavedAt?: string }
   /** The save request is on its way. */
   | { state: 'saving' }
+  /**
+   * Someone else changed the same fields while this person was typing: nothing is saved until each of the
+   * `count` values is settled. Amber, never green: the last save time says what is safe, not that this is.
+   */
+  | { state: 'conflict'; count: number; lastSavedAt?: string }
   /** The server refused or the network failed. `reason` in plain words: "mất mạng". */
   | { state: 'error'; reason: string; count?: number };
 
@@ -21,8 +26,16 @@ export type SaveStatusProps = {
 } & Omit<HTMLAttributes<HTMLDivElement>, 'children'>;
 
 /**
- * The save line of a staff form, one of four moments: "8 ô chưa lưu · Lưu lần cuối 09:12", "Đang lưu…",
- * "Đã lưu 09:15", or "Lưu không được: mất mạng. Chữ đã gõ vẫn còn." with "Lưu lại".
+ * The save line of a staff form, one of five moments:
+ *
+ * | State | Reads | Color |
+ * |---|---|---|
+ * | unsaved | "8 ô chưa lưu · Lưu lần cuối 09:12" | `status-info-text` |
+ * | saving | "Đang lưu…" | `status-info-text` |
+ * | saved | "✓ Đã lưu 09:15" | `status-success-text` |
+ * | conflict | "Cần xử lý 2 giá trị trước khi lưu · Lưu lần cuối 09:12" | `status-warning-text` (never green) |
+ * | error | "Lưu không được: mất mạng. Chữ đã gõ vẫn còn." + "Lưu lại" | `status-error-text` |
+ *
  * It counts unsaved fields only ("ô chưa lưu"); items still to fill ("mục còn thiếu") are a different count, shown elsewhere.
  * Changes are announced politely; a failed save is announced at once.
  */
@@ -44,6 +57,12 @@ export function SaveStatus({ status, onRetry, retryLabel = 'Lưu lại', classNa
         </span>
       ) : null}
       {status.state === 'saving' ? <span className={styles.Unsaved}>Đang lưu…</span> : null}
+      {status.state === 'conflict' ? (
+        <span>
+          <span className={styles.Conflict}>Cần xử lý {status.count} giá trị trước khi lưu</span>
+          {status.lastSavedAt ? <span className={styles.Muted}> · Lưu lần cuối {status.lastSavedAt}</span> : null}
+        </span>
+      ) : null}
       {status.state === 'error' ? (
         <>
           <span role="alert" className={styles.Error}>

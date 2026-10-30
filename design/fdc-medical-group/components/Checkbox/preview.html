@@ -1,0 +1,9 @@
+<!-- @dsCard group="Atoms" height=310 subtitle="one statement to tick; hint, error with one red bar, disabled" -->
+<div id="root" style="display:flex;flex-direction:column;gap:16px;padding:16px;max-width:560px" data-density="compact"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h(F.Checkbox, {label: 'Tôi đã xem phần nhập tay', hint: '1 kết quả nhập tay: X-quang tim phổi', defaultChecked: true}),
+  h(F.Checkbox, {label: 'Tôi đã xem phần nhập tay', hint: '1 kết quả nhập tay: X-quang tim phổi', error: 'Tích “Tôi đã xem phần nhập tay” để gửi'}),
+  h(F.Checkbox, {label: 'Gửi bản sao cho công ty', disabled: true, hint: 'Đang gửi lên Sở, không sửa được'})));
+</script>

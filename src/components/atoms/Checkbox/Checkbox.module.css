@@ -1,0 +1,76 @@
+/* The box sits on the first line of the label; the row is the click target and never shorter than 44px.
+   The row is only as wide as its words, so a tap in the empty space beside it does not tick the box. */
+.Checkbox {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-inline-size: 0;
+  font-family: var(--font-body);
+}
+.Row {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  column-gap: var(--space-10);
+  align-items: start;
+  align-content: center;
+  max-inline-size: 100%;
+  min-block-size: var(--target-min);
+  padding-block: var(--space-5);
+  font-size: var(--font-size-body);
+  cursor: pointer;
+}
+.Input {
+  box-sizing: border-box;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  margin: 0;
+  /* With the label's font, 1.5em is one line of label text: the box centers on the first line at any text size. */
+  font: inherit;
+  margin-block-start: calc((1.5em - 1.5rem) / 2);
+  accent-color: var(--action-primary-bg);
+  cursor: pointer;
+}
+.Input:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+.Text {
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text-default);
+  overflow-wrap: anywhere;
+}
+.Required {
+  color: var(--status-error-text);
+}
+/* Lined up with the label's text, not the box. */
+.Hint {
+  box-sizing: border-box;
+  padding-inline-start: calc(1.5rem + var(--space-10));
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+.Error {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--status-error-text);
+}
+
+/* Error: one message and one red bar, like a RadioGroup; the box keeps its normal edge. */
+.Checkbox:where([data-invalid]) {
+  box-sizing: border-box;
+  border-inline-start: var(--border-width-heavy) solid var(--status-error-text);
+  padding-inline-start: var(--space-15);
+}
+
+.Checkbox:where([data-disabled]) .Row,
+.Checkbox:where([data-disabled]) .Input {
+  cursor: not-allowed;
+}
+.Checkbox:where([data-disabled]) .Text {
+  color: var(--text-disabled);
+}

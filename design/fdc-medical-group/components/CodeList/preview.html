@@ -1,0 +1,13 @@
+<!-- @dsCard group="Molecules" height=520 subtitle="several coded items for one question, e.g. every disease found at a check-up" -->
+<div id="root" style="display:flex;flex-direction:column;gap:20px;padding:16px;max-width:560px" data-density="compact"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+var icd = [
+  {value: 'I10', label: 'Tăng huyết áp vô căn (nguyên phát)', code: 'I10', keywords: 'cao huyet ap THA'},
+  {value: 'E11', label: 'Đái tháo đường type 2', code: 'E11', keywords: 'tieu duong'},
+  {value: 'E66', label: 'Béo phì', code: 'E66'},
+  {value: 'K21', label: 'Bệnh trào ngược dạ dày – thực quản', code: 'K21'}];
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h(F.CodeList, {label: 'Bệnh, tật', hint: 'Chọn mọi bệnh, tật phát hiện khi khám.', options: icd, defaultValue: ['I10', 'E11']}),
+  h(F.CodeList, {label: 'Bệnh, tật', options: icd, error: 'Thêm ít nhất một bệnh, tật trước khi xem lại'})));
+</script>

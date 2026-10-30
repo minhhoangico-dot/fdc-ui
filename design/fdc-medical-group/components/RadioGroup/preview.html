@@ -1,4 +1,4 @@
-<!-- @dsCard group="Molecules" height=520 subtitle="tiles; Không / Có in a row; I–V compact; one error for the group" -->
+<!-- @dsCard group="Molecules" height=700 subtitle="tiles; Không / Có in a row; I–V compact; one error for the group; pills for list filters" -->
 <div id="root" style="padding:16px;max-width:560px;display:flex;flex-direction:column;gap:24px"></div>
 <script>
 var h = React.createElement, F = window.FDC;
@@ -11,5 +11,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, nu
   h('div', {style: {maxWidth: '330px'}},
     h(F.RadioGroup, {label: 'Phân loại sức khỏe', name: 'loai', layout: 'row', density: 'compact', defaultValue: 'II',
       options: ['I', 'II', 'III', 'IV', 'V'].map(function (v) { return {value: v, label: v}; })})),
-  h(F.RadioGroup, {label: '8. Tăng huyết áp (I10)', name: 'q8', layout: 'row', options: yn, error: 'Chọn Không hoặc Có'})));
+  h(F.RadioGroup, {label: '8. Tăng huyết áp (I10)', name: 'q8', layout: 'row', options: yn, error: 'Chọn Không hoặc Có'}),
+  h('div', {'data-density': 'compact'},
+    h(F.RadioGroup, {label: 'Nhóm người', name: 'nhom', variant: 'pills', layout: 'wrap', density: 'compact', defaultValue: 'can-lam', options: [
+      {value: 'can-lam', label: 'Cần điền hoặc sửa · 1.017'},
+      {value: 'xem-lai', label: 'Sẵn sàng xem lại · 412'},
+      {value: 'dang-cho', label: 'Đang chờ · 96'},
+      {value: 'dang-gui', label: 'Đang gửi · 3'},
+      {value: 'da-gui', label: 'Đã gửi · 505'},
+      {value: 'tat-ca', label: 'Tất cả · 2.033'}]}))));
 </script>

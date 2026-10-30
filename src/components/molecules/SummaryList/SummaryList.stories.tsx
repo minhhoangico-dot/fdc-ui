@@ -26,8 +26,8 @@ export const ReadOnly: Story = { args: { rows: [{ key: 'Mã đặt lịch', valu
 
 const cell = { padding: 'var(--space-5) var(--space-10)', textAlign: 'left' as const, verticalAlign: 'top' as const };
 const results = [
-  ['Huyết áp', '150/95 mmHg', <StatusTag key="t" tone="error" size="sm">Cao</StatusTag>],
-  ['Glucose máu', '3,2 mmol/L', <StatusTag key="t" tone="error" size="sm">Thấp</StatusTag>],
+  ['Huyết áp', '150/95 mmHg', <StatusTag key="t" tone="attention" size="sm">Cao</StatusTag>],
+  ['Glucose máu', '3,2 mmol/L', <StatusTag key="t" tone="attention" size="sm">Thấp</StatusTag>],
   ['Chiều cao', '162 cm', <StatusTag key="t" tone="muted" size="sm">Nhập tay</StatusTag>],
   ['X-quang tim phổi', 'Bình thường', null],
 ] as const;

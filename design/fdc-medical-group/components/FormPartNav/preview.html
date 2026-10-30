@@ -1,0 +1,22 @@
+<!-- @dsCard group="Molecules" height=450 subtitle="the parts of a long form with what is left; one toggle on phones" -->
+<div id="root" style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;padding:16px" data-density="compact"></div>
+<script>
+var h = React.createElement, F = window.FDC;
+var parts = [
+  {label: '1. Hành chính', href: '#', done: true},
+  {label: '2. Lần khám', href: '#', done: true},
+  {label: '3. Tiền sử', href: '#', count: 'còn 17', problem: '1 cần sửa'},
+  {label: '4. Thể lực', href: '#', count: 'còn 2', current: true},
+  {label: '5. Lâm sàng', href: '#', count: 'còn 25'},
+  {label: '6. Cận lâm sàng', href: '#', done: true, sub: '12 chỉ số từ HIS, 09:12'},
+  {label: '7. Kết luận', href: '#', count: 'còn 2'}];
+// The second copy is opened once it is on screen, to show the list a phone gets (from 1024px both show the list).
+var openOnce = function (el) {
+  if (!el || el.dataset.opened) return;
+  el.dataset.opened = 'true';
+  setTimeout(function () { var b = el.querySelector('button[aria-expanded="false"]'); if (b) b.click(); }, 0);
+};
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h('div', {style: {flex: '1 1 260px', maxWidth: '280px'}}, h(F.FormPartNav, {items: parts})),
+  h('div', {style: {flex: '1 1 260px', maxWidth: '280px'}, ref: openOnce}, h(F.FormPartNav, {items: parts}))));
+</script>

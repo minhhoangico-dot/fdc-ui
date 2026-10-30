@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { FormNotice } from './FormNotice';
+import { FormNotice, type FormNoticeValue } from './FormNotice';
 
 describe('FormNotice', () => {
   it('is a status line with its type, unboxed by default', () => {
@@ -15,5 +15,32 @@ describe('FormNotice', () => {
     const note = screen.getByRole('status');
     expect(note).toHaveAttribute('data-boxed', 'true');
     expect(note).toHaveAttribute('data-type', 'warning');
+  });
+
+  it('shows the type as a hidden sign before the words: "!" error and warning, "i" info, "✓" success', () => {
+    const signs: Array<[NonNullable<FormNoticeValue['type']>, string]> = [
+      ['error', '!'],
+      ['warning', '!'],
+      ['info', 'i'],
+      ['success', '✓'],
+    ];
+    for (const [type, sign] of signs) {
+      const { unmount } = render(<FormNotice boxed notice={{ type, text: 'Chưa gửi được lên Sở.' }} />);
+      const note = screen.getByRole('status');
+      const mark = note.querySelector('[data-part="mark"]');
+      expect(mark, type).toHaveTextContent(sign);
+      expect(mark, type).toHaveAttribute('aria-hidden', 'true');
+      expect(note.firstElementChild, type).toBe(mark);
+      unmount();
+    }
+  });
+
+  it('keeps an empty live region in the page until there is something to say', () => {
+    const { rerender } = render(<FormNotice notice={null} />);
+    const note = screen.getByRole('status');
+    expect(note).toBeEmptyDOMElement();
+    rerender(<FormNotice notice={{ type: 'error', text: 'Chưa gửi được.' }} />);
+    expect(screen.getByRole('status')).toBe(note);
+    expect(note).toHaveTextContent('Chưa gửi được.');
   });
 });

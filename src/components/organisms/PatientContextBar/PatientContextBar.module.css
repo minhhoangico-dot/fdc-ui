@@ -45,23 +45,20 @@
   line-height: 1.3;
   overflow-wrap: anywhere;
 }
-/* Facts separated by middots; each fact stays whole when the line wraps. */
+/* Facts are whole chunks set apart by a gap, never by punctuation, so nothing dangles at a line end.
+   Each stays on one line; only the company or ward, the longest, wraps inside itself. */
 .Facts {
   display: flex;
   flex-wrap: wrap;
+  gap: 0 var(--space-15);
   margin: 0;
   color: var(--text-default);
 }
 .Facts > span {
   white-space: nowrap;
 }
-/* The dot ends a fact, so a wrapped line never starts with one. */
-.Facts > span:not(:last-child)::after {
-  content: '·';
-  padding: 0 var(--space-5);
-  color: var(--text-muted);
-}
-.Facts > span:last-child {
+.Facts > .Organization {
+  min-inline-size: 0;
   white-space: normal;
 }
 .Status {
@@ -71,4 +68,30 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-10);
+}
+/* Phones: a smaller name, tighter spacing, and the previous/next buttons share one row
+   (equal columns; their words may wrap) instead of stacking. */
+@media (max-width: 39.99rem) {
+  .Inner {
+    gap: var(--space-5) var(--space-15);
+  }
+  .Breadcrumb {
+    margin-block-start: calc(var(--space-5) * -1);
+  }
+  .NameLine {
+    gap: 0 var(--space-10);
+  }
+  .Name {
+    font-size: 1.25rem;
+  }
+  .Actions {
+    display: grid;
+    flex: 1 1 100%;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+  }
+  /* Half a phone each: a narrower inner edge keeps "Người sau cần làm" to two lines at 320px. */
+  .Actions [data-component='Button'] {
+    padding-inline: var(--space-10);
+  }
 }

@@ -1,0 +1,93 @@
+/* Field parts match TextField (label, hint, error, control), so a Select lines up with TextFields in a FieldRow. */
+.Select {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+  font-family: var(--font-body);
+}
+.Label {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-default);
+}
+.HiddenLabel {
+  box-sizing: border-box;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.Required {
+  color: var(--status-error-text);
+}
+.Hint {
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+.Error {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--status-error-text);
+}
+.Control {
+  position: relative;
+  min-inline-size: 0;
+}
+/* appearance: none drops the browser's arrow so ours (the Icon atom) is the same in every browser and theme. */
+.Input {
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: var(--control-height);
+  margin: 0;
+  padding: var(--space-10) var(--space-40) var(--space-10) var(--space-15);
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-default);
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  appearance: none;
+  cursor: pointer;
+}
+.Input:focus-visible {
+  box-sizing: border-box;
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: 1px;
+  border-color: var(--focus-ring);
+}
+.Input:disabled {
+  background: var(--surface-alt);
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+.Input[multiple] {
+  padding-inline-end: var(--space-15);
+}
+.Input option {
+  background: var(--surface);
+  color: var(--text-default);
+}
+.Select:where([data-invalid]) .Input {
+  box-sizing: border-box;
+  border: var(--border-width-strong) solid var(--status-error-text);
+}
+.Chevron {
+  position: absolute;
+  inset-inline-end: var(--space-15);
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.Input:disabled + .Chevron {
+  color: var(--text-disabled);
+}

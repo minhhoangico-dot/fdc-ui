@@ -82,3 +82,53 @@ describe('RadioGroup v2.1', () => {
   });
 });
 
+describe('RadioGroup v2.4 pills', () => {
+  const filters = [
+    { value: 'can-lam', label: 'Cần điền hoặc sửa · 1.017' },
+    { value: 'xem-lai', label: 'Sẵn sàng xem lại · 412' },
+    { value: 'tat-ca', label: 'Tất cả · 2.033' },
+  ];
+
+  it('defaults to tiles', () => {
+    render(<RadioGroup label="Ai?" name="who" options={options} />);
+    expect(screen.getByRole('group')).toHaveAttribute('data-variant', 'tiles');
+  });
+
+  it('draws a list filter as pills that are still radios, with the checked one marked', async () => {
+    const onValueChange = vi.fn();
+    render(
+      <RadioGroup label="Nhóm người" name="nhom" variant="pills" layout="wrap" density="compact" defaultValue="can-lam" options={filters} onValueChange={onValueChange} />,
+    );
+    const group = screen.getByRole('group', { name: 'Nhóm người' });
+    expect(group).toHaveAttribute('data-variant', 'pills');
+    expect(screen.getAllByRole('radio')).toHaveLength(3);
+    const first = screen.getByRole('radio', { name: 'Cần điền hoặc sửa · 1.017' });
+    expect(first).toBeChecked();
+    expect(first.closest('[data-checked]')).not.toBeNull();
+
+    await userEvent.click(screen.getByText('Tất cả · 2.033'));
+    const all = screen.getByRole('radio', { name: 'Tất cả · 2.033' });
+    expect(all).toBeChecked();
+    expect(first).not.toBeChecked();
+    expect(first.closest('[data-checked]')).toBeNull();
+    expect(all.closest('[data-checked]')).not.toBeNull();
+    expect(onValueChange).toHaveBeenLastCalledWith('tat-ca');
+  });
+
+  it('keeps the keyboard: Tab lands on the chosen pill and arrow keys move the choice', async () => {
+    render(
+      <>
+        <button type="button">Trước</button>
+        <RadioGroup label="Nhóm người" name="nhom" variant="pills" layout="wrap" defaultValue="xem-lai" options={filters} />
+      </>,
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Trước' }));
+    await userEvent.tab();
+    expect(screen.getByRole('radio', { name: 'Sẵn sàng xem lại · 412' })).toHaveFocus();
+    await userEvent.keyboard('{ArrowRight}');
+    const all = screen.getByRole('radio', { name: 'Tất cả · 2.033' });
+    expect(all).toHaveFocus();
+    expect(all).toBeChecked();
+  });
+});
+

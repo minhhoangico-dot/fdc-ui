@@ -1,4 +1,4 @@
-<!-- @dsCard group="Organisms" height=430 subtitle="records for staff: name first, status word, next step, paging" -->
+<!-- @dsCard group="Organisms" height=430 subtitle="records for staff: name first, status word, next step, paging; stacks on phones" -->
 <div id="root" style="padding:16px" data-density="compact"></div>
 <script>
 var h = React.createElement, F = window.FDC;
@@ -8,12 +8,12 @@ var rows = [
   {stt: 3, name: 'Tôn Nữ Hoàng Bảo Ngọc Phương Thảo', meta: 'Nữ · 21/12/1978 · CCCD …0003', code: 'RD26-0003', status: 'Cần điền · còn 47 mục', tone: 'neutral', next: 'Chọn Không hoặc Có cho 17 câu tiền sử', busy: 'Chị Mai đang mở'}];
 var muted = {color: 'var(--text-muted)'};
 ReactDOM.createRoot(document.getElementById('root')).render(h(F.DataTable, {
-  caption: 'Người cần điền hoặc sửa', rows: rows, getRowKey: function (r) { return r.code; },
+  caption: 'Người cần điền hoặc sửa', rows: rows, getRowKey: function (r) { return r.code; }, stackBelow: 'phone',
   pagination: {page: 1, pageSize: 50, total: 1017, itemLabel: 'người', getHref: function (p) { return '#trang-' + p; }},
   columns: [
     {key: 'stt', header: 'STT', align: 'end', width: '4.5rem', cell: function (r) { return r.stt; }},
     {key: 'name', header: 'Họ tên', rowHeader: true, cell: function (r) { return h(React.Fragment, null, h('a', {href: '#', style: {color: 'var(--text-link)', fontWeight: 600}}, r.name), h('div', {style: muted}, r.meta)); }},
     {key: 'code', header: 'Mã lượt khám', nowrap: true, cell: function (r) { return r.code; }},
-    {key: 'status', header: 'Trạng thái', cell: function (r) { return h(F.StatusTag, {tone: r.tone, size: 'sm'}, r.status); }},
+    {key: 'status', header: 'Trạng thái', hideLabelWhenStacked: true, cell: function (r) { return h(F.StatusTag, {tone: r.tone, size: 'sm'}, r.status); }},
     {key: 'next', header: 'Việc tiếp theo', cell: function (r) { return h(React.Fragment, null, r.next, r.busy ? h('div', {style: muted}, r.busy) : null); }}]}));
 </script>

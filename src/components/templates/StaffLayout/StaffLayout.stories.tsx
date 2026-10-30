@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '../../atoms/Button';
 import { staffHeader } from '../../../fixtures/staff';
+import { FormPartNav } from '../../molecules/FormPartNav';
 import { SaveStatus } from '../../molecules/SaveStatus';
 import { StaffLayout } from './StaffLayout';
 
@@ -23,10 +24,25 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-/** With a side column and the sticky action bar (the one block with a shadow, because it floats). */
+/**
+ * With the form's parts in the side column (a FormPartNav: the full list from 1024px, one toggle on phones)
+ * and the sticky action bar (the one block with a shadow, because it floats).
+ */
 export const WithAsideAndActionBar: Story = {
   args: {
-    aside: <p style={{ margin: 0, padding: 'var(--space-15)', background: 'var(--surface)', border: '1px solid var(--border)' }}>Các phần của phiếu</p>,
+    aside: (
+      <FormPartNav
+        items={[
+          { label: '1. Hành chính', href: '#', done: true },
+          { label: '2. Lần khám', href: '#', done: true },
+          { label: '3. Tiền sử', href: '#', count: 'còn 17' },
+          { label: '4. Thể lực', href: '#', count: 'còn 2', current: true },
+          { label: '5. Lâm sàng', href: '#', count: 'còn 25' },
+          { label: '6. Cận lâm sàng', href: '#', done: true, sub: '12 chỉ số từ HIS, 09:12' },
+          { label: '7. Kết luận', href: '#', count: 'còn 2' },
+        ]}
+      />
+    ),
     actionBar: (
       <>
         <span style={{ flex: '1 1 16rem' }}>
@@ -38,3 +54,6 @@ export const WithAsideAndActionBar: Story = {
     ),
   },
 };
+
+/** A phone: the parts are one toggle above the form, and the spacing is tighter, so the work area starts sooner. */
+export const WithAsideOnPhone: Story = { ...WithAsideAndActionBar, parameters: { viewport: { defaultViewport: 'mobile1' } } };

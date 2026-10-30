@@ -31,6 +31,8 @@
   --warning-50: #fff6d6;
   --warning-600: #a16a00;
   --warning-800: #6b4500;
+  --success-50: #edf7e2;
+  --danger-50: #fdeeec;
   --action-primary-bg: var(--brand-600);
   --action-primary-bg-hover: var(--brand-700);
   --text-on-action: var(--surface);
@@ -39,7 +41,9 @@
   --text-link: var(--brand-700);
   --focus-ring: var(--brand-600);
   --status-success-text: var(--leaf-700);
+  --status-success-bg: var(--success-50);
   --status-error-text: var(--danger);
+  --status-error-bg: var(--danger-50);
   --status-info-bg: var(--info-50);
   --status-info-border: var(--info-600);
   --status-info-text: var(--info-800);
@@ -86,7 +90,9 @@
   --text-link: var(--brand-700);
   --focus-ring: var(--brand-600);
   --status-success-text: var(--leaf-700);
+  --status-success-bg: var(--success-50);
   --status-error-text: var(--danger);
+  --status-error-bg: var(--danger-50);
   --status-info-bg: var(--info-50);
   --status-info-border: var(--info-600);
   --status-info-text: var(--info-800);

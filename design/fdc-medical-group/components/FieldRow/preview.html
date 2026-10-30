@@ -1,16 +1,19 @@
-<!-- @dsCard group="Layout" height=330 subtitle="fields side by side; labels and inputs line up; compact density for staff" -->
+<!-- @dsCard group="Layout" height=380 subtitle="fields side by side; labels and boxes line up across TextField, Combobox and Select" -->
 <div id="root" style="padding:16px;display:flex;flex-direction:column;gap:28px"></div>
 <script>
 var h = React.createElement, F = window.FDC;
+var occupations = [
+  {value: '22', label: 'Nhà chuyên môn về sức khỏe', code: '22'},
+  {value: '4', label: 'Nhân viên trợ lý văn phòng', code: '4'},
+  {value: '83', label: 'Lái xe và thợ vận hành thiết bị chuyển động', code: '83'}];
 ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
   h(F.FieldRow, null,
     h(F.TextField, {label: 'Họ và tên', defaultValue: 'Phạm Văn Nam'}),
     h(F.TextField, {label: 'Mã bệnh nhân', hint: 'In ở góc trên phiếu khám'}),
     h(F.TextField, {label: 'Năm sinh', defaultValue: '58', error: 'Nhập năm sinh gồm 4 chữ số, ví dụ 1958'})),
   h('div', {'data-density': 'compact'},
-    h(F.FieldRow, {minColumn: '11rem'},
-      h(F.TextField, {label: 'Chiều cao (cm)', placeholder: 'Chưa điền · ví dụ 162'}),
-      h(F.TextField, {label: 'Cân nặng (kg)', placeholder: 'Chưa điền · ví dụ 58'}),
-      h(F.TextField, {label: 'Mạch (lần/phút)', hint: 'Đo khi nghỉ', placeholder: 'Chưa điền · ví dụ 78'}),
-      h(F.TextField, {label: 'Huyết áp (mmHg)', defaultValue: '150/95'})))));
+    h(F.FieldRow, {minColumn: '14rem'},
+      h(F.Combobox, {label: 'Nghề nghiệp', options: occupations, defaultValue: '4'}),
+      h(F.TextField, {label: 'Nơi làm việc', hint: 'Ghi đủ tên công ty hoặc cơ quan như trên hợp đồng khám sức khỏe của đợt, kể cả chi nhánh', defaultValue: 'Công ty TNHH Rạng Đông'}),
+      h(F.Select, {label: 'Phân loại sức khỏe', defaultValue: 'II', options: ['I', 'II', 'III', 'IV', 'V'].map(function (v) { return {value: v, label: 'Loại ' + v}; })})))));
 </script>

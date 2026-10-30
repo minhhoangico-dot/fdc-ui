@@ -32,9 +32,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** Facts are whole chunks set apart by space: "Nữ", "Sinh 07/07/1990 (36 tuổi)", "CCCD …0006", "Mã lượt khám RD26-0006", the company. */
 export const Default: Story = {};
 
-/** The longest names and companies wrap; name, date of birth and code stay whole. */
+/** The longest names and companies wrap; each other fact stays whole, and no line starts with stray punctuation. */
 export const LongName: Story = {
   args: {
     name: 'Tôn Nữ Hoàng Bảo Ngọc Phương Thảo',
@@ -49,4 +50,5 @@ export const LongName: Story = {
 /** A missing ID is simply left out; nothing says "undefined". */
 export const MissingId: Story = { args: { idEnd: undefined, name: 'Nguyễn Thị Mai Anh', birthDate: '29/02/1996', recordCode: 'RD26-0007' } };
 
+/** On a phone the name is smaller, the spacing tighter, and "Người trước" / "Người sau cần làm" share one row. */
 export const Phone: Story = { parameters: { viewport: { defaultViewport: 'mobile1' } } };

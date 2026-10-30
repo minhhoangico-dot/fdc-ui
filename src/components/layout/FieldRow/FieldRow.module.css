@@ -1,5 +1,8 @@
-/* Each TextField spans four row tracks of the row (label, hint, error, control) through subgrid,
-   so parts line up across columns whether or not a field has a hint or an error. */
+/* Each field spans four row tracks of the row (label, hint, error, control) through subgrid,
+   so parts line up across columns whether or not a field has a hint or an error.
+   A field takes part when it is listed in FIELDS below and tags its parts with data-part="label|hint|error|control"
+   (TextField, Combobox, Select; NumberField renders a TextField). A new field component does both.
+   :is() keeps these rules above the field's own root class (display: flex) whatever order the CSS loads in. */
 .FieldRow {
   box-sizing: border-box;
   display: grid;
@@ -9,25 +12,35 @@
   align-items: end;
 }
 @supports (grid-template-rows: subgrid) {
-  .FieldRow > [data-component='TextField'] {
+  /* A row gap would also open around the empty hint and error tracks of a field that has neither, putting
+     its label 45px above its own box (and nearer the box above it on a phone). So the row has no gap:
+     parts keep the field's own 5px, and lines of fields are spaced by each field's bottom padding.
+     The last line's padding is taken back, so the row adds no space after itself. */
+  .FieldRow {
+    row-gap: 0;
+    margin-block-end: calc(var(--space-20) * -1);
+  }
+  /* FIELDS */
+  .FieldRow > :is([data-component='TextField'], [data-component='Combobox'], [data-component='Select']) {
     display: grid;
     grid-row: span 4;
     grid-template-rows: subgrid;
     row-gap: var(--space-5);
+    padding-block-end: var(--space-20);
     align-items: end;
   }
-  .FieldRow > [data-component='TextField'] > [data-part='label'] {
+  .FieldRow > :is([data-component='TextField'], [data-component='Combobox'], [data-component='Select']) > [data-part='label'] {
     grid-row: 1;
   }
-  .FieldRow > [data-component='TextField'] > [data-part='hint'] {
+  .FieldRow > :is([data-component='TextField'], [data-component='Combobox'], [data-component='Select']) > [data-part='hint'] {
     grid-row: 2;
     align-self: start;
   }
-  .FieldRow > [data-component='TextField'] > [data-part='error'] {
+  .FieldRow > :is([data-component='TextField'], [data-component='Combobox'], [data-component='Select']) > [data-part='error'] {
     grid-row: 3;
     align-self: start;
   }
-  .FieldRow > [data-component='TextField'] > [data-part='control'] {
+  .FieldRow > :is([data-component='TextField'], [data-component='Combobox'], [data-component='Select']) > [data-part='control'] {
     grid-row: 4;
     align-self: start;
   }

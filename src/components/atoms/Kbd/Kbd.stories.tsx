@@ -4,6 +4,7 @@ import { Kbd } from './Kbd';
 const meta = {
   title: 'Atoms/Kbd',
   component: Kbd,
+  parameters: { density: 'compact' },
   args: { keys: ['Ctrl', 'S'] },
 } satisfies Meta<typeof Kbd>;
 export default meta;

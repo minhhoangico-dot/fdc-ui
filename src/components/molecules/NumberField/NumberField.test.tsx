@@ -52,3 +52,55 @@ describe('NumberField', () => {
     expect(screen.getByRole('textbox')).toHaveAccessibleDescription(/Lỗi: Điền mạch trước khi xem lại/);
   });
 });
+
+describe('NumberField v2.4 hint', () => {
+  it('drops "Chưa điền" next to an error, keeping only the example', () => {
+    render(<NumberField label="Mạch" unit="lần/phút" example="78" error="Điền mạch" />);
+    expect(screen.queryByText(/Chưa điền/)).not.toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toHaveAccessibleDescription('lần/phút ví dụ 78 Lỗi: Điền mạch');
+  });
+
+  it('shows no hint at all next to an error when there is no example', () => {
+    render(<NumberField label="Mạch" unit="lần/phút" error="Điền mạch" />);
+    expect(screen.getByRole('textbox')).toHaveAccessibleDescription('lần/phút Lỗi: Điền mạch');
+  });
+
+  it("keeps only the example next to the field's own range error", async () => {
+    render(<NumberField label="Mạch" unit="lần/phút" example="78" min={30} max={250} />);
+    const input = screen.getByRole('textbox');
+    await userEvent.type(input, '300');
+    await userEvent.tab();
+    expect(input).toHaveAccessibleDescription('lần/phút ví dụ 78 Lỗi: Mạch từ 30 đến 250 lần/phút.');
+  });
+
+  it('keeps the example while typing, then drops the hint once filled and left', async () => {
+    render(<NumberField label="Chiều cao" unit="cm" example="158" />);
+    const input = screen.getByRole('textbox');
+    expect(input).toHaveAccessibleDescription('cm Chưa điền · ví dụ 158');
+    await userEvent.type(input, '1');
+    // Still one line of hint while typing, so the box does not move under the cursor.
+    expect(input).toHaveAccessibleDescription('cm ví dụ 158');
+    await userEvent.type(input, '62');
+    await userEvent.tab();
+    expect(screen.queryByText(/ví dụ 158/)).not.toBeInTheDocument();
+    expect(input).toHaveAccessibleDescription('cm');
+    // Back into the filled field to change it: the example comes back.
+    await userEvent.click(input);
+    expect(input).toHaveAccessibleDescription('cm ví dụ 158');
+  });
+
+  it('shows no hint for a value that was already filled in', () => {
+    render(<NumberField label="Cân nặng" unit="kg" decimals={1} example="52,5" defaultValue="52,5" />);
+    expect(screen.getByRole('textbox')).toHaveAccessibleDescription('kg');
+  });
+
+  it("lets the consumer's hint win in every state", async () => {
+    const onFocus = vi.fn();
+    render(<NumberField label="Mạch" example="78" hint="Đo lúc nghỉ 5 phút" defaultValue="78" error="Kiểm tra lại" onFocus={onFocus} />);
+    const input = screen.getByRole('textbox');
+    expect(input).toHaveAccessibleDescription('Đo lúc nghỉ 5 phút Lỗi: Kiểm tra lại');
+    await userEvent.click(input);
+    expect(onFocus).toHaveBeenCalled();
+    expect(input).toHaveAccessibleDescription('Đo lúc nghỉ 5 phút Lỗi: Kiểm tra lại');
+  });
+});

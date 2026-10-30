@@ -9,14 +9,15 @@
       "--text-placeholder",
       "--status-success-text",
       "--status-error-text",
-      "--status-info-text"
+      "--status-info-text",
+      "--status-warning-text"
     ],
     "bg": [
       "--surface",
       "--surface-alt",
       "--surface-selected"
     ],
-    "note": "every text role on every surface components may place it on (status-info-text: SaveStatus \"ô chưa lưu\" on the white action bar)"
+    "note": "every text role on every surface components may place it on (status-info-text: SaveStatus \"ô chưa lưu\" on the white action bar); status-warning-text: SaveStatus conflict on the white action bar"
   },
   {
     "fg": [
@@ -39,10 +40,32 @@
     "fg": [
       "--text-default",
       "--status-info-text",
+      "--text-muted",
       "--text-link"
     ],
     "bg": "--status-info-bg",
-    "note": "pending panel"
+    "note": "pending panel and info tags (text-muted: steps still to come)"
+  },
+  {
+    "fg": [
+      "--text-default",
+      "--text-muted",
+      "--status-success-text",
+      "--status-info-text",
+      "--status-error-text",
+      "--text-link"
+    ],
+    "bg": "--status-success-bg",
+    "note": "success tag, boxed success notice, subtle confirmation panel (status-info-text: the step still waited for; text-muted: steps still to come; status-error-text: a failed step)"
+  },
+  {
+    "fg": [
+      "--text-default",
+      "--status-error-text",
+      "--text-link"
+    ],
+    "bg": "--status-error-bg",
+    "note": "error tag and boxed error notice"
   },
   {
     "fg": [
@@ -51,7 +74,7 @@
       "--text-link"
     ],
     "bg": "--status-warning-bg",
-    "note": "warning panel"
+    "note": "warning panel, boxed warning notice, attention tag (\"Cao\", \"Thấp\")"
   },
   {
     "fg": "--text-on-action",
@@ -122,5 +145,16 @@
     "fg": "--text-on-action",
     "bg": "--status-info-border",
     "note": "current step in a pending panel"
+  },
+  {
+    "fg": "--status-info-border",
+    "bg": "--status-success-bg",
+    "min": 3,
+    "note": "dashed edge of the step still waited for, in the subtle confirmation panel"
+  },
+  {
+    "fg": "--text-on-action",
+    "bg": "--status-warning-border",
+    "note": "white mark in the warning notice circle (\"!\")"
   }
 ]

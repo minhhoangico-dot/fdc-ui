@@ -1,8 +1,15 @@
-<!-- @dsCard group="Organisms" height=170 subtitle="after a failed submit; links to fields" -->
-<div id="root" style="padding:16px;max-width:560px"></div>
+<!-- @dsCard group="Organisms" height=360 subtitle="after a failed submit; links to fields; inline for staff forms" -->
+<div id="root" style="padding:16px;max-width:560px;display:flex;flex-direction:column;gap:16px"></div>
 <script>
 var h = React.createElement, F = window.FDC;
-ReactDOM.createRoot(document.getElementById('root')).render(h(F.ErrorSummary, {focusOnMount: false, errors: [
-  {fieldId: 'name', text: 'Nhập họ và tên'},
-  {fieldId: 'phone', text: 'Nhập số điện thoại gồm 10 chữ số, ví dụ 0912 345 678'}]}));
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h(F.ErrorSummary, {focusOnMount: false, errors: [
+    {fieldId: 'name', text: 'Nhập họ và tên'},
+    {fieldId: 'phone', text: 'Nhập số điện thoại gồm 10 chữ số, ví dụ 0912 345 678'}]}),
+  h('div', {'data-density': 'compact'},
+    h(F.ErrorSummary, {focusOnMount: false, layout: 'inline', title: 'Còn 4 mục ở phần 4. Thể lực', errors: [
+      {fieldId: 'chieu-cao', text: 'Điền chiều cao'},
+      {fieldId: 'can-nang', text: 'Điền cân nặng'},
+      {fieldId: 'mach', text: 'Điền mạch'},
+      {fieldId: 'huyet-ap-tam-thu', text: 'Điền huyết áp tâm thu'}]}))));
 </script>

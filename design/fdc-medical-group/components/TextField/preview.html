@@ -1,4 +1,4 @@
-<!-- @dsCard group="Atoms" height=360 subtitle="label, hint, error, icon, multiline; aligned in a FieldRow" -->
+<!-- @dsCard group="Atoms" height=470 subtitle="label, hint, error, icon, multiline; aligned in a FieldRow; read-only computed value" -->
 <div id="root" style="padding:16px;display:flex;flex-direction:column;gap:24px"></div>
 <script>
 var h = React.createElement, F = window.FDC;
@@ -7,5 +7,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, nu
     h(F.TextField, {label: 'Họ và tên', icon: 'ui-user', autoComplete: 'name', required: true}),
     h(F.TextField, {label: 'Mã bệnh nhân', hint: 'In ở góc trên phiếu khám', placeholder: 'Ví dụ HS-2610-0412'}),
     h(F.TextField, {label: 'Năm sinh', defaultValue: '58', error: 'Nhập năm sinh gồm 4 chữ số, ví dụ 1958'})),
-  h(F.TextField, {label: 'Nội dung', icon: 'pencil-alt-2', multiline: true, rows: 3, hint: 'Không bắt buộc'})));
+  h(F.TextField, {label: 'Nội dung', icon: 'pencil-alt-2', multiline: true, rows: 3, hint: 'Không bắt buộc'}),
+  h('div', {'data-density': 'compact', style: {maxWidth: '420px'}},
+    h(F.TextField, {label: 'BMI', readOnly: true, value: '24,1', unit: 'kg/m²', hint: 'Tự tính từ chiều cao và cân nặng'}))));
 </script>

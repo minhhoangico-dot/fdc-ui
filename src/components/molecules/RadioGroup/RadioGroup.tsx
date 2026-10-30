@@ -37,12 +37,19 @@ export type RadioGroupProps = {
   layout?: 'column' | 'row' | 'wrap';
   /** compact = less padding and gap, so five short options (I–V) fit a 360px phone; targets stay ≥ 44px. */
   density?: 'comfortable' | 'compact';
+  /**
+   * tiles = a bordered tile with a visible radio circle: for questions on a form ("Bạn đặt lịch cho ai?", Loại I–V).
+   * pills = rounded pills without the circle: for list filters, so a filter never looks like a form question.
+   * Use pills with layout "wrap". The radio stays in the page for the keyboard and screen readers; the checked
+   * pill is marked by its fill, a heavier brand edge and bold text, not by color alone. Default tiles.
+   */
+  variant?: 'tiles' | 'pills';
   className?: string;
 };
 
 /**
- * One choice from a short list, as large tappable tiles built on native radios.
- * Arrow keys move between options; the whole tile is the hit area.
+ * One choice from a short list, as large tappable tiles built on native radios, or as pills for list filters.
+ * Arrow keys move between options; the whole tile or pill is the hit area.
  */
 export function RadioGroup({
   label,
@@ -60,6 +67,7 @@ export function RadioGroup({
   id: firstId,
   layout = 'column',
   density = 'comfortable',
+  variant = 'tiles',
   className,
 }: RadioGroupProps) {
   const id = useId();
@@ -76,6 +84,7 @@ export function RadioGroup({
       data-invalid={error ? 'true' : undefined}
       data-layout={layout}
       data-density={density}
+      data-variant={variant}
     >
       <legend className={hideLegend ? styles.LegendHidden : legendAsHeading ? styles.LegendHeading : styles.Legend}>
         {legendAsHeading ? <h1 className={styles.LegendH1}>{label}</h1> : label}

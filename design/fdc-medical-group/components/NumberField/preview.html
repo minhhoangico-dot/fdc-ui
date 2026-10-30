@@ -1,10 +1,10 @@
-<!-- @dsCard group="Molecules" height=250 subtitle="a measurement with its unit; neutral when empty, a word when out of range" -->
+<!-- @dsCard group="Molecules" height=190 subtitle="a measurement with its unit; neutral when empty, no hint once filled, only the example next to an error" -->
 <div id="root" style="padding:16px;max-width:900px" data-density="compact"></div>
 <script>
 var h = React.createElement, F = window.FDC;
 ReactDOM.createRoot(document.getElementById('root')).render(h(F.FieldRow, {minColumn: '12rem'},
   h(F.NumberField, {label: 'Cân nặng', unit: 'kg', decimals: 1, example: '52,5', min: 2, max: 300, defaultValue: '52,5'}),
-  h(F.NumberField, {label: 'Mạch', unit: 'lần/phút', example: '78', min: 30, max: 250}),
+  h(F.NumberField, {label: 'Nhịp thở', unit: 'lần/phút', example: '18', min: 5, max: 60}),
   h(F.NumberField, {label: 'Huyết áp tâm thu', unit: 'mmHg', example: '120', min: 50, max: 300, normalRange: [90, 139], defaultValue: '145'}),
-  h(F.NumberField, {label: 'Mạch (gõ 300)', unit: 'lần/phút', defaultValue: '300', error: 'Mạch từ 30 đến 250 lần/phút.'})));
+  h(F.NumberField, {label: 'Mạch', unit: 'lần/phút', example: '78', min: 30, max: 250, required: true, error: 'Điền mạch'})));
 </script>

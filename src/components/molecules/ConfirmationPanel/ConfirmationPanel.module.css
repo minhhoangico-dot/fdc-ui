@@ -77,7 +77,45 @@
   line-height: 1.5;
 }
 
-/* Step line: Chờ gửi → Đang gửi → Đã gửi lên Sở → Bộ đã nhận. The current step is filled with the brand. */
+/* Subtle: a success on a staff screen, one block among many. Pale status-success-bg, a 1px green edge,
+   the title in green, ordinary text, left-aligned; the code in a white box so it can be read out and copied. */
+.ConfirmationPanel:where([data-emphasis='subtle']) {
+  gap: var(--space-15);
+}
+.ConfirmationPanel:where([data-emphasis='subtle']) .Panel {
+  padding: var(--space-20);
+  border: 1px solid var(--status-success-text);
+  background: var(--status-success-bg);
+  color: var(--text-default);
+  text-align: start;
+}
+.ConfirmationPanel:where([data-emphasis='subtle']) .Title {
+  font-size: 1.375rem;
+  color: var(--status-success-text);
+}
+.ConfirmationPanel:where([data-emphasis='subtle']) .Reference {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-5) var(--space-10);
+  font-size: 1rem;
+}
+.ConfirmationPanel:where([data-emphasis='subtle']) .Code {
+  padding: 0 var(--space-10);
+  border: 1px solid var(--status-success-text);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-default);
+  font-size: 1.25rem;
+}
+.ConfirmationPanel:where([data-emphasis='subtle']) .Next {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Step line: Chờ gửi → Đang gửi → Đã gửi lên Sở → Bộ đã nhận. A done step carries "✓" at normal weight.
+   The current step is what we are still waiting for: an outlined pill with a dashed edge and no fill, so it never
+   looks more finished than the done steps. Steps still to come are muted where the panel is pale. */
 .Steps {
   display: flex;
   flex-wrap: wrap;
@@ -90,7 +128,7 @@
   font-size: 1rem;
   line-height: 1.5;
 }
-.ConfirmationPanel:where([data-tone='pending']) .Steps {
+.ConfirmationPanel:where([data-tone='pending'], [data-emphasis='subtle']) .Steps {
   justify-content: flex-start;
 }
 .Step {
@@ -101,19 +139,23 @@
 .Step + .Step::before {
   content: '→' / '';
 }
+.Step:where([data-state='done']) .StepLabel {
+  font-weight: 400;
+}
+/* On the green strong panel this is a white dashed outline with white text (currentColor). */
 .Step:where([data-state='current']) .StepLabel {
+  box-sizing: border-box;
   padding: 0 var(--space-10);
+  border: 1px dashed currentColor;
   border-radius: var(--radius-pill);
-  background: var(--surface-brand);
-  color: var(--text-on-action);
-  font-weight: 600;
+  font-weight: 500;
 }
-/* On the green success panel the current step is a white pill with green text. */
-.ConfirmationPanel:where([data-tone='success']) .Step:where([data-state='current']) .StepLabel {
-  background: var(--surface);
-  color: var(--status-success-text);
+/* On pale panels the step still waited for is pending work, so it takes the status blue: never green for pending. */
+.ConfirmationPanel:where([data-tone='pending'], [data-emphasis='subtle']) .Step:where([data-state='current']) .StepLabel {
+  border-color: var(--status-info-border);
+  color: var(--status-info-text);
 }
-.ConfirmationPanel:where([data-tone='pending']) .Step:where([data-state='todo']) {
+.ConfirmationPanel:where([data-tone='pending'], [data-emphasis='subtle']) .Step:where([data-state='todo']) {
   color: var(--text-muted);
 }
 /* A failed step: red words with a heavy underline, so it does not rely on color alone. */
@@ -123,12 +165,8 @@
   text-decoration: underline wavy;
   text-underline-offset: 0.2em;
 }
-.ConfirmationPanel:where([data-tone='success']) .Step:where([data-state='failed']) .StepLabel {
+.ConfirmationPanel:where([data-tone='success']:not([data-emphasis='subtle'])) .Step:where([data-state='failed']) .StepLabel {
   padding: 0 var(--space-10);
   border-radius: var(--radius-pill);
   background: var(--surface);
-}
-/* In the pending panel the current step takes the status blue, so the panel reads as one state in every theme. */
-.ConfirmationPanel:where([data-tone='pending']) .Step:where([data-state='current']) .StepLabel {
-  background: var(--status-info-border);
 }

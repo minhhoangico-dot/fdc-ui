@@ -9,7 +9,10 @@ export type StaffLayoutProps = {
   header: Omit<HeaderProps, 'variant'>;
   /** Full-width bar under the header, e.g. a sticky PatientContextBar on a record form. */
   context?: ReactNode;
-  /** A column beside the content (from 64rem up; above the content on smaller screens), e.g. the list of form parts. */
+  /**
+   * A column beside the content (from 64rem up; above the content on smaller screens). It is the `<nav>` landmark,
+   * so put the form's parts in it as a FormPartNav: a full list on computers, one "4. Thể lực · còn 2" toggle on phones.
+   */
   aside?: ReactNode;
   /** aria-label of the aside's landmark. Default "Các phần của phiếu". */
   asideLabel?: string;
@@ -30,7 +33,8 @@ export type StaffLayoutProps = {
 /**
  * Page shell for staff tools (hoso, FDC Manager): compact density, a grey work surface, the one-row header,
  * an optional context bar and side column, and a sticky action bar. Blocks inside are separated by edges and space,
- * not shadows; only the action bar, which floats over content, has one.
+ * not shadows; only the action bar, which floats over content, has one. Below 40rem the spacing is tighter
+ * (10px above the content, 15px between blocks), so the work area starts sooner on a phone.
  */
 export function StaffLayout({
   header,

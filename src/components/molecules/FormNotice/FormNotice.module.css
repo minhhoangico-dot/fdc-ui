@@ -1,8 +1,13 @@
 .FormNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-10);
   margin: 0;
   font-family: var(--font-body);
   font-size: var(--font-size-body);
+  line-height: 1.5;
   color: var(--text-muted);
+  --notice-mark: var(--status-info-border);
 }
 .FormNotice:empty {
   display: none;
@@ -10,41 +15,74 @@
 .FormNotice:where([data-type='success']) {
   color: var(--status-success-text);
   font-weight: 600;
+  --notice-mark: var(--status-success-text);
 }
 .FormNotice:where([data-type='error']) {
   color: var(--status-error-text);
   font-weight: 600;
+  --notice-mark: var(--status-error-text);
 }
 .FormNotice:where([data-type='warning']) {
   color: var(--text-default);
   font-weight: 600;
+  --notice-mark: var(--status-warning-border);
 }
 
-/* Boxed: a notice standing on its own in a page. The bar carries the type, the words carry the meaning. */
+/* The type as a shape and a sign, not only a color: in the nursing-home theme the brand orange, the error red
+   and the warning amber sit close together. A circle in the type's color with "!", "i" or "✓"; hidden from screen
+   readers, which read the words. Sized against the first line: the mark's font is 0.75em, so the notice's
+   line-height of 1.5 is 2em here and the circle (1.65em) is centred on the first line. */
+.Mark {
+  box-sizing: border-box;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.65em;
+  block-size: 1.65em;
+  margin-block-start: calc((2em - 1.65em) / 2);
+  /* Transparent edge: invisible here, drawn in forced-colors mode where the fill is dropped. */
+  border: 1px solid transparent;
+  border-radius: var(--radius-round);
+  background: var(--notice-mark);
+  color: var(--text-on-action);
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1;
+}
+.Text {
+  min-inline-size: 0;
+}
+
+/* Boxed: a notice standing on its own in a page. Tinted in the type's color with an edge and a bar in the same
+   color; the mark carries the type, the words carry the meaning. */
 .FormNotice:where([data-boxed]) {
   box-sizing: border-box;
   --notice-bar: var(--status-info-border);
+  --notice-bg: var(--status-info-bg);
   padding: var(--space-15) var(--space-20);
-  border: 1px solid var(--border-control);
+  border: 1px solid var(--notice-bar);
   /* 6px bar: twice the heavy border width. */
   border-inline-start: calc(2 * var(--border-width-heavy)) solid var(--notice-bar);
   border-radius: var(--radius-sm);
-  background: var(--surface);
+  background: var(--notice-bg);
   color: var(--text-default);
   font-size: 1rem;
   font-weight: 500;
-  line-height: 1.5;
 }
 .FormNotice:where([data-boxed][data-type='warning']) {
   --notice-bar: var(--status-warning-border);
+  --notice-bg: var(--status-warning-bg);
 }
 .FormNotice:where([data-boxed][data-type='error']) {
   --notice-bar: var(--status-error-text);
+  --notice-bg: var(--status-error-bg);
   color: var(--status-error-text);
   font-weight: 600;
 }
 .FormNotice:where([data-boxed][data-type='success']) {
   --notice-bar: var(--status-success-text);
+  --notice-bg: var(--status-success-bg);
   color: var(--status-success-text);
   font-weight: 600;
 }

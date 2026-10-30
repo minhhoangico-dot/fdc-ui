@@ -1,0 +1,7 @@
+# Select
+
+One choice from a list, as a native select dressed like a TextField: the same label, hint, error and box, 48px tall (44px in compact), 18px text, a `border-control` edge, the 3px `focus-ring`, and on error a 2px `status-error-text` edge with a hidden "Lỗi:" prefix. The arrow on the right is the Icon atom (`rounded-down`) and never catches a tap. Field parts (label, hint, error, control) match TextField, so it lines up in a FieldRow.
+
+Use it where tiles would take too much room: a list filter on a phone, where six RadioGroup tiles would fill the screen, collapses to one Select with the count in each option ("Cần điền hoặc sửa · 1.017", counts with `Intl` vi-VN); a long fixed list (Loại I–V on a dense form, nơi khám). For a short question on its own page use RadioGroup, whose choices are all visible; for coded items people find by typing (ICD-10, nghề nghiệp) use Combobox.
+
+Pass `options` ({value, label, disabled}) or `<option>` / `<optgroup>` children. When nothing is chosen yet, start with an option that says so ("Chưa chọn"), never an empty box. A long option is cut with "…" in the box and shown in full in the list the phone opens. The consumer owns the value (`value` / `defaultValue` / `onChange`).

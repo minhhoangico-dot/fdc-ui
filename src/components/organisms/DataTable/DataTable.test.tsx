@@ -41,4 +41,41 @@ describe('DataTable', () => {
     render(<DataTable {...base} rows={rows} pagination={{ page: 1, pageSize: 12, total: 2033, itemLabel: 'người', getHref: (p) => `?p=${p}` }} />);
     expect(screen.getByRole('navigation', { name: 'Trang của danh sách' })).toHaveTextContent('Hiển thị 1–12 trong 2.033 người');
   });
+
+  it('is a plain table with no stacking labels by default', () => {
+    render(<DataTable {...base} rows={rows} />);
+    expect(screen.getByRole('table')).not.toHaveAttribute('role');
+    expect(screen.getAllByText('Mã lượt khám')).toHaveLength(1);
+  });
+
+  it('states every table role when it stacks on phones, and labels each line with its column', () => {
+    const columns = recordColumns.map((c) =>
+      c.key === 'status' ? { ...c, hideLabelWhenStacked: true } : c.key === 'next' ? { ...c, stackLabel: 'Tiếp theo' } : c,
+    );
+    render(<DataTable {...base} columns={columns} rows={rows.slice(0, 2)} stackBelow="phone" />);
+    const table = screen.getByRole('table', { name: 'Người cần điền hoặc sửa' });
+    expect(table).toHaveAttribute('role', 'table');
+    expect(table.querySelectorAll('thead[role="rowgroup"], tbody[role="rowgroup"]')).toHaveLength(2);
+    for (const h of within(table).getAllByRole('columnheader')) expect(h).toHaveAttribute('role', 'columnheader');
+
+    const row = within(table).getAllByRole('row')[1];
+    expect(row).toHaveAttribute('role', 'row');
+    // The name is the block's title: a row header with its link first, no label.
+    const title = within(row).getByRole('rowheader');
+    expect(title).toHaveAttribute('role', 'rowheader');
+    expect(title.firstElementChild?.tagName).toBe('A');
+
+    const cells = within(row).getAllByRole('cell');
+    for (const c of cells) expect(c).toHaveAttribute('role', 'cell');
+    const labels = cells.map((c) => c.querySelector(':scope > [aria-hidden="true"]')?.textContent ?? null);
+    expect(labels).toEqual(['STT', 'Mã lượt khám', null, 'Tiếp theo']);
+    // The label is visible copy only: the column header still names the cell, so it is not read twice.
+    expect(within(row).getByRole('cell', { name: rows[0].recordCode })).toBeInTheDocument();
+  });
+
+  it('keeps the roles on its message row while it stacks', () => {
+    render(<DataTable {...base} rows={[]} status="loading" stackBelow="phone" />);
+    expect(screen.getByRole('table')).toHaveAttribute('aria-busy', 'true');
+    expect(screen.getByRole('cell', { name: 'Đang tải danh sách…' })).toHaveAttribute('role', 'cell');
+  });
 });

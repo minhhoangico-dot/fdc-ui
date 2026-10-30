@@ -19,6 +19,8 @@
 }
 .Table {
   inline-size: 100%;
+  /* minWidth comes in as --table-min, so phones can drop it when the rows stack. */
+  min-inline-size: var(--table-min, 48rem);
   border-collapse: collapse;
 }
 .Caption {
@@ -47,7 +49,8 @@
   vertical-align: bottom;
 }
 .Cell {
-  padding: var(--space-10) var(--space-15);
+  /* A little tighter than the header, so more records fit on a screen; text keeps its size. */
+  padding: calc(var(--space-10) * 0.8) var(--space-15);
   border-block-start: 1px solid var(--border);
   font-weight: 400;
   text-align: start;
@@ -94,4 +97,72 @@ th.Cell > a:first-child:focus-visible {
 .Footer {
   padding: var(--space-5) var(--space-15);
   border-block-start: 1px solid var(--border);
+}
+/* Labels exist only on a stacking table and show only on phones. */
+.StackLabel {
+  display: none;
+}
+
+/* Phones, stackBelow="phone": each row is a block. The row header (the name) comes first as its title; every other
+   cell is a line with its column's name before the value. The header row stays for screen readers, visually hidden,
+   and the explicit ARIA roles keep it a table although display changes. Nothing scrolls sideways. */
+@media (max-width: 39.99rem) {
+  .Table:where([data-stack='phone']) {
+    position: relative;
+    display: block;
+    min-inline-size: 0;
+  }
+  .Table:where([data-stack='phone']) > caption,
+  .Table:where([data-stack='phone']) > tbody,
+  .Table:where([data-stack='phone']) > tbody > tr,
+  .Table:where([data-stack='phone']) .Message {
+    display: block;
+  }
+  .Table:where([data-stack='phone']) > .Caption {
+    border-block-end: 1px solid var(--border);
+  }
+  .Table:where([data-stack='phone']) > thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .Table:where([data-stack='phone']) .Row {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-10) var(--space-15);
+  }
+  .Table:where([data-stack='phone']) .Row + .Row {
+    border-block-start: 1px solid var(--border);
+  }
+  .Table:where([data-stack='phone']) .Cell {
+    display: block;
+    padding: 0;
+    border: 0;
+    text-align: start;
+    white-space: normal;
+  }
+  .Table:where([data-stack='phone']) th.Cell {
+    order: -1;
+    margin-block-end: var(--space-5);
+  }
+  /* Label and value share a line while both fit; a value that cannot shrink (a status tag) moves under its label. */
+  .Table:where([data-stack='phone']) .Cell:where([data-labelled]) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: var(--space-10);
+  }
+  .Table:where([data-stack='phone']) .StackLabel {
+    display: block;
+    flex: 0 0 7.5rem;
+    font-size: 1rem;
+    color: var(--text-muted);
+  }
+  .Table:where([data-stack='phone']) .StackValue {
+    flex: 1 1 7.5rem;
+    overflow-wrap: anywhere;
+  }
 }

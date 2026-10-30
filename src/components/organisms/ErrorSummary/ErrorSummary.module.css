@@ -42,3 +42,37 @@
   outline: var(--focus-ring-width) solid var(--focus-ring);
   outline-offset: var(--focus-ring-offset);
 }
+
+/* Inline (staff forms): the same box, about half as tall. The heading is smaller, the padding tighter and the
+   links share one wrapping line, separated by a dot that screen readers skip (the list already says how many).
+   Each link keeps its 44px target height. */
+.ErrorSummary:where([data-layout='inline']) {
+  padding: var(--space-10) var(--space-15);
+}
+.ErrorSummary:where([data-layout='inline']) .Title {
+  margin-block-end: 0;
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+.ErrorSummary:where([data-layout='inline']) .List {
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: var(--space-10);
+  row-gap: 0;
+  padding: 0;
+  list-style: none;
+}
+.ErrorSummary:where([data-layout='inline']) .Item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-10);
+  min-inline-size: 0;
+}
+.Separator {
+  color: var(--text-muted);
+  font-weight: 700;
+}
+.ErrorSummary:where([data-layout='inline']) .Link {
+  font-size: 1rem;
+}
+

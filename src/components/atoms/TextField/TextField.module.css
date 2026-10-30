@@ -87,6 +87,13 @@ textarea.Input {
   background: var(--surface-alt);
   color: var(--text-disabled);
 }
+/* Read-only, not disabled: a computed value (BMI) shown in place. Grey fill and the light edge, so it does not look
+   editable; the text stays text-default because it is real data. :where keeps the error border and the focus ring
+   (both more specific) on top. */
+.Input:where(:read-only:not(:disabled)) {
+  border-color: var(--border);
+  background: var(--surface-alt);
+}
 .TextField:where([data-invalid]) .Input {
   box-sizing: border-box;
   border: var(--border-width-strong) solid var(--status-error-text);

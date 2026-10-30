@@ -15,7 +15,11 @@ type Story = StoryObj<typeof meta>;
 /** Empty is neutral: a grey hint with an example, no red. */
 export const Empty: Story = {};
 
+/** Filled and left: no hint. "ví dụ 78" comes back while the field is focused, so typing never moves the box. */
 export const Filled: Story = { args: { defaultValue: '78' } };
+
+/** Still empty after "Xem lại": the red line already says it is empty, so the grey hint keeps only "ví dụ 78". */
+export const EmptyAfterReview: Story = { args: { required: true, error: 'Điền mạch' } };
 
 /** Typed 300 and left the field: the message says the allowed range. */
 export const OutOfRange: Story = { args: { defaultValue: '300', error: 'Mạch từ 30 đến 250 lần/phút.' } };
@@ -25,7 +29,7 @@ export const AboveNormal: Story = {
   args: { label: 'Glucose máu', unit: 'mmol/L', decimals: 1, example: '5,4', min: 0, max: 50, normalRange: [3.9, 6.4], defaultValue: '7,2' },
 };
 
-/** Measurements side by side in a FieldRow: labels, hints and boxes line up. */
+/** Measurements side by side in a FieldRow: labels, hints and boxes line up, whether a field has a hint or not. */
 export const Vitals: Story = {
   decorators: [(Story) => <div style={{ maxWidth: 900 }}><Story /></div>],
   render: () => (

@@ -1,0 +1,109 @@
+/* Legend, hint and error look like a field's label, hint and error (Combobox, TextField), so the group
+   lines up with the fields around it. The fieldset's flex gap does not reach the legend, hence its margin. */
+.CodeList {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: var(--font-body);
+}
+.Legend {
+  padding: 0;
+  margin-block-end: var(--space-5);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-default);
+}
+.Hint {
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+.Error {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--status-error-text);
+}
+
+/* The chosen items share one surface with light lines between them: no card per item. */
+.List {
+  box-sizing: border-box;
+  margin: var(--space-5) 0 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+.Item {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--space-10);
+  min-block-size: var(--target-min);
+  padding-inline: var(--space-15) var(--space-5);
+  color: var(--text-default);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+}
+.Item + .Item {
+  border-block-start: 1px solid var(--border);
+}
+.Name {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  padding-block: var(--space-5);
+  overflow-wrap: anywhere;
+}
+.Code {
+  color: var(--text-muted);
+}
+/* A text button, like Combobox's "Xóa": underlined, 44px target. */
+.Remove {
+  box-sizing: border-box;
+  flex: none;
+  min-block-size: var(--target-min);
+  min-inline-size: var(--target-min);
+  padding: 0 var(--space-10);
+  border: 0;
+  background: none;
+  color: var(--text-link);
+  font: inherit;
+  font-size: var(--font-size-body);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+.Remove:hover {
+  color: var(--text-link-hover);
+}
+.Remove:focus-visible {
+  box-sizing: border-box;
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-ring-width) * -1);
+  border-radius: var(--radius-sm);
+}
+/* Nothing chosen yet is neutral, not an error. */
+.Empty {
+  margin: var(--space-5) 0 0;
+  color: var(--text-muted);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+}
+.Add {
+  margin-block-start: var(--space-10);
+}
+
+/* Error: one message and one red bar for the whole group, like RadioGroup. */
+.CodeList:where([data-invalid]) {
+  box-sizing: border-box;
+  border-inline-start: var(--border-width-heavy) solid var(--status-error-text);
+  padding-inline-start: var(--space-15);
+}

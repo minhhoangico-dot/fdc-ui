@@ -18,6 +18,11 @@ export const WithIcon: Story = { args: { icon: 'ui-user' } };
 export const Error: Story = { args: { label: 'Năm sinh', defaultValue: '58', error: 'Nhập năm sinh gồm 4 chữ số, ví dụ 1958' } };
 export const Multiline: Story = { args: { label: 'Nội dung', multiline: true, icon: 'pencil-alt-2', hint: 'Không bắt buộc' } };
 export const Disabled: Story = { args: { disabled: true, defaultValue: 'Nguyễn Thị Ánh Tuyết' } };
+/** A computed value shown in place: grey fill and a light edge, so it does not look like a field to type in. */
+export const ReadOnly: Story = {
+  parameters: { density: 'compact' },
+  args: { label: 'BMI', readOnly: true, value: '24,1', unit: 'kg/m²', hint: 'Tự tính từ chiều cao và cân nặng', autoComplete: 'off' },
+};
 export const LongVietnamese: Story = {
   args: { label: 'Họ và tên người bệnh (ghi đầy đủ, có dấu)', defaultValue: 'Tôn Thất Nguyễn Hoàng Phương Quỳnh', hint: 'ẪỄỖẲỰẬ — dấu phải hiển thị đủ' },
 };

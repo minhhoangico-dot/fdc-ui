@@ -1,17 +1,17 @@
-/* A key cap: control-colored edge with a thicker bottom, like a physical key. Text, not a control. */
+/* A light key cap: grey fill and a light 1px edge, no heavy bottom, so a hint never outweighs the screen's buttons.
+   Text, not a control. */
 .Kbd {
   box-sizing: border-box;
   display: inline-block;
   min-inline-size: 1.75em;
   padding: 0 var(--space-5);
-  border: 1px solid var(--border-control);
-  border-block-end-width: var(--border-width-strong);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  background: var(--surface);
+  background: var(--surface-alt);
   color: var(--text-default);
   font-family: var(--font-body);
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.5;
   text-align: center;
   white-space: nowrap;
@@ -26,4 +26,9 @@
 .Separator {
   color: var(--text-default);
   white-space: pre;
+}
+@media (forced-colors: active) {
+  .Kbd {
+    border-color: CanvasText;
+  }
 }

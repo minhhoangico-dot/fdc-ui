@@ -20,11 +20,6 @@ export function Breadcrumb({ items, label = 'Vị trí', className, ...rest }: B
           const last = i === items.length - 1;
           return (
             <li key={`${item.label}-${i}`} className={styles.Item}>
-              {i > 0 ? (
-                <span className={styles.Separator} aria-hidden="true">
-                  ›
-                </span>
-              ) : null}
               {last || !item.href ? (
                 <span className={styles.Current} aria-current={last ? 'page' : undefined}>
                   {item.label}
@@ -33,6 +28,12 @@ export function Breadcrumb({ items, label = 'Vị trí', className, ...rest }: B
                 <a className={styles.Link} href={item.href}>
                   {item.label}
                 </a>
+              )}
+              {/* The separator ends its item, so a wrapped line never starts with "›". */}
+              {last ? null : (
+                <span className={styles.Separator} aria-hidden="true">
+                  ›
+                </span>
               )}
             </li>
           );

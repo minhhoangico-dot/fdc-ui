@@ -17,7 +17,10 @@ export type NumberFieldProps = {
   normalRange?: [number, number];
   highLabel?: string;
   lowLabel?: string;
-  /** A typical value for the grey hint: "Chưa điền · ví dụ 78". */
+  /**
+   * A typical value for the grey hint. Empty: "Chưa điền · ví dụ 78". While an error shows, or while typing: "ví dụ 78"
+   * (the error already says the field is empty, and the line does not jump on the first key). Filled and left: no hint.
+   */
   example?: string;
   /** Hint when the field is empty. Default "Chưa điền". */
   emptyLabel?: string;
@@ -28,12 +31,16 @@ export type NumberFieldProps = {
   onValueChange?: (value: number | null, text: string) => void;
   /** An error from the page, e.g. a required field still empty after pressing "Xem lại". Wins over the field's own checks. */
   error?: string;
-} & Omit<TextFieldProps, 'type' | 'value' | 'defaultValue' | 'error' | 'unit' | 'after' | 'multiline' | 'icon' | 'min' | 'max'>;
+  /** Fixed help text instead of the automatic "Chưa điền · ví dụ 78"; shown in every state. */
+  hint?: string;
+} & Omit<TextFieldProps, 'type' | 'value' | 'defaultValue' | 'error' | 'hint' | 'unit' | 'after' | 'multiline' | 'icon' | 'min' | 'max'>;
 
 /**
  * A number with its unit, for measurements and results: "52,5 kg", "78 lần/phút".
  * Accepts a decimal comma or dot, checks the range when the user leaves the field (not while typing),
  * and flags values outside the normal range with a word. An empty field stays neutral: a grey hint, no red.
+ * The hint says only what still helps: "Chưa điền · ví dụ 78" while empty, "ví dụ 78" next to an error or while
+ * typing, nothing once a value is in and the user has moved on.
  */
 export const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(function NumberField(
   {
@@ -53,6 +60,7 @@ export const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(functi
     error,
     hint,
     onChange,
+    onFocus,
     onBlur,
     ...rest
   },
@@ -61,6 +69,7 @@ export const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(functi
   const [inner, setInner] = useState(defaultValue);
   const text = value ?? inner;
   const [checked, setChecked] = useState<string | undefined>(undefined);
+  const [focused, setFocused] = useState(false);
   const number = parseViNumber(text);
 
   const unitText = unit ? ` ${unit}` : '';
@@ -88,7 +97,17 @@ export const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(functi
           ? lowLabel
           : undefined
       : undefined;
-  const autoHint = hint ?? [text.trim() ? undefined : emptyLabel, example ? `ví dụ ${example}` : undefined].filter(Boolean).join(' · ');
+  const shownError = error ?? ownError;
+  const exampleText = example ? `ví dụ ${example}` : undefined;
+  // One line of help, never a repeat of the error: "Chưa điền" only while empty and nothing is wrong yet;
+  // the example stays next to an error (it helps fix it) and while typing (no jump on the first key).
+  const autoHint = shownError
+    ? exampleText
+    : !text.trim()
+      ? [emptyLabel, exampleText].filter(Boolean).join(' · ')
+      : focused
+        ? exampleText
+        : undefined;
 
   return (
     <TextField
@@ -99,12 +118,12 @@ export const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(functi
       type="text"
       inputMode={decimals > 0 ? 'decimal' : 'numeric'}
       autoComplete="off"
-      hint={autoHint || undefined}
-      error={error ?? ownError}
+      hint={hint ?? (autoHint || undefined)}
+      error={shownError}
       value={text}
       after={
         flag ? (
-          <StatusTag tone="error" size="sm">
+          <StatusTag tone="attention" size="sm">
             {flag}
           </StatusTag>
         ) : undefined
@@ -117,7 +136,12 @@ export const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(functi
         onValueChange?.(n === null || Number.isNaN(n) ? null : n, next);
         onChange?.(e);
       }}
+      onFocus={(e: FocusEvent<HTMLInputElement>) => {
+        setFocused(true);
+        onFocus?.(e);
+      }}
       onBlur={(e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFocused(false);
         const n = parseViNumber(e.target.value);
         const p = problem(n);
         setChecked(p);

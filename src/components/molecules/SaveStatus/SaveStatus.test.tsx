@@ -23,3 +23,20 @@ describe('SaveStatus', () => {
     expect(onRetry).toHaveBeenCalled();
   });
 });
+
+describe('SaveStatus v2.4 conflict', () => {
+  it('asks to settle the conflicting values, with the last save time, politely', () => {
+    render(<SaveStatus status={{ state: 'conflict', count: 2, lastSavedAt: '09:12' }} />);
+    const status = screen.getByRole('status');
+    expect(status).toHaveAttribute('data-state', 'conflict');
+    expect(status).toHaveTextContent('Cần xử lý 2 giá trị trước khi lưu · Lưu lần cuối 09:12');
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('never says it is saved: no "Đã lưu", no check mark', () => {
+    render(<SaveStatus status={{ state: 'conflict', count: 1 }} />);
+    const status = screen.getByRole('status');
+    expect(status).toHaveTextContent(/^Cần xử lý 1 giá trị trước khi lưu$/);
+    expect(status).not.toHaveTextContent(/Đã lưu|✓/);
+  });
+});

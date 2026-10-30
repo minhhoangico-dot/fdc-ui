@@ -7,3 +7,5 @@ Always pass `label`; use `hideLabel` only where a visible heading already names 
 Placeholders use `text-placeholder` and show an example, never the label ("Chưa điền · ví dụ 78"). Put fields side by side with **FieldRow**, so labels and inputs line up when only some fields have a hint or an error.
 
 `unit` shows a unit inside the box on the right ("kg", "lần/phút") and is read after the label; `after` places something next to the box, such as a StatusTag "Cao". For measurements use **NumberField**, which builds on both.
+
+`readOnly` (not `disabled`) shows a computed value in place, such as BMI from height and weight: a `surface-alt` fill and the light `border` edge, so it does not look like a field to type in. The text stays `text-default` because it is real data, it can still be focused and copied, and the hint says where the value comes from ("Tự tính từ chiều cao và cân nặng"). `disabled` is unchanged (grey fill, `text-disabled`) and means "not available now".

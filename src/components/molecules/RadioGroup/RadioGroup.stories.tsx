@@ -74,3 +74,27 @@ export const RowError: Story = {
     error: 'Chọn Không hoặc Có',
   },
 };
+
+/**
+ * List filter with counts: pills, not tiles, so a filter never looks like a form question (compare ClassesCompact).
+ * Still native radios: Tab reaches the chosen pill, arrow keys move the choice, the focus ring is drawn on the pill.
+ */
+export const FilterPills: Story = {
+  args: {
+    label: 'Nhóm người',
+    name: 'nhom',
+    variant: 'pills',
+    layout: 'wrap',
+    density: 'compact',
+    defaultValue: 'can-lam',
+    options: [
+      { value: 'can-lam', label: 'Cần điền hoặc sửa · 1.017' },
+      { value: 'xem-lai', label: 'Sẵn sàng xem lại · 412' },
+      { value: 'dang-cho', label: 'Đang chờ · 96' },
+      { value: 'dang-gui', label: 'Đang gửi · 3' },
+      { value: 'da-gui', label: 'Đã gửi · 505' },
+      { value: 'tat-ca', label: 'Tất cả · 2.033' },
+    ],
+  },
+  parameters: { density: 'compact' },
+};

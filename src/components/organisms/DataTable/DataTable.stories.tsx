@@ -5,6 +5,9 @@ import { DataTable } from './DataTable';
 
 const rows = makeRecords(10);
 
+/** On phones the status tag speaks for itself, so its line has no "Trạng thái" label. */
+const phoneColumns = recordColumns.map((c) => (c.key === 'status' ? { ...c, hideLabelWhenStacked: true } : c));
+
 const meta = {
   title: 'Organisms/DataTable',
   component: DataTable<KskRecord>,
@@ -20,7 +23,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Long names and companies wrap; codes and statuses stay on one line; a record open elsewhere says so. */
+/**
+ * Long names and companies wrap; codes and statuses stay on one line; a record open elsewhere says so.
+ * Without stackBelow, a narrow screen scrolls the table sideways inside its box; the page itself never does.
+ */
 export const Records: Story = {};
 
 export const Loading: Story = { args: { rows: [], status: 'loading' } };
@@ -35,5 +41,11 @@ export const NoMatch: Story = {
   args: { rows: [], emptyText: 'Không có ai khớp “Hằng” trong nhóm Cần điền hoặc sửa. Xóa chữ tìm hoặc chọn nhóm Tất cả.' },
 };
 
-/** On a phone the table scrolls sideways inside its box; the page itself never does. */
-export const Phone: Story = { parameters: { viewport: { defaultViewport: 'mobile1' } } };
+/**
+ * stackBelow="phone": below 40rem each record is a block, the name first (the whole name area opens the record),
+ * then one line per column with its name. The first screen shows records, and nothing scrolls sideways.
+ */
+export const Phone: Story = {
+  args: { stackBelow: 'phone', columns: phoneColumns },
+  parameters: { viewport: { defaultViewport: 'mobile1' } },
+};

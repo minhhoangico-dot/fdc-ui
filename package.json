@@ -1,6 +1,6 @@
 {
   "name": "@fdc/ui",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "FDC Bác sĩ gia đình — atomic design system (tokens, atoms, molecules, organisms, templates)",
   "private": true,
   "type": "module",
@@ -21,7 +21,7 @@
     "tokens:check": "node scripts/tokens-from-design.mjs --check",
     "build:design": "vite build -c vite.design.config.ts && node scripts/design-bundle.mjs",
     "review:visual": "npm run build-storybook -- --quiet && node .claude/skills/atomic-design-system/scripts/shots.mjs --storybook storybook-static --themes clinic,nursing-home --out visual-review",
-    "lint:tokens": "node .claude/skills/atomic-design-system/scripts/lint-tokens.mjs src/components --strict --forbid 'brand-*,leaf-*,ink,ink-*,danger,group-600,accent-*,surface-button,info-*,warning-*'",
+    "lint:tokens": "node .claude/skills/atomic-design-system/scripts/lint-tokens.mjs src/components --strict --forbid 'brand-*,leaf-*,ink,ink-*,danger,danger-*,success-*,group-600,accent-*,surface-button,info-*,warning-*'",
     "lint:levels": "node .claude/skills/atomic-design-system/scripts/lint-levels.mjs src/components",
     "contrast": "node .claude/skills/atomic-design-system/scripts/contrast.mjs --css src/tokens/tokens.css --pairs design/contrast-pairs.json && node .claude/skills/atomic-design-system/scripts/contrast.mjs --css src/tokens/tokens.css --scope \"[data-theme='nursing-home']\" --pairs design/contrast-pairs.json",
     "check": "npm run typecheck && npm run lint && npm test && npm run tokens:check && npm run lint:tokens && npm run lint:levels && npm run contrast",

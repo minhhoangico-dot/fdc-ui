@@ -14,6 +14,12 @@
   color: var(--status-info-text);
   font-weight: 600;
 }
+/* Two people changed the same fields: amber in both themes (not the nursing-home orange), never green,
+   because nothing new is saved until each value is settled. */
+.Conflict {
+  color: var(--status-warning-text);
+  font-weight: 600;
+}
 .Muted {
   color: var(--text-muted);
 }

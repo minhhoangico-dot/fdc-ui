@@ -1,0 +1,136 @@
+.FormPartNav {
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+  color: var(--text-default);
+}
+
+/* Phones and tablets: one control in place of the list, so the form starts near the top of the screen.
+   It looks like a field (white, control edge) because it opens a choice, not an action. */
+.Toggle {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-10);
+  inline-size: 100%;
+  min-block-size: max(var(--control-height), var(--target-min));
+  padding: var(--space-5) var(--space-15);
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-default);
+  font: inherit;
+  font-weight: 600;
+  text-align: start;
+  cursor: pointer;
+}
+.Toggle:hover {
+  background: var(--surface-alt);
+}
+.Toggle:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+.ToggleText {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+.Chevron {
+  flex: none;
+}
+
+/* A white block with an edge, like the other blocks on the grey work surface. Closed below 64rem until the toggle opens it. */
+.List {
+  box-sizing: border-box;
+  display: none;
+  flex-direction: column;
+  margin: var(--space-5) 0 0;
+  padding: var(--space-5) 0;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+.FormPartNav[data-open] .List {
+  display: flex;
+}
+@media (min-width: 64rem) {
+  .Toggle {
+    display: none;
+  }
+  .List {
+    display: flex;
+    margin-block-start: 0;
+  }
+}
+
+/* Every item is a full-width 44px target. The start edge is reserved for the current item's brand bar, so text
+   never moves; a border (not a shadow) keeps the bar in Windows high-contrast mode. */
+.Link {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-10);
+  inline-size: 100%;
+  min-block-size: var(--target-min);
+  margin: 0;
+  padding: var(--space-5) var(--space-15) var(--space-5) calc(var(--space-15) - var(--border-width-heavy));
+  border: 0;
+  border-inline-start: var(--border-width-heavy) solid transparent;
+  background: none;
+  color: var(--text-default);
+  font: inherit;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+}
+.Link:hover {
+  background: var(--surface-alt);
+}
+.Link:hover .Label {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+/* Inside the block, so neighbouring items never cover the ring. */
+.Link:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-ring-width) * -1);
+}
+.Link[aria-current] {
+  border-inline-start-color: var(--border-brand);
+  background: var(--surface-selected);
+  font-weight: 600;
+}
+.Text {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+.Sub {
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-weight: 400;
+}
+/* Words carry it ("1 cần sửa"); red only adds to them. */
+.Problem {
+  color: var(--status-error-text);
+  font-size: 1rem;
+  font-weight: 600;
+}
+.Count {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-5);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.Count[data-done] {
+  color: var(--status-success-text);
+}
+.Mark {
+  font-weight: 700;
+}

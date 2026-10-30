@@ -24,6 +24,13 @@ export type ConfirmationPanelProps = {
    */
   tone?: 'success' | 'pending';
   /**
+   * How loud a success is. strong (default) = the solid green panel with white text that ends a patient flow
+   * ("Đã đặt lịch khám"). subtle = for staff screens, where a result is one block among many: a pale
+   * status-success-bg panel with a 1px status-success-text edge, the title in green, ordinary text, left-aligned,
+   * the reference code in a white box and the explanation inside the panel. Pending panels are always subtle.
+   */
+  emphasis?: 'strong' | 'subtle';
+  /**
    * Short step line. Prefer objects with an explicit state per step, set from real events:
    * [{ label: 'Đã gửi lên Sở', state: 'done' }, { label: 'Bộ đã nhận', state: 'current' }].
    * Plain strings with `currentStep` still work (earlier steps are then shown as done).
@@ -51,6 +58,7 @@ export function ConfirmationPanel({
   children,
   focusOnMount = true,
   tone = 'success',
+  emphasis = 'strong',
   steps,
   currentStep,
   stepsLabel = 'Tiến trình',
@@ -62,8 +70,15 @@ export function ConfirmationPanel({
   useEffect(() => {
     if (focusOnMount) ref.current?.focus();
   }, [focusOnMount]);
+  // Pending and subtle panels hold their explanation ("Chị có thể hủy."); the strong panel puts it under the panel, on the page.
+  const nextInside = tone === 'pending' || emphasis === 'subtle';
   return (
-    <div className={cx(styles.ConfirmationPanel, className)} data-component="ConfirmationPanel" data-tone={tone}>
+    <div
+      className={cx(styles.ConfirmationPanel, className)}
+      data-component="ConfirmationPanel"
+      data-tone={tone}
+      data-emphasis={tone === 'success' ? emphasis : undefined}
+    >
       <div className={styles.Panel}>
         {createElement(`h${headingLevel}`, { ref, tabIndex: -1, className: styles.Title }, title)}
         {reference ? (
@@ -90,6 +105,12 @@ export function ConfirmationPanel({
                 <li key={label} className={styles.Step} aria-current={state === 'current' ? 'step' : undefined} data-state={state}>
                   <span className={styles.StepLabel}>
                     {state === 'failed' ? <VisuallyHidden>{failedPrefix} </VisuallyHidden> : null}
+                    {/* A done step shows a tick; the current step is only outlined, so it never looks more finished. */}
+                    {state === 'done' ? (
+                      <span aria-hidden="true" data-part="done-mark">
+                        ✓{' '}
+                      </span>
+                    ) : null}
                     {label}
                   </span>
                 </li>
@@ -97,10 +118,9 @@ export function ConfirmationPanel({
             })}
           </ol>
         ) : null}
-        {/* Pending: the explanation ("Chị có thể hủy.") belongs inside the panel. */}
-        {children && tone === 'pending' ? <div className={styles.Next}>{children}</div> : null}
+        {children && nextInside ? <div className={styles.Next}>{children}</div> : null}
       </div>
-      {children && tone !== 'pending' ? <div className={styles.Next}>{children}</div> : null}
+      {children && !nextInside ? <div className={styles.Next}>{children}</div> : null}
     </div>
   );
 }
