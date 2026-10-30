@@ -1,12 +1,12 @@
 {
-  "version": "2.3.0",
-  "tokensVersion": 2.3,
-  "date": "2026-10-29T17:11:46.484Z",
+  "version": "2.4.0",
+  "tokensVersion": 2.4,
+  "date": "2026-10-30T12:14:30.699Z",
   "files": {
-    "tokens.json": "5ae37ad54b7febf99355d7fa2563b3f36b4ca0688231767c5db825d37926851f",
-    "README.md": "4f17ab470a55e0d0903b972f4475daad52d558be1bdd04e4f43c7d06b09e43e7",
-    "components/bundle.js": "23f016da837263223463d45418fd8442256db55a30eb5f4cbf4bffc41da3937e",
-    "components/bundle.css": "fa64780559c947287ae3c972ec9175351286bca99ec4fd224f8a0b96937c0e9b",
-    "components/index.d.ts": "d4e1aa6bc876ad1b8a24e645601495e4e9eb71c3186ff52e22f53de501e68b68"
+    "tokens.json": "3dda6c4ed99b595ba1e9e119bc64d85e9113f1304351d5acc5948441809a5719",
+    "README.md": "4c6b0109867c32e465499d42a6a93d23aa7e227e3c392e73bcbcb839b152030d",
+    "components/bundle.js": "dfadcf35ebe002af1c244c28125b231a097ffe51c6d029e0d632cd75c3e4f7b6",
+    "components/bundle.css": "7f131071c64889a122b2bce49c7bb3c2130dc2412d4f448ba85c6cce8e09c57f",
+    "components/index.d.ts": "24043b9e5ea4f69b744d49437b21abb67a61296bdea84f04d3758c1064aeba23"
   }
 }

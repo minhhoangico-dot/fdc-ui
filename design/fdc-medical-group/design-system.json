@@ -324,10 +324,10 @@
   ],
   "lastChange": {
     "by": "Minh",
-    "at": "2026-10-29T17:13:09Z",
-    "via": "Claude Code · fdc-ui@2.3.0",
-    "note": "v2.3 release: staff components NumberField, Combobox, SaveStatus, Pagination, Breadcrumb, DataTable, PatientContextBar, StaffLayout; TextField unit, RadioGroup wrap, compact Header sticky below 1024px; README staff screens and moments; tokens version 2.3 (no value changes)",
-    "release": "2.3.0"
+    "at": "2026-10-30T12:20:00Z",
+    "via": "Claude Code · fdc-ui@2.4.0",
+    "note": "v2.4 release: the guide keeps shared principles and component rules only (each app keeps its own workflow, KSK in fdc-ui docs/apps/ksk-nhan-vien.md); new Checkbox, Select, CodeList, FormPartNav; one error look for every field, dark-ink focus on errors, tinted tags and panels with signs, measured sticky bars, NumberField one message line; tokens 2.4 (success-50, danger-50 with status-success-bg, status-error-bg)",
+    "release": "2.4.0"
   },
   "layout": "files",
   "libraries": [
