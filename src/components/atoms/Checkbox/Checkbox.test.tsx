@@ -60,6 +60,14 @@ describe('Checkbox', () => {
     expect(screen.getByRole('checkbox')).toHaveAccessibleDescription('Cần sửa: Tích để tiếp tục');
   });
 
+  it('shows the error with the same sign as every field, which screen readers skip', () => {
+    const { container } = render(<Checkbox label="Tôi đồng ý" error="Tích để tiếp tục" />);
+    const mark = container.querySelector('[data-part="error"] [data-part="mark"]');
+    expect(mark).toHaveTextContent('!');
+    expect(mark).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.getByRole('checkbox')).toHaveAccessibleDescription('Lỗi: Tích để tiếp tục');
+  });
+
   it('forwards the ref, id and name to the input; disabled does not toggle', async () => {
     const ref = createRef<HTMLInputElement>();
     render(<Checkbox ref={ref} id="da-xem" name="daXem" label="Tôi đã xem phần nhập tay" disabled />);

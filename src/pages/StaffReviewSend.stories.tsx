@@ -297,9 +297,10 @@ function partRows(phase: Phase): SummaryRow[] {
 function NextPerson({ line, variant = 'primary' }: { line?: ReactNode; variant?: 'primary' | 'neutral' }) {
   return (
     <Inline gap={15}>
+      {/* The entry page's words ("Người sau", arrow after) plus the person, so it is one 44px line at 390px.
+          On a narrower phone it breaks after the colon, never inside the name. */}
       <Button variant={variant} href="#" icon="simple-right" iconPosition="end">
-        {/* On a narrow phone the label breaks after the colon, never inside the name. */}
-        Sang người sau: <span className={styles.Whole}>{NEXT_PERSON}</span>
+        Người sau: <span className={styles.Whole}>{NEXT_PERSON}</span>
       </Button>
       {line ? <span>{line}</span> : null}
     </Inline>
@@ -443,7 +444,7 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
         <ul className={styles.Answers}>
           <li>Sở tiếp nhận: nhóm Sở đã tiếp nhận.</li>
           <li>Bị từ chối: nhóm Cần điền hoặc sửa, kèm lý do của Sở.</li>
-          <li>Chưa rõ kết quả: vẫn ở nhóm Đang gửi, với nút Kiểm tra lại trạng thái.</li>
+          <li>Chưa rõ kết quả: vẫn ở nhóm Đang gửi; mở hồ sơ để kiểm tra lại trạng thái.</li>
         </ul>
         <NextPerson />
       </ConfirmationPanel>
@@ -557,28 +558,33 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
         {/* One trail: the full path from 40rem, only "‹ Ngô Văn Nam" (the way back) on phones. */}
         <Breadcrumb collapseOnPhone items={trail} />
         <h1 className={styles.Title}>{sendable ? 'Xem lại trước khi gửi lên Sở Y tế' : 'Trạng thái gửi lên Sở Y tế'}</h1>
-        <div className={styles.Person}>
-          <PatientContextBar
-            variant="block"
-            headingLevel={2}
-            name="Ngô Văn Nam"
-            sex="Nam"
-            birthDate="15/03/1990"
-            ageOn={new Date(2026, 9, 10)}
-            idEnd="0004"
-            recordCode="RD26-0004"
-            organization="Công ty TNHH Rạng Đông"
-            status={<StatusTag tone={tag.tone}>{tag.label}</StatusTag>}
-          />
-          <p className={styles.Meta}>
+      </div>
+      {/* The person: one block with one edge. A direct child of the content, so from 1024px it sticks for the whole
+          page and the name, date of birth and code stay in view down to the tick box and the send button (below
+          1024px the header's thin bar does this). */}
+      <PatientContextBar
+        variant="block"
+        sticky
+        headingLevel={2}
+        className={styles.Person}
+        name="Ngô Văn Nam"
+        sex="Nam"
+        birthDate="15/03/1990"
+        ageOn={new Date(2026, 9, 10)}
+        idEnd="0004"
+        recordCode="RD26-0004"
+        organization="Công ty TNHH Rạng Đông"
+        status={<StatusTag tone={tag.tone}>{tag.label}</StatusTag>}
+        recordFacts={
+          <>
             <span>Khám 10/10/2026 08:15</span>
             <span>
               Người ký: <strong>BS Hoàng Thị Cúc</strong>
             </span>
             <span>{phase === 'stale' ? 'Bản này lưu lúc 09:14 bởi chị Mai' : 'Bản này lưu lúc 09:12 bởi chị Lan'}</span>
-          </p>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       <VisuallyHidden role="status">{said}</VisuallyHidden>
       <div ref={outcomeRef} className={styles.OutcomeSlot}>
@@ -677,6 +683,37 @@ type Story = StoryObj<typeof meta>;
 export const XemLai: Story = {};
 
 /**
+ * Scrolled down to the tick box and the send button: the person's name, date of birth and code stay in view. From
+ * 1024px the person block sticks at the top (one edge, as before scrolling); below 1024px the header's thin bar holds
+ * them. A focused control is never under the block: StaffLayout measures it.
+ */
+export const CuonDenNutGui: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const tick = canvas.getByRole('checkbox', { name: 'Tôi đã đối chiếu phần nhập tay với phiếu giấy' });
+    tick.focus();
+    canvas.getByRole('button', { name: 'Gửi lên Sở: Ngô Văn Nam' }).scrollIntoView({ block: 'end' });
+    window.dispatchEvent(new Event('scroll'));
+    const who = canvas.getByRole('region', { name: 'Người đang làm' });
+    if (window.innerWidth >= 1024) {
+      await waitFor(() => expect(Math.round(who.getBoundingClientRect().top)).toBe(0));
+      for (const text of ['Ngô Văn Nam', 'Sinh 15/03/1990 (36 tuổi)', 'RD26-0004']) {
+        const el = within(who).getByText(text);
+        const r = el.getBoundingClientRect();
+        await expect(document.elementFromPoint(r.left + 4, r.top + r.height / 2)).toBe(el);
+      }
+      // The scroll padding keeps a focused control below the block.
+      const pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop);
+      await expect(pad).toBeGreaterThan(who.getBoundingClientRect().bottom);
+    } else {
+      const header = canvasElement.querySelector('header')!;
+      await waitFor(() => expect(header).toHaveAttribute('data-collapsed', 'true'));
+      await expect(within(header).getByText('RD26-0004')).toBeVisible();
+    }
+  },
+};
+
+/**
  * Ticked and sent: a 30-second undo window in pale blue (started, not finished), and the way on to the next person.
  * Focus moves to the panel's heading, whose name stays "Chờ gửi lên Sở" while the seconds run in the text under it;
  * the page's status line says the start once.
@@ -691,7 +728,7 @@ export const ChoGui: Story = {
     await expect(heading).toHaveFocus();
     await expect(canvas.getByText('Chờ gửi lên Sở, còn 30 giây để hủy')).toBeInTheDocument();
     await expect(canvas.getByRole('button', { name: 'Hủy gửi' })).toBeInTheDocument();
-    await expect(canvas.getByRole('link', { name: `Sang người sau: ${NEXT_PERSON}` })).toBeInTheDocument();
+    await expect(canvas.getByRole('link', { name: `Người sau: ${NEXT_PERSON}` })).toBeInTheDocument();
     // The record's tag says the state once; the countdown lives only in the panel's text.
     const who = canvas.getByRole('region', { name: 'Người đang làm' });
     await expect(within(who).getByText('Chờ gửi')).toBeInTheDocument();

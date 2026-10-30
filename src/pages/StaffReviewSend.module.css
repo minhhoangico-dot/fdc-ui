@@ -1,7 +1,7 @@
-/* Xem lại trước khi gửi: the page's own layout only (title size, the person block, the result line, blocks).
+/* Xem lại trước khi gửi: the page's own layout only (title size, the person's place, the result line, blocks).
    Role tokens only; the components bring their own look. 40rem matches the phone break of SummaryList and DataTable. */
 
-/* The head (breadcrumb, title, person, result) is tight, so the result and the data under it stay in view. */
+/* The head (breadcrumb and title) is tight, so the person, the result and the data under it stay in view. */
 .Head {
   display: flex;
   flex-direction: column;
@@ -18,27 +18,11 @@
   color: var(--text-default);
 }
 
-/* The person: one light block; the context bar inside uses variant="block", so the block has one edge, not two. */
+/* The person (PatientContextBar variant="block": one edge, no box around it) sits 10px under the title, like the
+   head's own rhythm, although the content's gap is 15px (20px from 40rem). It is a direct child of the content so
+   that, from 1024px, it sticks for the whole page. */
 .Person {
-  box-sizing: border-box;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-}
-/* Exam, signer and last save: whole chunks set apart by space (like the bar's facts), lined up with the bar's text. */
-.Meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 var(--space-15);
-  margin: 0;
-  padding: 0 var(--space-15) var(--space-10);
-  color: var(--text-muted);
-  font-size: 1rem;
-  line-height: 1.5;
-}
-.Meta strong {
-  font-weight: 600;
-  color: var(--text-default);
+  margin-block-start: calc(var(--space-5) * -1);
 }
 
 /* A white block with a light edge on the grey work surface. Tighter on phones. */
@@ -150,6 +134,9 @@
 @media (min-width: 40rem) {
   .Title {
     font-size: 2rem;
+  }
+  .Person {
+    margin-block-start: calc(var(--space-10) * -1);
   }
   .Block {
     gap: var(--space-15);

@@ -16,7 +16,7 @@ export type PatientContextBarProps = {
   idEnd?: string;
   /** Record or visit code: "RD26-0006", shown in bold after its label. */
   recordCode: string;
-  /** Words before the code. Default "Mã lượt khám". */
+  /** Words before the code. Default "Mã lượt khám". On phones only the bold code shows (as in the Header's thin bar); the words stay for screen readers. */
   recordCodeLabel?: string;
   /** Company or ward, after the code. */
   organization?: string;
@@ -32,14 +32,25 @@ export type PatientContextBarProps = {
    * They sit on the name's row from 40rem up, and share one row of two 44px buttons on phones.
    */
   actions?: ReactNode;
+  /**
+   * Facts about this version of the record, on a muted line of their own under the person's facts: on the review
+   * page the exam time, the signer and the last save. Pass each as its own element; each stays whole, set apart by
+   * space: `<><span>Khám 10/10/2026 08:15</span><span>Người ký: <strong>BS Hoàng Thị Cúc</strong></span></>`.
+   */
+  recordFacts?: ReactNode;
   /** The name is the page's heading. Default 1. */
   headingLevel?: 1 | 2;
   /**
-   * bar (default) = a full-width bar with a bottom edge, under the header; block = no edge and no fill of its own, for
-   * placing inside a bordered block on a page (the review page), never sticky.
+   * bar (default) = a full-width bar with a bottom edge, in StaffLayout's `context` slot under the header (a record
+   * form). block = a white block with one light edge all round, among the page's own blocks (the review page, after
+   * its title); put no box around it, so there is one edge, not two.
    */
   variant?: 'bar' | 'block';
-  /** Stay at the top while the form scrolls, from 1024px up. Below that the compact Header's thin bar (collapseOnScroll + compactBar) does this job. */
+  /**
+   * Stay at the top while the page scrolls, from 1024px up, in either variant. Below that the compact Header's thin
+   * bar (collapseOnScroll + compactBar) does this job. A sticky block must be a direct child of the page's content
+   * (StaffLayout's main), so it sticks for the whole page; StaffLayout measures it like the bar.
+   */
   sticky?: boolean;
   className?: string;
 };
@@ -49,8 +60,10 @@ export type PatientContextBarProps = {
  * the record code, the state and the way to the previous or next person.
  * Name, date of birth and record code are the three facts that tell two people apart; they are never hidden.
  * Facts are whole chunks set apart by space, not by dots: a dot left at a line end reads like a stray mark.
- * Rows: the breadcrumb; the name with its state (and, from 40rem, the previous/next buttons at the end); the facts.
- * From 64rem, where it sticks, that is one row of buttons, not a second row under the facts.
+ * Rows: the breadcrumb; the name with its state (and, from 40rem, the previous/next buttons at the end); the facts;
+ * the record facts. From 64rem, where it sticks, that is one row of buttons, not a second row under the facts.
+ * On phones it is as short as it can be without losing a fact: the state sits beside the name when both fit, and
+ * the facts run on as few lines as their whole chunks allow (the code without its words, 10px apart).
  */
 export function PatientContextBar({
   name,
@@ -64,6 +77,7 @@ export function PatientContextBar({
   breadcrumb,
   status,
   actions,
+  recordFacts,
   headingLevel = 1,
   sticky,
   variant = 'bar',
@@ -79,7 +93,7 @@ export function PatientContextBar({
     </span>,
     idEnd ? <span key="id">CCCD …{idEnd}</span> : null,
     <span key="code">
-      {recordCodeLabel ? `${recordCodeLabel} ` : null}
+      {recordCodeLabel ? <span className={styles.CodeLabel}>{recordCodeLabel} </span> : null}
       <strong>{recordCode}</strong>
     </span>,
     organization ? (
@@ -89,7 +103,7 @@ export function PatientContextBar({
     ) : null,
   ].filter(Boolean);
   return (
-    <section aria-label="Người đang làm" className={cx(styles.PatientContextBar, className)} data-component="PatientContextBar" data-sticky={(sticky && variant !== 'block') || undefined} data-variant={variant}>
+    <section aria-label="Người đang làm" className={cx(styles.PatientContextBar, className)} data-component="PatientContextBar" data-sticky={sticky || undefined} data-variant={variant}>
       <div className={styles.Inner}>
         {breadcrumb?.length ? <Breadcrumb items={breadcrumb} collapseOnPhone className={styles.Breadcrumb} /> : null}
         <div className={styles.NameLine}>
@@ -98,6 +112,7 @@ export function PatientContextBar({
         </div>
         {/* A real space between facts, so copied text and screen readers do not run them together. */}
         <p className={styles.Facts}>{facts.flatMap((f, i) => (i ? [' ', f] : [f]))}</p>
+        {recordFacts ? <p className={styles.RecordFacts}>{recordFacts}</p> : null}
         {actions ? <div className={styles.Actions}>{actions}</div> : null}
       </div>
     </section>

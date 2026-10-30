@@ -51,6 +51,10 @@ describe('RadioGroup v2.1', () => {
     // The options themselves carry no error text and no error styling hook.
     expect(container.querySelectorAll('[data-invalid]')).toHaveLength(1);
     for (const radio of screen.getAllByRole('radio')) expect(radio).not.toHaveAccessibleDescription();
+    // The message carries the same sign as every field error, hidden from screen readers.
+    const mark = container.querySelector('[data-part="error"] [data-part="mark"]');
+    expect(mark).toHaveTextContent('!');
+    expect(mark).toHaveAttribute('aria-hidden', 'true');
   });
 
   it('marks row layout and compact density, and arrow keys still move the choice', async () => {

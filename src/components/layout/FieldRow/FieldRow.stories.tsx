@@ -27,9 +27,9 @@ export const StaffCompact: Story = {
   parameters: { density: 'compact' },
   render: () => (
     <FieldRow minColumn="11rem">
-      <TextField label="Chiều cao (cm)" placeholder="Chưa điền · ví dụ 162" />
-      <TextField label="Cân nặng (kg)" placeholder="Chưa điền · ví dụ 58" />
-      <TextField label="Mạch (lần/phút)" hint="Đo khi nghỉ" placeholder="Chưa điền · ví dụ 78" />
+      <TextField label="Chiều cao (cm)" placeholder="ví dụ 162" />
+      <TextField label="Cân nặng (kg)" placeholder="ví dụ 58" />
+      <TextField label="Mạch (lần/phút)" hint="Đo khi nghỉ" placeholder="ví dụ 78" />
       <TextField label="Huyết áp (mmHg)" defaultValue="150/95" />
     </FieldRow>
   ),

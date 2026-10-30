@@ -18,25 +18,31 @@
   }
 }
 
-/* The part's heading. On a phone 18px, below the page's h1 (the person's name, 20px there), so the headings keep
-   their order; 22px from 40rem. It takes focus when a part is chosen in the side list (tabIndex -1): no ring, it is
-   not a control. */
+/* The part's heading, 22px. It takes focus when a part is chosen in the side list (tabIndex -1): no ring, it is not
+   a control. On a phone the part toggle right above the block names the part ("4. Thể lực · còn 4"), so the heading
+   is for screen readers only there (it still names the section and keeps the heading order): the first field comes
+   43px up the screen, and after "Xem lại" it shows under the error summary. */
 .PartTitle {
   margin: 0;
   font-family: var(--font-heading);
-  font-size: 1.125rem;
+  font-size: 1.375rem;
   line-height: 1.3;
 }
 .PartTitle:focus {
   outline: none;
 }
-@media (min-width: 40rem) {
-  .PartTitle {
-    font-size: 1.375rem;
+@media (max-width: 39.99rem) {
+  .PartHead {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 /* What is left in this part, beside the heading. On a phone the part toggle right above says it ("4. Thể lực · còn 4")
-   and each empty field says "Chưa điền", so the line goes and the first field comes up the screen. */
+   and each empty field says "Chưa điền", so the count is left out there, for screen readers too. */
 .PartLeft {
   color: var(--text-muted);
 }
@@ -60,7 +66,8 @@
    message line, box. Each field takes the last three through subgrid (the data-part contract FieldRow uses: NumberField's
    one message line is its hint part), so labels line up with labels and boxes with boxes. Every level has the same
    5px row gap: a subgrid with a different gap from its parent shifts its items by half the difference.
-   Narrow: Mạch on its own line (its unit and a "Cao" tag need the width), the two pressures side by side under it. */
+   Narrow: Mạch on its own line (its unit and a "Cao" tag need the width), the two pressures side by side under it
+   while each gets 9rem, under each other below that. */
 .Vitals {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -113,6 +120,22 @@
   font-weight: 600;
   line-height: 1.4;
 }
+/* Too narrow for two 9rem columns (a 320 or 360px phone, where the row above is one column too): Tâm thu and
+   Tâm trương under each other, each the full width. A NumberField's own texts fit one line of a 9rem column, so the
+   pair side by side from 375px and each field alone below that keep a one-line message line: no blank line between
+   label and box. Spacing as before: 5px under the group label, 20px between the two fields. */
+@container fields (width < 19.25rem) {
+  .Pressure {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    grid-row: auto;
+  }
+  .Pressure > .Field + .Field {
+    margin-block-start: var(--space-15);
+  }
+}
+
 /* Three equal columns, the same as the row above (Chiều cao · Cân nặng · BMI): Mạch in the first, the group in
    the other two. Wide enough that "112 lần/phút" and its "Cao" tag fit Mạch's column. */
 @container fields (min-width: 40rem) {

@@ -121,6 +121,11 @@ describe('CodeList', () => {
     expect(input).toHaveAccessibleDescription('Gõ tên hoặc mã, có dấu hay không dấu đều được. Lỗi: Thêm ít nhất một bệnh, tật');
     // One message only: the add field shows no error line of its own.
     expect(screen.getAllByText('Thêm ít nhất một bệnh, tật')).toHaveLength(1);
+    // One sign too, on the group's message (hidden from screen readers, which hear "Lỗi:").
+    const marks = document.querySelectorAll('[data-part="mark"]');
+    expect(marks).toHaveLength(1);
+    expect(marks[0]).toHaveTextContent('!');
+    expect(marks[0]).toHaveAttribute('aria-hidden', 'true');
   });
 
   it('marks nothing invalid without an error', () => {

@@ -9,7 +9,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, nu
     h(F.Header, {variant: 'compact', appName: 'hoso', logo: {src: logo, alt: 'FDC Bác sĩ gia đình, về Việc của tôi', href: '#'},
       items: [{label: 'Việc của tôi', href: '#', current: true}, {label: 'Đợt khám', href: '#'}],
       tools: h(React.Fragment, null,
-        h(F.StatusTag, {tone: 'info', size: 'sm'}, 'Gửi tự động đang chạy: chỉ đợt F.D.I KSK 2026'),
+        h(F.StatusTag, {tone: 'info'}, 'Gửi tự động: chỉ đợt F.D.I\u00a0KSK\u00a02026'),
         h('span', null, 'Chị Lan'),
         h(F.TextLink, {href: '#', arrow: false}, 'Đăng xuất'))}))));
 </script>

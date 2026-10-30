@@ -7,12 +7,14 @@
   line-height: 1.4;
   color: var(--text-default);
 }
+/* Among the page's own blocks (the review page): one light edge all round, like them, and nothing around it. */
 .PatientContextBar:where([data-variant='block']) {
-  border-block-end: 0;
-  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
 }
-/* Sticky from 64rem, under whatever else sticks above it (StaffLayout measures that as --header-space; 0 when the
-   header scrolls away, as it does from 64rem). */
+/* Sticky from 64rem in either variant, under whatever else sticks above it (StaffLayout measures that as
+   --header-space; 0 when the header scrolls away, as it does from 64rem). A block sticks the same way when it is a
+   direct child of the page's content, and its fill hides what scrolls under it. */
 @media (min-width: 64rem) {
   .PatientContextBar:where([data-sticky]) {
     position: sticky;
@@ -20,13 +22,13 @@
     z-index: 5;
   }
 }
-/* Rows: breadcrumb / name and state / facts / the previous-next buttons (phones). From 40rem the buttons move up to
-   the end of the name's row, so the bar never grows a row of buttons under the facts. */
+/* Rows: breadcrumb / name and state / facts / record facts / the previous-next buttons (phones). From 40rem the
+   buttons move up to the end of the name's row, so the bar never grows a row of buttons under the facts. */
 .Inner {
   box-sizing: border-box;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: 'crumb' 'name' 'facts' 'actions';
+  grid-template-areas: 'crumb' 'name' 'facts' 'record' 'actions';
   align-items: center;
   gap: 0 var(--space-30);
   max-inline-size: var(--container-max);
@@ -36,7 +38,7 @@
 @media (min-width: 40rem) {
   .Inner {
     grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas: 'crumb crumb' 'name actions' 'facts facts';
+    grid-template-areas: 'crumb crumb' 'name actions' 'facts facts' 'record record';
   }
 }
 .Breadcrumb {
@@ -80,6 +82,23 @@
   min-inline-size: 0;
   white-space: normal;
 }
+/* About this version of the record (exam, signer, last save): muted, whole chunks like the facts, a little apart. */
+.RecordFacts {
+  grid-area: record;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-15);
+  margin: var(--space-5) 0 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.RecordFacts > * {
+  white-space: nowrap;
+}
+.RecordFacts strong {
+  font-weight: 600;
+  color: var(--text-default);
+}
 .Actions {
   grid-area: actions;
   display: flex;
@@ -88,7 +107,10 @@
   gap: var(--space-10);
 }
 /* Phones: a smaller name, tighter spacing, and the previous/next buttons share one row in two equal columns. With
-   the short words ("Người trước", "Người sau") each stays one line, so the row is one 44px button tall. */
+   the short words ("Người trước", "Người sau") each stays one line, so the row is one 44px button tall.
+   The facts take as few lines as their whole chunks allow: 10px apart, and the code shows without its words
+   ("RD26-0006", as in the Header's thin bar; screen readers still hear "Mã lượt khám"). At 390px that is two lines
+   (sex, date of birth, CCCD / code, company), so the first field of a form starts higher. */
 @media (max-width: 39.99rem) {
   .Breadcrumb {
     margin-block-start: calc(var(--space-5) * -1);
@@ -98,6 +120,18 @@
   }
   .Name {
     font-size: 1.25rem;
+  }
+  .Facts,
+  .RecordFacts {
+    column-gap: var(--space-10);
+  }
+  .CodeLabel {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
   .Actions {
     display: grid;

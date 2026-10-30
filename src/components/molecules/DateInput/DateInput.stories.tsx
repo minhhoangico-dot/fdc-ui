@@ -14,3 +14,9 @@ export const Default: Story = {};
 export const Filled: Story = { args: { defaultValue: { day: '27', month: '3', year: '1950' } } };
 export const Error: Story = { args: { defaultValue: { day: '31', month: '2', year: '1950' }, error: 'Ngày sinh không có thật, vui lòng kiểm tra lại' } };
 export const VisitDate: Story = { args: { label: 'Ngày khám', birthday: false, hint: 'Ngày ghi trên phiếu khám, ví dụ: 24 10 2026' } };
+
+/** In a narrow column (a card on a 320px phone, 218px): the boxes shrink before the year wraps, so the date stays on one line. */
+export const NarrowColumn: Story = {
+  args: { label: 'Ngày khám', birthday: false, hint: 'Ngày ghi trên phiếu khám', error: 'Nhập ngày khám ghi trên phiếu' },
+  decorators: [(Story) => <div style={{ maxWidth: 218 }}><Story /></div>],
+};

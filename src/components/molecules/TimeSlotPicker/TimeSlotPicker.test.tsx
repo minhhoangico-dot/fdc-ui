@@ -29,4 +29,12 @@ describe('TimeSlotPicker', () => {
     render(<TimeSlotPicker id="slot-first" label="Chọn giờ khám" slots={[{ time: '07:30', taken: true }, ...slots]} />);
     expect(document.getElementById('slot-first')).toHaveAttribute('value', '08:00');
   });
+
+  it('shows an error with the same sign as every field, read as "Lỗi:"', () => {
+    const { container } = render(<TimeSlotPicker label="Chọn giờ khám" slots={slots} error="Chọn một giờ khám" />);
+    expect(screen.getByRole('group', { name: 'Chọn giờ khám' })).toHaveAccessibleDescription('Lỗi: Chọn một giờ khám');
+    const mark = container.querySelector('[data-part="error"] [data-part="mark"]');
+    expect(mark).toHaveTextContent('!');
+    expect(mark).toHaveAttribute('aria-hidden', 'true');
+  });
 });

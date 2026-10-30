@@ -73,6 +73,14 @@ describe('Combobox', () => {
     expect(screen.getByRole('combobox')).toHaveAccessibleDescription(/Lỗi: Chọn nghề/);
   });
 
+  it('shows the error with the same sign as every field, which screen readers skip', () => {
+    const { container } = render(<Combobox label="Nghề" hint="" options={[]} error="Chọn nghề" />);
+    const mark = container.querySelector('[data-part="error"] [data-part="mark"]');
+    expect(mark).toHaveTextContent('!');
+    expect(mark).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.getByRole('combobox')).toHaveAccessibleDescription('Lỗi: Chọn nghề');
+  });
+
   it('takes a group error by id, invalid without a message of its own', () => {
     render(
       <>

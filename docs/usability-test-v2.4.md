@@ -125,7 +125,7 @@ Hoặc trong Storybook, mở màn rồi bấm nút "Open canvas in new tab" (mũ
 | 3 | Nhập kết quả › Mat Mang Chua Luu | `pages-nhân-viên-nhập-kết-quả--mat-mang-chua-luu` | Mất mạng giả: lần lưu nào cũng lỗi; đã có một ô gõ sẵn chưa lưu |
 | 4 | Nhập kết quả › Hai Nguoi Cung Sua | `pages-nhân-viên-nhập-kết-quả--hai-nguoi-cung-sua` | |
 | 5 | Nhập kết quả › Ket Luan | `pages-nhân-viên-nhập-kết-quả--ket-luan` | Phần 7. Kết luận |
-| 6 | Xem lại trước khi gửi › Xem Lai, rồi Nhập kết quả › Sau Khi Gui | `pages-nhân-viên-xem-lại-trước-khi-gửi--xem-lai`, `pages-nhân-viên-nhập-kết-quả--sau-khi-gui` | Ngô Văn Nam, chưa tích ô đối chiếu. Khi người tham gia bấm "Sang người sau: Đặng Thanh Chi", người dẫn mở màn thứ hai (người sau, có dòng "Hủy gửi Ngô Văn Nam" ở đầu trang) |
+| 6 | Xem lại trước khi gửi › Xem Lai, rồi Nhập kết quả › Sau Khi Gui | `pages-nhân-viên-xem-lại-trước-khi-gửi--xem-lai`, `pages-nhân-viên-nhập-kết-quả--sau-khi-gui` | Ngô Văn Nam, chưa tích ô đối chiếu. Khi người tham gia bấm "Người sau: Đặng Thanh Chi", người dẫn mở màn thứ hai (người sau, có dòng "Hủy gửi Ngô Văn Nam" ở đầu trang) |
 | 7A | Xem lại trước khi gửi › Dang Gui | `pages-nhân-viên-xem-lại-trước-khi-gửi--dang-gui` | Đang gửi |
 | 7B | Xem lại trước khi gửi › So Da Tiep Nhan | `pages-nhân-viên-xem-lại-trước-khi-gửi--so-da-tiep-nhan` | Sở đã tiếp nhận, mã SYT-HN-2026-118204 |
 | 7C | Xem lại trước khi gửi › Bi Tu Choi | `pages-nhân-viên-xem-lại-trước-khi-gửi--bi-tu-choi` | Lý do của Sở: thiếu kết luận phân loại sức khỏe |
@@ -357,7 +357,7 @@ Hoàn thành đúng: tìm ra **Tôn Nữ Hoàng Bảo Ngọc Phương Thảo, RD
 
 **Người dẫn:** khi đồng hồ trên màn hình còn **20 giây**, nói đúng câu: *"Chị Lan vừa nhắn: kết quả X-quang của anh Nam nhập nhầm, phải sửa lại."* Bấm đồng hồ thứ hai từ lúc nói.
 
-Trong lúc chờ, màn có nút "Sang người sau: Đặng Thanh Chi". Khi người tham gia bấm, người dẫn mở màn Nhập kết quả › Sau Khi Gui (người sau; đầu trang có dòng "Ngô Văn Nam: chờ gửi lên Sở · còn … giây" và nút "Hủy gửi Ngô Văn Nam"). Vẫn nói câu của chị Lan lúc còn 20 giây và xem họ tìm lại anh Nam ở đâu.
+Trong lúc chờ, màn có nút "Người sau: Đặng Thanh Chi". Khi người tham gia bấm, người dẫn mở màn Nhập kết quả › Sau Khi Gui (người sau; đầu trang có dòng "Ngô Văn Nam: chờ gửi lên Sở · còn … giây" và nút "Hủy gửi Ngô Văn Nam"). Vẫn nói câu của chị Lan lúc còn 20 giây và xem họ tìm lại anh Nam ở đâu.
 
 **Hoàn thành đúng khi:** (1) xem phần nhập tay (X-quang) rồi mới tích "Tôi đã đối chiếu phần nhập tay với phiếu giấy"; (2) bấm "Gửi lên Sở: Ngô Văn Nam" một lần; (3) bấm **"Hủy gửi" trước khi hết giờ**; (4) nói được "chưa có gì lên Sở".
 
@@ -543,7 +543,7 @@ In một bộ cho cả buổi thử. Mỗi bảng có một cột cho mỗi ngư
 | Kết quả 2 / 1 / 0 | | | |
 | Số giây đến khi nhận ra lưu lỗi | | | |
 | Lỗi (ghi ngắn) | | | |
-| ★ Sang người sau / nói "xong" khi chưa lưu | | | |
+| ★ Người sau / nói "xong" khi chưa lưu | | | |
 | Bấm "Lưu lại"? Mất mạng tiếp thì làm gì? | | | |
 | SEQ 1–7 | | | |
 | "Mạch 78 đã vào hồ sơ chưa?" Đ / S | | | |

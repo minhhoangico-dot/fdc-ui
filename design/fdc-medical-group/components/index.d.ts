@@ -122,8 +122,13 @@ export type ButtonProps = {
     variant?: 'neutral' | 'primary' | 'hotline';
     /** Renders a link that looks like a button (for example href="tel:02435430430"). */
     href?: string;
-    /** Leading icon. */
+    /** A glyph beside the label. */
     icon?: IconName;
+    /**
+     * Where the icon sits. Default "start". Use "end" for "next" and "forward" actions, so the arrow points the way it
+     * goes and sits where the eye ends: "Người sau ›", like "5. Lâm sàng ›" and "Sau ›" elsewhere.
+     */
+    iconPosition?: 'start' | 'end';
     /** Full width (recommended on phones for the main action). */
     block?: boolean;
     /** Shows a busy state and blocks repeat clicks while a request runs. */
@@ -147,8 +152,13 @@ export declare const Button: import('react').ForwardRefExoticComponent<{
     variant?: "neutral" | "primary" | "hotline";
     /** Renders a link that looks like a button (for example href="tel:02435430430"). */
     href?: string;
-    /** Leading icon. */
+    /** A glyph beside the label. */
     icon?: IconName;
+    /**
+     * Where the icon sits. Default "start". Use "end" for "next" and "forward" actions, so the arrow points the way it
+     * goes and sits where the eye ends: "Người sau ›", like "5. Lâm sàng ›" and "Sau ›" elsewhere.
+     */
+    iconPosition?: "start" | "end";
     /** Full width (recommended on phones for the main action). */
     block?: boolean;
     /** Shows a busy state and blocks repeat clicks while a request runs. */
@@ -283,17 +293,21 @@ export type SkipLinkProps = {
 export declare function SkipLink({ targetId, label, className, ...rest }: SkipLinkProps): import("react").JSX.Element;
 
 /* ===== components/atoms/StatusTag/StatusTag ===== */
-export type StatusTagTone = 'neutral' | 'muted' | 'info' | 'success' | 'error' | 'attention' | 'strong';
+export type StatusTagTone = 'neutral' | 'muted' | 'info' | 'success' | 'error' | 'attention'
+/** @deprecated Since 2.4: no screen used it, and in the nursing-home theme it looked like the orange primary button. Shown as neutral; removed in 3.0. */
+ | 'strong';
 export type StatusTagProps = {
     /**
-     * Tinted fills, never a dark edge, so a tag never reads as a button.
-     * - neutral (default): grey fill, a state with no color of its own ("Cần điền").
-     * - muted: white with a light edge and muted words, for sources such as "Nhập tay"; no dot.
-     * - info: pending work ("Chờ gửi · còn 27 giây"); never green for pending.
-     * - success: done and confirmed ("Đã gửi").
-     * - error: something must be fixed before going on ("Cần sửa", "Gửi lỗi").
-     * - attention: a value outside the normal range ("Cao", "Thấp"): worth a look, not an input error.
-     * - strong: brand fill, for the one state that matters most on a screen; no dot.
+     * Tinted fills with no edge, so a tag never reads as a button. No tag is solid.
+     * - neutral (default): grey fill, a state with no color of its own ("Cần điền", "Sẵn sàng xem lại").
+     * - muted: the same pale grey fill with muted words and no dot, the quietest tag: a source rather than a state
+     *   ("Nhập tay"), or a record nothing has been typed into yet ("Chưa điền").
+     * - info: pending work ("Chờ gửi", "Đang gửi"); never green for pending.
+     * - success: done and confirmed by the other side ("Sở đã tiếp nhận", "Bộ đã xác nhận").
+     * - error: something must be fixed before going on ("Cần sửa", "Bị từ chối").
+     * - attention: worth a look, not an input error: a value outside the normal range ("Cao", "Thấp") or an
+     *   outcome not known yet ("Chưa rõ kết quả").
+     * - strong: deprecated, shown as neutral.
      */
     tone?: StatusTagTone;
     /** sm sits next to a value in tables and summaries; md (default) stands alone. */
@@ -302,19 +316,21 @@ export type StatusTagProps = {
     children: ReactNode;
 } & HTMLAttributes<HTMLSpanElement>;
 /**
- * A rounded status label for staff tools: "Cao", "Nhập tay", "Chờ gửi", "Đã gửi".
+ * A rounded status label for staff tools: "Cao", "Nhập tay", "Chờ gửi", "Sở đã tiếp nhận".
  * It is text, not a control; when the state needs an action, put a Button next to it.
  */
 export declare const StatusTag: import('react').ForwardRefExoticComponent<{
     /**
-     * Tinted fills, never a dark edge, so a tag never reads as a button.
-     * - neutral (default): grey fill, a state with no color of its own ("Cần điền").
-     * - muted: white with a light edge and muted words, for sources such as "Nhập tay"; no dot.
-     * - info: pending work ("Chờ gửi · còn 27 giây"); never green for pending.
-     * - success: done and confirmed ("Đã gửi").
-     * - error: something must be fixed before going on ("Cần sửa", "Gửi lỗi").
-     * - attention: a value outside the normal range ("Cao", "Thấp"): worth a look, not an input error.
-     * - strong: brand fill, for the one state that matters most on a screen; no dot.
+     * Tinted fills with no edge, so a tag never reads as a button. No tag is solid.
+     * - neutral (default): grey fill, a state with no color of its own ("Cần điền", "Sẵn sàng xem lại").
+     * - muted: the same pale grey fill with muted words and no dot, the quietest tag: a source rather than a state
+     *   ("Nhập tay"), or a record nothing has been typed into yet ("Chưa điền").
+     * - info: pending work ("Chờ gửi", "Đang gửi"); never green for pending.
+     * - success: done and confirmed by the other side ("Sở đã tiếp nhận", "Bộ đã xác nhận").
+     * - error: something must be fixed before going on ("Cần sửa", "Bị từ chối").
+     * - attention: worth a look, not an input error: a value outside the normal range ("Cao", "Thấp") or an
+     *   outcome not known yet ("Chưa rõ kết quả").
+     * - strong: deprecated, shown as neutral.
      */
     tone?: StatusTagTone;
     /** sm sits next to a value in tables and summaries; md (default) stands alone. */
@@ -324,22 +340,36 @@ export declare const StatusTag: import('react').ForwardRefExoticComponent<{
 } & HTMLAttributes<HTMLSpanElement> & import('react').RefAttributes<HTMLSpanElement>>;
 
 /* ===== components/atoms/TextField/TextField ===== */
+/** A text the message line keeps room for: a hint, or an error (drawn with its "!" sign). */
+export type TextFieldReserve = string | {
+    error: string;
+};
 export type TextFieldProps = {
     /** Visible label. Always pass one; placeholders never replace it. */
     label: string;
     /** Hide the label visually (still read by screen readers) only when a visible heading already names the field. */
     hideLabel?: boolean;
-    /** Help text between the label and the field. */
-    hint?: string;
-    /** Error message; shown under the label with a thicker red border. */
+    /** Help text between the label and the field. Usually a string; NumberField passes its "Cao" tag line. */
+    hint?: ReactNode;
+    /** Error message; shown above the field with a "!" sign and a thicker red border. */
     error?: string;
     /** Screen-reader prefix before the error. Default "Lỗi:". */
     errorPrefix?: string;
+    /**
+     * One stable message line above the box, for a field whose help changes while the person works in it
+     * (NumberField). Setting it, even to [], puts the error in the hint's place instead of a line of its own, and the
+     * line keeps the room of the tallest text listed here (and at least one line), so the box never moves when the
+     * hint, a tag or an error comes or goes. The texts are drawn hidden from CSS, so they are not in the page text.
+     */
+    reserve?: TextFieldReserve[];
     /** Leading icon (the nursing home's icon-led fields). */
     icon?: IconName;
     /** Unit shown inside the box on the right ("kg", "lần/phút"), and read after the label. */
     unit?: string;
-    /** Next to the box, outside it: a StatusTag such as "Cao" for the value typed. */
+    /**
+     * @deprecated Since 2.4: a tag beside the box takes the box's width, so a typed value can be cut off and boxes in a
+     * column stop lining up. Put a tag in the hint line instead (NumberField does). Still drawn beside the box; removed in 3.0.
+     */
     after?: ReactNode;
     /** Renders a resizable textarea. */
     multiline?: boolean;
@@ -354,17 +384,27 @@ export declare const TextField: import('react').ForwardRefExoticComponent<{
     label: string;
     /** Hide the label visually (still read by screen readers) only when a visible heading already names the field. */
     hideLabel?: boolean;
-    /** Help text between the label and the field. */
-    hint?: string;
-    /** Error message; shown under the label with a thicker red border. */
+    /** Help text between the label and the field. Usually a string; NumberField passes its "Cao" tag line. */
+    hint?: ReactNode;
+    /** Error message; shown above the field with a "!" sign and a thicker red border. */
     error?: string;
     /** Screen-reader prefix before the error. Default "Lỗi:". */
     errorPrefix?: string;
+    /**
+     * One stable message line above the box, for a field whose help changes while the person works in it
+     * (NumberField). Setting it, even to [], puts the error in the hint's place instead of a line of its own, and the
+     * line keeps the room of the tallest text listed here (and at least one line), so the box never moves when the
+     * hint, a tag or an error comes or goes. The texts are drawn hidden from CSS, so they are not in the page text.
+     */
+    reserve?: TextFieldReserve[];
     /** Leading icon (the nursing home's icon-led fields). */
     icon?: IconName;
     /** Unit shown inside the box on the right ("kg", "lần/phút"), and read after the label. */
     unit?: string;
-    /** Next to the box, outside it: a StatusTag such as "Cao" for the value typed. */
+    /**
+     * @deprecated Since 2.4: a tag beside the box takes the box's width, so a typed value can be cut off and boxes in a
+     * column stop lining up. Put a tag in the hint line instead (NumberField does). Still drawn beside the box; removed in 3.0.
+     */
     after?: ReactNode;
     /** Renders a resizable textarea. */
     multiline?: boolean;
@@ -378,15 +418,29 @@ export declare const TextField: import('react').ForwardRefExoticComponent<{
 export type TextLinkProps = {
     /** Default "Xem chi tiết". Prefer a specific label when the destination is not obvious. */
     children?: ReactNode;
-    /** Show the double chevron. Default true. */
-    arrow?: boolean;
+    /**
+     * The mark beside the words, hidden from screen readers so the link's name is only its words.
+     * true (default) = the double chevron after them, for "Xem chi tiết »" at the end of a card or panel;
+     * "back" = one chevron before them and "next" = one after them, for moving between the parts of a form
+     * ("‹ 3. Tiền sử", "5. Lâm sàng ›"); false = none, for a plain link such as "Đăng xuất".
+     */
+    arrow?: boolean | 'back' | 'next';
 } & AnchorHTMLAttributes<HTMLAnchorElement>;
-/** The "Xem chi tiết »" link that ends cards and panels. For a main action use Button. */
+/**
+ * A text link: underlined `text-link` words at body size, a 44px tall target and the 3px focus ring.
+ * Use it for every link that is not a button, so no link falls back to the browser's thin default ring.
+ * For a main action use Button.
+ */
 export declare const TextLink: import('react').ForwardRefExoticComponent<{
     /** Default "Xem chi tiết". Prefer a specific label when the destination is not obvious. */
     children?: ReactNode;
-    /** Show the double chevron. Default true. */
-    arrow?: boolean;
+    /**
+     * The mark beside the words, hidden from screen readers so the link's name is only its words.
+     * true (default) = the double chevron after them, for "Xem chi tiết »" at the end of a card or panel;
+     * "back" = one chevron before them and "next" = one after them, for moving between the parts of a form
+     * ("‹ 3. Tiền sử", "5. Lâm sàng ›"); false = none, for a plain link such as "Đăng xuất".
+     */
+    arrow?: boolean | "back" | "next";
 } & AnchorHTMLAttributes<HTMLAnchorElement> & import('react').RefAttributes<HTMLAnchorElement>>;
 
 /* ===== components/atoms/VisuallyHidden/VisuallyHidden ===== */
@@ -491,9 +545,9 @@ export type ComboboxProps = {
     onValueChange?: (value: string | null, option: ComboboxOption | null) => void;
     /** Most options shown at once; staff refine by typing. Default 50. */
     maxResults?: number;
-    /** Shown when nothing matches. */
+    /** Shown when nothing matches, and read out in place of the count. */
     noResultsText?: (query: string) => string;
-    /** Read after the result count changes. */
+    /** Read after the result count changes, while something matches. */
     resultsText?: (count: number) => string;
     /** Text of the button that empties the field. Default "Xóa". */
     clearLabel?: string;
@@ -502,16 +556,24 @@ export type ComboboxProps = {
     /** id of the input, so an ErrorSummary can link to it. */
     id?: string;
     name?: string;
+    /** More ids that describe the input, read after the hint and error: e.g. the error of the group the field adds to (CodeList). */
+    'aria-describedby'?: string;
+    /** Marks the input invalid without a message or red edge of its own, when the message belongs to the group around it (CodeList). */
+    'aria-invalid'?: boolean;
     className?: string;
 };
 /** "Tăng huyết áp (I10)": how a chosen option reads in the field and in summaries. */
 export declare const optionText: (o: ComboboxOption) => string;
+/** The default message when nothing matches (or, with nothing typed, when there is nothing to choose). */
+export declare const notFoundText: (q: string) => string;
+/** The options that match what was typed, best first, as the list shows them (tone marks and case ignored). */
+export declare function matchOptions(options: ComboboxOption[], query: string, max?: number): ComboboxOption[];
 /**
  * Choose one coded item by typing part of its name or its code: diagnoses (ICD-10), occupations, wards.
  * Typing without tone marks works ("tang huyet ap" finds "Tăng huyết áp"). The field only accepts an item
  * from the list; leaving it without choosing puts back the previous choice. Follows the ARIA 1.2 combobox pattern.
  */
-export declare function Combobox({ label, hideLabel, hint, error, errorPrefix, options, value, defaultValue, onValueChange, maxResults, noResultsText, resultsText, clearLabel, required, disabled, id, name, className, }: ComboboxProps): import("react").JSX.Element;
+export declare function Combobox({ label, hideLabel, hint, error, errorPrefix, options, value, defaultValue, onValueChange, maxResults, noResultsText, resultsText, clearLabel, required, disabled, id, name, 'aria-describedby': describedBy, 'aria-invalid': ariaInvalid, className, }: ComboboxProps): import("react").JSX.Element;
 
 /* ===== components/molecules/ConfirmationPanel/ConfirmationPanel ===== */
 export type StepState = 'done' | 'current' | 'todo' | 'failed';
@@ -520,37 +582,56 @@ export type ConfirmationStep = {
     label: string;
     state: StepState;
 };
+export type ConfirmationTone = 'success' | 'pending' | 'error' | 'attention';
 export type ConfirmationPanelProps = {
-    /** "Đã đặt lịch khám" (success) or "Chờ gửi · còn 27 giây" (pending). */
+    /**
+     * "Đã đặt lịch khám" (success), "Chờ gửi lên Sở" (pending), "Bị từ chối" (error), "Chưa rõ kết quả" (attention).
+     * A focused title keeps one name; put a countdown in the text under it ("Còn 27 giây để hủy.").
+     */
     title: string;
-    /** Booking or request code, e.g. "FDC-2410-0830". */
+    /** Booking or receipt code, e.g. "FDC-2410-0830" or "SYT-HN-2026-118204". It never breaks across lines. */
     reference?: string;
     /** Default "Mã đặt lịch của bạn". */
     referenceLabel?: string;
-    /** What happens next, how to change or cancel. */
+    /** What happens next, how to change or cancel, and the buttons for the next step. */
     children?: ReactNode;
     /** Move focus to the title when shown (after a submit). Default true. */
     focusOnMount?: boolean;
     /**
-     * success (default) = the work is done: green panel. pending = pressed but not finished yet
-     * ("Chờ gửi · còn 27 giây"): pale status-info panel with ordinary text. Green is only ever for success.
+     * What the result is. Every tone except a strong success is a pale panel: a tint, a sign in a circle before the
+     * title and ordinary text, with no edge and no side bar (status colors are the same in both themes).
+     * - success (default): the work is done and confirmed. Green is only ever for success.
+     * - pending: pressed but not finished ("Chờ gửi lên Sở"; the seconds left go in the text under the title, "Còn 27
+     *   giây để hủy."): status-info tint, sign "i".
+     * - error: the other side refused and said why ("Bị từ chối"): status-error tint, sign "!". Say the reason,
+     *   where to fix it and what comes after the fix.
+     * - attention: the outcome is not known ("Chưa rõ kết quả"): status-warning tint, sign "!". Offer a check,
+     *   never a resend, while the other side may already hold the record.
      */
-    tone?: 'success' | 'pending';
+    tone?: ConfirmationTone;
     /**
      * How loud a success is. strong (default) = the solid green panel with white text that ends a patient flow
      * ("Đã đặt lịch khám"). subtle = for staff screens, where a result is one block among many: a pale
-     * status-success-bg panel with a 1px status-success-text edge, the title in green, ordinary text, left-aligned,
-     * the reference code in a white box and the explanation inside the panel. Pending panels are always subtle.
+     * status-success-bg panel with a "✓" sign, the title in green, ordinary text, left-aligned, the reference code
+     * in a white box and the explanation inside the panel. Other tones are always pale.
      */
     emphasis?: 'strong' | 'subtle';
     /**
-     * Short step line. Prefer objects with an explicit state per step, set from real events:
-     * [{ label: 'Đã gửi lên Sở', state: 'done' }, { label: 'Bộ đã nhận', state: 'current' }].
+     * Short step line. Prefer objects with an explicit state per step, set from real events. Done steps say what
+     * happened ("Đã gửi lên Sở", "Sở đã tiếp nhận"), the step waited for says "Chờ …" ("Chờ Bộ xác nhận"),
+     * later steps are plain event names ("Bộ xác nhận"):
+     * [{ label: 'Sở đã tiếp nhận', state: 'done' }, { label: 'Chờ Bộ xác nhận', state: 'current' }].
      * Plain strings with `currentStep` still work (earlier steps are then shown as done).
      */
     steps?: Array<string | ConfirmationStep>;
     /** For plain-string steps: index of the current step (0-based). */
     currentStep?: number;
+    /** Read before a done step. Default "Xong:". */
+    donePrefix?: string;
+    /** Read before the step being waited for. Default "Hiện tại:". */
+    currentPrefix?: string;
+    /** Read before a step still to come. Default "Bước sau:". */
+    todoPrefix?: string;
     /** Read before a failed step. Default "Lỗi:". */
     failedPrefix?: string;
     /** Read before the step line. Default "Tiến trình". */
@@ -563,13 +644,13 @@ export type ConfirmationPanelProps = {
  * The finish of a flow, or its waiting state: a clear panel with the title, the reference code,
  * an optional step line, then what happens next.
  */
-export declare function ConfirmationPanel({ title, reference, referenceLabel, children, focusOnMount, tone, emphasis, steps, currentStep, stepsLabel, failedPrefix, headingLevel, className, }: ConfirmationPanelProps): import("react").JSX.Element;
+export declare function ConfirmationPanel({ title, reference, referenceLabel, children, focusOnMount, tone, emphasis, steps, currentStep, stepsLabel, donePrefix, currentPrefix, todoPrefix, failedPrefix, headingLevel, className, }: ConfirmationPanelProps): import("react").JSX.Element;
 
 /* ===== components/molecules/DateInput/DateInput ===== */
 export type DateInputProps = {
     /** The question, read as the group's legend: "Ngày sinh của người bệnh". */
     label: string;
-    /** Default "Ví dụ: 27 3 1950". */
+    /** Default "Ví dụ: 27 3 1950" (the date joined by no-break spaces). */
     hint?: string;
     error?: string;
     errorPrefix?: string;
@@ -616,8 +697,8 @@ export type FormNoticeValue = {
 export type FormNoticeProps = {
     notice?: FormNoticeValue | null;
     /**
-     * Stand-alone notice in a page (not under a form): a box tinted in the type's color, with a 1px edge and a
-     * 6px bar on the left in the same color (warning amber, error red, success green, info blue; the same in every theme).
+     * Stand-alone notice in a page (not under a form): a pale tint in the type's color (warning amber, error red,
+     * success green, info blue; the same in every theme), the sign and the words. No edge and no side bar.
      */
     boxed?: boolean;
     /**
@@ -715,33 +796,41 @@ export type NumberFieldProps = {
     max?: number;
     /** Digits allowed after the comma. Default 0 (whole numbers). */
     decimals?: number;
-    /** Normal range: a value outside it gets a word tag ("Cao", "Thấp"), never color alone. It is not an error. */
+    /**
+     * Normal range: a value outside it gets a word tag in the message line above the box ("Cao · bình thường 60–100",
+     * the range only when it fits), never color alone and never beside the box. It is not an error.
+     */
     normalRange?: [number, number];
     highLabel?: string;
     lowLabel?: string;
     /**
-     * A typical value for the grey hint. Empty: "Chưa điền · ví dụ 78". While an error shows, or while typing: "ví dụ 78"
-     * (the error already says the field is empty, and the line does not jump on the first key). Filled and left: no hint.
+     * A typical value, shown as "ví dụ 78" while the field has focus (empty or typing). Empty and not focused, the line
+     * says "Chưa điền"; filled and left, nothing. The line keeps its room in every state.
      */
     example?: string;
-    /** Hint when the field is empty. Default "Chưa điền". */
+    /** Hint when the field is empty and not focused. Default "Chưa điền". Keep it to a word or two (one line). */
     emptyLabel?: string;
     /** Controlled text, as typed ("52,5"). */
     value?: string;
     defaultValue?: string;
     /** Called on every change with the number (null when empty or not a number) and the text typed. */
     onValueChange?: (value: number | null, text: string) => void;
-    /** An error from the page, e.g. a required field still empty after pressing "Xem lại". Wins over the field's own checks. */
+    /**
+     * An error from the page, e.g. a required field still empty after pressing "Xem lại". Wins over the field's own
+     * checks and shows in the same line, as given. Keep it short ("Điền mạch", "Điền tâm thu"): the line is one line
+     * in a 9rem column; the error summary can keep its own short name.
+     */
     error?: string;
-    /** Fixed help text instead of the automatic "Chưa điền · ví dụ 78"; shown in every state. */
+    /** Fixed help text instead of the automatic "Chưa điền" / "ví dụ 78"; an error or a "Cao" tag takes its place. */
     hint?: string;
-} & Omit<TextFieldProps, 'type' | 'value' | 'defaultValue' | 'error' | 'hint' | 'unit' | 'after' | 'multiline' | 'icon' | 'min' | 'max'>;
+} & Omit<TextFieldProps, 'type' | 'value' | 'defaultValue' | 'error' | 'hint' | 'reserve' | 'unit' | 'after' | 'multiline' | 'icon' | 'min' | 'max'>;
 /**
  * A number with its unit, for measurements and results: "52,5 kg", "78 lần/phút".
  * Accepts a decimal comma or dot, checks the range when the user leaves the field (not while typing),
  * and flags values outside the normal range with a word. An empty field stays neutral: a grey hint, no red.
- * The hint says only what still helps: "Chưa điền · ví dụ 78" while empty, "ví dụ 78" next to an error or while
- * typing, nothing once a value is in and the user has moved on.
+ * Everything it says is in one message line above the box (hint, "Cao" tag, error), and that line keeps its room
+ * whatever it shows, so nothing above or below the field moves while it is focused, typed into or left, and the box
+ * always has its column's full width. Every text it writes itself fits one line of a 9rem (144px) column.
  */
 export declare const NumberField: import('react').ForwardRefExoticComponent<{
     /** The measurement, without the unit: "Cân nặng". The unit goes in `unit`. */
@@ -753,27 +842,34 @@ export declare const NumberField: import('react').ForwardRefExoticComponent<{
     max?: number;
     /** Digits allowed after the comma. Default 0 (whole numbers). */
     decimals?: number;
-    /** Normal range: a value outside it gets a word tag ("Cao", "Thấp"), never color alone. It is not an error. */
+    /**
+     * Normal range: a value outside it gets a word tag in the message line above the box ("Cao · bình thường 60–100",
+     * the range only when it fits), never color alone and never beside the box. It is not an error.
+     */
     normalRange?: [number, number];
     highLabel?: string;
     lowLabel?: string;
     /**
-     * A typical value for the grey hint. Empty: "Chưa điền · ví dụ 78". While an error shows, or while typing: "ví dụ 78"
-     * (the error already says the field is empty, and the line does not jump on the first key). Filled and left: no hint.
+     * A typical value, shown as "ví dụ 78" while the field has focus (empty or typing). Empty and not focused, the line
+     * says "Chưa điền"; filled and left, nothing. The line keeps its room in every state.
      */
     example?: string;
-    /** Hint when the field is empty. Default "Chưa điền". */
+    /** Hint when the field is empty and not focused. Default "Chưa điền". Keep it to a word or two (one line). */
     emptyLabel?: string;
     /** Controlled text, as typed ("52,5"). */
     value?: string;
     defaultValue?: string;
     /** Called on every change with the number (null when empty or not a number) and the text typed. */
     onValueChange?: (value: number | null, text: string) => void;
-    /** An error from the page, e.g. a required field still empty after pressing "Xem lại". Wins over the field's own checks. */
+    /**
+     * An error from the page, e.g. a required field still empty after pressing "Xem lại". Wins over the field's own
+     * checks and shows in the same line, as given. Keep it short ("Điền mạch", "Điền tâm thu"): the line is one line
+     * in a 9rem column; the error summary can keep its own short name.
+     */
     error?: string;
-    /** Fixed help text instead of the automatic "Chưa điền · ví dụ 78"; shown in every state. */
+    /** Fixed help text instead of the automatic "Chưa điền" / "ví dụ 78"; an error or a "Cao" tag takes its place. */
     hint?: string;
-} & Omit<TextFieldProps, "defaultValue" | "type" | "icon" | "after" | "max" | "min" | "value" | "hint" | "error" | "unit" | "multiline"> & import('react').RefAttributes<HTMLInputElement>>;
+} & Omit<TextFieldProps, "defaultValue" | "type" | "icon" | "after" | "max" | "min" | "value" | "hint" | "error" | "reserve" | "unit" | "multiline"> & import('react').RefAttributes<HTMLInputElement>>;
 
 /* ===== components/molecules/Pagination/Pagination ===== */
 export type PaginationProps = {
@@ -790,22 +886,36 @@ export type PaginationProps = {
     onPageChange?: (page: number) => void;
     /** aria-label of the nav. Default "Trang của danh sách". */
     label?: string;
+    /**
+     * Announce the range line when it changes (a polite live region). Default true. DataTable sets false: it keeps one
+     * live region of its own that says the count, the empty result or the failure, so nothing is read twice.
+     */
+    live?: boolean;
     previousLabel?: string;
     nextLabel?: string;
     className?: string;
 };
+/** The page and the rows it shows, clamped to the list: page 99 of a 41-page list is page 41. */
+export declare function pageRange(page: number, pageSize: number, total: number): {
+    pages: number;
+    current: number;
+    from: number;
+    to: number;
+};
+/** "Hiển thị 1–50 trong 2.033 người": the range line in plain text (DataTable's live region says it too). */
+export declare function rangeText({ page, pageSize, total, itemLabel }: Pick<PaginationProps, 'page' | 'pageSize' | 'total' | 'itemLabel'>): string;
 /**
  * "Hiển thị 1–50 trong 2.033 người · ‹ Trước · Trang 1 / 41 · Sau ›".
  * Says what is shown and how much there is; only Previous and Next, so the control never grows with the list.
  * Renders nothing when the list is empty (the table says so instead).
  */
-export declare function Pagination({ page, pageSize, total, itemLabel, getHref, onPageChange, label, previousLabel, nextLabel, className, }: PaginationProps): import("react").JSX.Element | null;
+export declare function Pagination({ page, pageSize, total, itemLabel, getHref, onPageChange, label, live, previousLabel, nextLabel, className, }: PaginationProps): import("react").JSX.Element | null;
 
 /* ===== components/molecules/PhoneInput/PhoneInput ===== */
 export type PhoneInputProps = {
     /** Default "Số điện thoại". */
     label?: string;
-    /** Default "Ví dụ: 0912 345 678". */
+    /** Default "Ví dụ: 0912 345 678" (the number joined by no-break spaces, so it never breaks over two lines). */
     hint?: string;
     /** Called with the normalized digits (0912345678), or null while incomplete or invalid. */
     onPhoneChange?: (digits: string | null, raw: string) => void;
@@ -817,7 +927,7 @@ export type PhoneInputProps = {
 export declare const PhoneInput: import('react').ForwardRefExoticComponent<{
     /** Default "Số điện thoại". */
     label?: string;
-    /** Default "Ví dụ: 0912 345 678". */
+    /** Default "Ví dụ: 0912 345 678" (the number joined by no-break spaces, so it never breaks over two lines). */
     hint?: string;
     /** Called with the normalized digits (0912345678), or null while incomplete or invalid. */
     onPhoneChange?: (digits: string | null, raw: string) => void;
@@ -918,11 +1028,17 @@ export type SaveStatusProps = {
  * | unsaved | "8 ô chưa lưu · Lưu lần cuối 09:12" | `status-info-text` |
  * | saving | "Đang lưu…" | `status-info-text` |
  * | saved | "✓ Đã lưu 09:15" | `status-success-text` |
- * | conflict | "Cần xử lý 2 giá trị trước khi lưu · Lưu lần cuối 09:12" | `status-warning-text` (never green) |
- * | error | "Lưu không được: mất mạng. Chữ đã gõ vẫn còn." + "Lưu lại" | `status-error-text` |
+ * | conflict | "(!) Cần xử lý 2 giá trị trước khi lưu · Lưu lần cuối 09:12" | `status-warning-text` (never green) |
+ * | error | "(!) Lưu không được: mất mạng. Chữ đã gõ vẫn còn (8 ô chưa lưu)." + "Lưu lại" | `status-error-text` |
  *
  * It counts unsaved fields only ("ô chưa lưu"); items still to fill ("mục còn thiếu") are a different count, shown elsewhere.
- * Changes are announced politely; a failed save is announced at once.
+ * The conflict and the failed save carry the "!" sign in a circle, as FormNotice does: in the nursing-home theme the
+ * red and the amber sit next to an orange button, so color alone does not tell them apart.
+ *
+ * One live region per change: a polite `role="status"` that is always in the page (unsaved, saving, saved, conflict),
+ * and, for a failed save only, a `role="alert"` added with its sentence, so it is read once and at once. The count in
+ * brackets and the "Lưu lại" button sit outside both regions: typing into another field while the network is down
+ * does not read the failure again, and the button's name is never part of the message.
  */
 export declare function SaveStatus({ status, onRetry, retryLabel, className, ...rest }: SaveStatusProps): import("react").JSX.Element;
 
@@ -1110,9 +1226,12 @@ export type DataTableColumn<Row> = {
     cell: (row: Row, index: number) => ReactNode;
     /** end = numbers and dates, right-aligned with even digit widths. Default start. */
     align?: 'start' | 'end';
-    /** A CSS width such as "6rem"; leave the main column without one so it takes the rest. */
+    /**
+     * A CSS width such as "6rem". Columns with a width keep it whatever the rows hold, so they do not move when a filter
+     * changes the rows; leave the main column without one so it takes the rest.
+     */
     width?: string;
-    /** Keep on one line (codes, dates, statuses). Names and next steps should wrap. */
+    /** Keep on one line, also when the rows stack on phones (codes, dates, statuses). Names and next steps should wrap. */
     nowrap?: boolean;
     /**
      * This column names the row (usually the person); read before each cell of the row.
@@ -1122,7 +1241,7 @@ export type DataTableColumn<Row> = {
     rowHeader?: boolean;
     /** On phones (stackBelow="phone"), the label before the value. Default: the header, when it is plain text. */
     stackLabel?: string;
-    /** On phones, show the value with no label, when it speaks for itself (a StatusTag with words). */
+    /** On phones, show the value with no label, when it speaks for itself (a StatusTag with words). It stays in the value column. */
     hideLabelWhenStacked?: boolean;
 };
 export type DataTableProps<Row> = {
@@ -1133,15 +1252,27 @@ export type DataTableProps<Row> = {
     columns: Array<DataTableColumn<Row>>;
     rows: Row[];
     getRowKey: (row: Row) => string;
+    /**
+     * boxed (default): a block on its own, with a 1px edge and a header band.
+     * plain: no outer edge and no header band, only the rows and their dividers: for a table inside a card or a
+     * SummaryList's details, so there is no box inside a box.
+     */
+    variant?: 'boxed' | 'plain';
     /** loading keeps the header and says so; error says what failed and offers to try again. */
     status?: 'ready' | 'loading' | 'error';
     loadingText?: string;
     /** What failed, in plain words: "Không tải được danh sách: mất mạng." */
     errorText?: string;
+    /** "Tải lại". After it, focus moves to the first row's link (or the message, if the list is still empty or loading). */
     onRetry?: () => void;
     retryLabel?: string;
     /** Shown when there are no rows: say why and what to do ("Không có ai khớp “Hằng”. Xóa chữ tìm để xem cả đợt."). */
     emptyText?: ReactNode;
+    /**
+     * A sentence the live region adds after the count or the empty text, for what the table cannot know:
+     * "Còn 1 người khớp “pham van nam” ở nhóm khác."
+     */
+    resultNote?: string;
     /** Narrowest width before the table scrolls sideways inside its box (never the page). Default 48rem. */
     minWidth?: string;
     /**
@@ -1158,9 +1289,11 @@ export type DataTableProps<Row> = {
  * A list of records for staff tools: one row per record, the name first, a status word, the next step.
  * The box scrolls sideways on narrow screens instead of the page, and becomes a keyboard-scrollable region
  * only when it actually overflows; with stackBelow="phone" each row becomes a block on phones instead.
- * Loading, empty and failed states keep the header so the page does not jump.
+ * Loading, empty and failed states keep the header so the page does not jump; their message sits under the table,
+ * outside the sideways scroll, so it and "Tải lại" are always on screen. One polite live region, always on the page,
+ * says the count, the empty result or the failure whenever it changes.
  */
-export declare function DataTable<Row>({ caption, showCaption, columns, rows, getRowKey, status, loadingText, errorText, onRetry, retryLabel, emptyText, minWidth, stackBelow, pagination, className, }: DataTableProps<Row>): import("react").JSX.Element;
+export declare function DataTable<Row>({ caption, showCaption, columns, rows, getRowKey, variant, status, loadingText, errorText, onRetry, retryLabel, emptyText, resultNote, minWidth, stackBelow, pagination, className, }: DataTableProps<Row>): import("react").JSX.Element;
 
 /* ===== components/organisms/Dialog/Dialog ===== */
 export type DialogProps = {
@@ -1194,7 +1327,10 @@ export declare function Dialog({ open, onClose, title, children, actions, alert,
 export type ErrorSummaryItem = {
     /** id of the input to focus, e.g. "lookup-phone" or a DateInput's "<id>-day". */
     fieldId: string;
-    /** Same words as the field's own message: "Nhập số điện thoại gồm 10 chữ số". */
+    /**
+     * The link's words. `list`: the field's own message ("Nhập số điện thoại gồm 10 chữ số").
+     * `inline`: the field's short name ("Mạch", "Tâm thu"), with the count in the title ("Còn 4 mục chưa điền").
+     */
     text: string;
 };
 export type ErrorSummaryProps = {
@@ -1205,8 +1341,9 @@ export type ErrorSummaryProps = {
     focusOnMount?: boolean;
     /**
      * list = a heading and one link per line: patient forms, where each problem gets its own 44px line. Default.
-     * inline = staff forms: a smaller heading, less padding and the links in one wrapping line separated by " · ",
-     * so four empty fields do not push the form down. Still a list for screen readers, still focused on mount.
+     * inline = staff forms: a smaller heading, less padding and the links side by side in rows that wrap, set apart by
+     * space (no dots), so four empty fields do not push the form down. Pass the fields' short names. Still a list for
+     * screen readers, still focused on mount.
      */
     layout?: 'list' | 'inline';
     className?: string;
@@ -1214,6 +1351,11 @@ export type ErrorSummaryProps = {
 /**
  * The list of problems at the top of a form after a failed submit. Each item links to its field.
  * Render it only when there are errors; it takes focus so screen-reader and keyboard users land on it.
+ *
+ * It is read once. It appears as an alert (read at once, even when it does not take focus). Once focus has been in it
+ * and moved on, or once its list changes without it being shown again (a page that drops filled fields on "Lưu"), it
+ * becomes a group named by its title: later changes are not read over what the person is doing. Rendered again after
+ * having no errors, or given a new `key`, it is an alert again.
  */
 export declare function ErrorSummary({ errors, title, focusOnMount, layout, className, }: ErrorSummaryProps): import("react").JSX.Element | null;
 
@@ -1302,7 +1444,12 @@ export type HeaderProps = {
      * The thin bar shows `compactBar` (the person being worked on: name, date of birth, record code) and the menu button.
      */
     collapseOnScroll?: boolean;
-    /** compact: content of the thin bar shown when collapsed. */
+    /**
+     * compact: the person in the thin bar shown when collapsed, as a fragment: the name first, then each fact as its
+     * own element, e.g. `<><strong>Đặng Thanh Chi</strong><span>Sinh 07/07/1990</span><span>RD26-0006</span></>`.
+     * The name keeps one line (a very long name ends in "…"); each fact stays whole, set apart by space, never by "·".
+     * The thin bar is never taller than the full header row.
+     */
     compactBar?: ReactNode;
     className?: string;
 };
@@ -1353,24 +1500,41 @@ export type PatientContextBarProps = {
     idEnd?: string;
     /** Record or visit code: "RD26-0006", shown in bold after its label. */
     recordCode: string;
-    /** Words before the code. Default "Mã lượt khám". */
+    /** Words before the code. Default "Mã lượt khám". On phones only the bold code shows (as in the Header's thin bar); the words stay for screen readers. */
     recordCodeLabel?: string;
     /** Company or ward, after the code. */
     organization?: string;
     /** Where this page sits, above the name. */
     breadcrumb?: BreadcrumbItem[];
-    /** A StatusTag with the record's state: "Cần điền · còn 47 mục". */
+    /** A StatusTag with the record's state: "Cần điền · còn 47 mục". It sits right after the name. */
     status?: ReactNode;
-    /** Buttons such as "Người trước" and "Người sau cần làm". */
+    /**
+     * The way to the previous and next person: two Buttons with short visible words, the next arrow after them, and
+     * an accessible name that starts with those words and adds the person:
+     * `<Button icon="simple-left" aria-label="Người trước: Ngô Văn Nam">Người trước</Button>`,
+     * `<Button icon="simple-right" iconPosition="end" aria-label="Người sau: Lê Thị Hà">Người sau</Button>`.
+     * They sit on the name's row from 40rem up, and share one row of two 44px buttons on phones.
+     */
     actions?: ReactNode;
+    /**
+     * Facts about this version of the record, on a muted line of their own under the person's facts: on the review
+     * page the exam time, the signer and the last save. Pass each as its own element; each stays whole, set apart by
+     * space: `<><span>Khám 10/10/2026 08:15</span><span>Người ký: <strong>BS Hoàng Thị Cúc</strong></span></>`.
+     */
+    recordFacts?: ReactNode;
     /** The name is the page's heading. Default 1. */
     headingLevel?: 1 | 2;
     /**
-     * bar (default) = a full-width bar with a bottom edge, under the header; block = no edge and no fill of its own, for
-     * placing inside a bordered block on a page (the review page), never sticky.
+     * bar (default) = a full-width bar with a bottom edge, in StaffLayout's `context` slot under the header (a record
+     * form). block = a white block with one light edge all round, among the page's own blocks (the review page, after
+     * its title); put no box around it, so there is one edge, not two.
      */
     variant?: 'bar' | 'block';
-    /** Stay at the top while the form scrolls, from 1024px up. Below that the compact Header's thin bar (collapseOnScroll + compactBar) does this job. */
+    /**
+     * Stay at the top while the page scrolls, from 1024px up, in either variant. Below that the compact Header's thin
+     * bar (collapseOnScroll + compactBar) does this job. A sticky block must be a direct child of the page's content
+     * (StaffLayout's main), so it sticks for the whole page; StaffLayout measures it like the bar.
+     */
     sticky?: boolean;
     className?: string;
 };
@@ -1379,8 +1543,12 @@ export type PatientContextBarProps = {
  * the record code, the state and the way to the previous or next person.
  * Name, date of birth and record code are the three facts that tell two people apart; they are never hidden.
  * Facts are whole chunks set apart by space, not by dots: a dot left at a line end reads like a stray mark.
+ * Rows: the breadcrumb; the name with its state (and, from 40rem, the previous/next buttons at the end); the facts;
+ * the record facts. From 64rem, where it sticks, that is one row of buttons, not a second row under the facts.
+ * On phones it is as short as it can be without losing a fact: the state sits beside the name when both fit, and
+ * the facts run on as few lines as their whole chunks allow (the code without its words, 10px apart).
  */
-export declare function PatientContextBar({ name, sex, birthDate, ageOn, idEnd, recordCode, recordCodeLabel, organization, breadcrumb, status, actions, headingLevel, sticky, variant, className, }: PatientContextBarProps): import("react").JSX.Element;
+export declare function PatientContextBar({ name, sex, birthDate, ageOn, idEnd, recordCode, recordCodeLabel, organization, breadcrumb, status, actions, recordFacts, headingLevel, sticky, variant, className, }: PatientContextBarProps): import("react").JSX.Element;
 
 /* ===== components/organisms/ResultLookupForm/ResultLookupForm ===== */
 export type ResultLookupValues = {
@@ -1485,5 +1653,8 @@ export type StaffLayoutProps = {
  * an optional context bar and side column, and a sticky action bar. Blocks inside are separated by edges and space,
  * not shadows; only the action bar, which floats over content, has one. Below 40rem the spacing is tighter
  * (10px above the content, 15px between blocks), so the work area starts sooner on a phone.
+ * It measures the bars that stick and writes their heights as --header-space, --context-bar-space and
+ * --action-bar-space, so the scroll padding (a focused field is never under a bar) and the side column's sticky top
+ * follow the real bars at every width and in every state. Pages never hard-code sticky offsets.
  */
 export declare function StaffLayout({ header, context, aside, asideLabel, children, actionBar, shortcuts, actionBarLabel, theme, skipLabel, className, }: StaffLayoutProps): import("react").JSX.Element;

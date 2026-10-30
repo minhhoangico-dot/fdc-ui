@@ -114,16 +114,19 @@ describe('ConfirmationPanel', () => {
     render(
       <ConfirmationPanel
         tone="pending"
-        title="Chờ gửi · còn 27 giây"
+        title="Chờ gửi lên Sở"
         headingLevel={2}
         focusOnMount={false}
         steps={['Đã xem lại', 'Chờ gửi', 'Sở tiếp nhận', 'Bộ xác nhận']}
         currentStep={1}
       >
-        <p>Chưa có gì lên Sở. Chị có thể hủy.</p>
+        <p>
+          <strong>Còn 27 giây để hủy.</strong> Chưa có gì lên Sở. Chị có thể hủy.
+        </p>
       </ConfirmationPanel>,
     );
-    const heading = screen.getByRole('heading', { level: 2, name: 'Chờ gửi · còn 27 giây' });
+    // The heading's name never counts; the seconds are in the text under it.
+    const heading = screen.getByRole('heading', { level: 2, name: 'Chờ gửi lên Sở' });
     expect(heading).not.toHaveFocus();
     const root = heading.closest('[data-component="ConfirmationPanel"]')!;
     // Emphasis is a success setting only: a pending panel is always pale.

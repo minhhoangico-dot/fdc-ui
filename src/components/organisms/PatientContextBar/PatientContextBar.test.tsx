@@ -38,9 +38,39 @@ it('can be a level-2 heading and skips the age when the date cannot be read', ()
   expect(screen.getByText(/^Sinh 1992$/)).toBeInTheDocument();
 });
 
-it('has a block variant for use inside a bordered block, never sticky', () => {
-  render(<PatientContextBar variant="block" sticky name="Ngô Văn Nam" birthDate="15/03/1990" recordCode="RD26-0004" headingLevel={2} />);
+it('has a block variant among the page\'s blocks that can stick too, with a line of record facts', () => {
+  render(
+    <PatientContextBar
+      variant="block"
+      sticky
+      name="Ngô Văn Nam"
+      birthDate="15/03/1990"
+      ageOn={new Date(2026, 9, 10)}
+      recordCode="RD26-0004"
+      headingLevel={2}
+      recordFacts={
+        <>
+          <span>Khám 10/10/2026 08:15</span>
+          <span>
+            Người ký: <strong>BS Hoàng Thị Cúc</strong>
+          </span>
+        </>
+      }
+    />,
+  );
   const region = screen.getByRole('region', { name: 'Người đang làm' });
   expect(region).toHaveAttribute('data-variant', 'block');
-  expect(region).not.toHaveAttribute('data-sticky');
+  expect(region).toHaveAttribute('data-sticky');
+  // The record facts are their own line, after the person's facts, each a whole chunk.
+  const record = screen.getByText('Khám 10/10/2026 08:15').parentElement!;
+  expect(record.tagName).toBe('P');
+  expect(record.textContent).toBe('Khám 10/10/2026 08:15Người ký: BS Hoàng Thị Cúc');
+  expect(screen.getByText('RD26-0004').closest('p')?.nextElementSibling).toBe(record);
+});
+
+it('keeps the code\'s words for screen readers in their own element (hidden on phones, where only the code shows)', () => {
+  render(<PatientContextBar name="Lê Thị Hà" birthDate="02/02/1992" recordCode="RD26-0002" />);
+  const code = screen.getByText('RD26-0002');
+  expect(code.previousElementSibling?.textContent).toBe('Mã lượt khám ');
+  expect(code.parentElement?.textContent).toBe('Mã lượt khám RD26-0002');
 });

@@ -50,10 +50,10 @@ export function ResultLookupForm({
     const patientCode = f.patientCode.value.trim();
     const visit = partsToDate(visitDate);
     const next: typeof errors = {};
-    if (!visit) next.visitDate = 'Nhập ngày khám ghi trên phiếu, ví dụ 24 10 2026';
+    if (!visit) next.visitDate = 'Nhập ngày khám ghi trên phiếu, ví dụ 24\u00a010\u00a02026';
     else if (visit > new Date()) next.visitDate = 'Ngày khám phải là hôm nay hoặc một ngày đã qua';
     if (!/^\d{4}$/.test(birthYear)) next.birthYear = 'Nhập năm sinh gồm 4 chữ số, ví dụ 1958';
-    if (!phone) next.phone = 'Nhập số điện thoại gồm 10 chữ số, ví dụ 0912 345 678';
+    if (!phone) next.phone = 'Nhập số điện thoại gồm 10 chữ số, ví dụ 0912\u00a0345\u00a0678';
     if (!patientCode) next.patientCode = 'Nhập mã bệnh nhân in trên phiếu khám';
     setErrors(next);
     if (Object.keys(next).length === 0 && phone) {
@@ -73,7 +73,7 @@ export function ResultLookupForm({
       </Heading>
       <ErrorSummary errors={summary} />
       <div className={styles.Grid}>
-        <DateInput id={ids.visitDate} name="visitDate" label="Ngày khám" hint="Ngày ghi trên phiếu khám, ví dụ: 24 10 2026" birthday={false} value={visitDate} onValueChange={setVisitDate} error={errors.visitDate} required />
+        <DateInput id={ids.visitDate} name="visitDate" label="Ngày khám" hint={'Ngày ghi trên phiếu khám, ví dụ: 24\u00a010\u00a02026'} birthday={false} value={visitDate} onValueChange={setVisitDate} error={errors.visitDate} required />
         <TextField id={ids.birthYear} name="birthYear" label="Năm sinh" inputMode="numeric" maxLength={4} autoComplete="bday-year" required error={errors.birthYear} />
         <PhoneInput id={ids.phone} name="phone" required error={errors.phone} />
         <TextField id={ids.patientCode} name="patientCode" label="Mã bệnh nhân" hint="In ở góc trên phiếu khám" required error={errors.patientCode} />

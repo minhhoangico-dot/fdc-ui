@@ -12,7 +12,10 @@ export type ConfirmationTone = 'success' | 'pending' | 'error' | 'attention';
 const signs: Record<ConfirmationTone, string> = { success: '✓', pending: 'i', error: '!', attention: '!' };
 
 export type ConfirmationPanelProps = {
-  /** "Đã đặt lịch khám" (success), "Chờ gửi · còn 27 giây" (pending), "Bị từ chối" (error), "Chưa rõ kết quả" (attention). */
+  /**
+   * "Đã đặt lịch khám" (success), "Chờ gửi lên Sở" (pending), "Bị từ chối" (error), "Chưa rõ kết quả" (attention).
+   * A focused title keeps one name; put a countdown in the text under it ("Còn 27 giây để hủy.").
+   */
   title: string;
   /** Booking or receipt code, e.g. "FDC-2410-0830" or "SYT-HN-2026-118204". It never breaks across lines. */
   reference?: string;
@@ -26,7 +29,8 @@ export type ConfirmationPanelProps = {
    * What the result is. Every tone except a strong success is a pale panel: a tint, a sign in a circle before the
    * title and ordinary text, with no edge and no side bar (status colors are the same in both themes).
    * - success (default): the work is done and confirmed. Green is only ever for success.
-   * - pending: pressed but not finished ("Chờ gửi · còn 27 giây"): status-info tint, sign "i".
+   * - pending: pressed but not finished ("Chờ gửi lên Sở"; the seconds left go in the text under the title, "Còn 27
+   *   giây để hủy."): status-info tint, sign "i".
    * - error: the other side refused and said why ("Bị từ chối"): status-error tint, sign "!". Say the reason,
    *   where to fix it and what comes after the fix.
    * - attention: the outcome is not known ("Chưa rõ kết quả"): status-warning tint, sign "!". Offer a check,

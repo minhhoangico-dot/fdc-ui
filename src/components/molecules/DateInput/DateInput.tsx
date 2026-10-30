@@ -7,7 +7,7 @@ import styles from './DateInput.module.css';
 export type DateInputProps = {
   /** The question, read as the group's legend: "Ngày sinh của người bệnh". */
   label: string;
-  /** Default "Ví dụ: 27 3 1950". */
+  /** Default "Ví dụ: 27 3 1950" (the date joined by no-break spaces). */
   hint?: string;
   error?: string;
   errorPrefix?: string;
@@ -34,7 +34,8 @@ const EMPTY: DateParts = { day: '', month: '', year: '' };
  */
 export function DateInput({
   label,
-  hint = 'Ví dụ: 27 3 1950',
+  // No-break spaces: the example date never breaks over two lines.
+  hint = 'Ví dụ: 27\u00a03\u00a01950',
   error,
   errorPrefix = 'Lỗi:',
   birthday = true,

@@ -26,10 +26,38 @@
   color: var(--text-muted);
 }
 .Error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-5);
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.4;
   color: var(--status-error-text);
+}
+/* The error's sign, the same on every field (TextField, NumberField, DateInput, Select, Combobox, CodeList,
+   RadioGroup, Checkbox): a red circle with "!", so the error does not rest on red alone. Hidden from screen readers,
+   which hear "Lỗi:". Centred on the first line: the mark's font is 0.75em, so the line (1.4em of the text) is
+   1.4 / 0.75 em here. */
+.Mark {
+  box-sizing: border-box;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.65em;
+  block-size: 1.65em;
+  margin-block-start: calc((1.4em / 0.75 - 1.65em) / 2);
+  /* Transparent edge: invisible here, drawn in forced-colors mode where the fill is dropped. */
+  border: 1px solid transparent;
+  border-radius: var(--radius-round);
+  background: var(--status-error-text);
+  color: var(--text-on-action);
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1;
+}
+.ErrorText {
+  min-inline-size: 0;
 }
 
 /* The chosen items share one surface with light lines between them: no card per item. */

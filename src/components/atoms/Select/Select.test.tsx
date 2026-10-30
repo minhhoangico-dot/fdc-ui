@@ -40,8 +40,16 @@ describe('Select', () => {
 
   it('tags its parts so a FieldRow can line them up', () => {
     const { container } = render(<Select label="Nhóm người" hint="Lọc danh sách" error="Chọn một nhóm" options={groups} />);
-    const parts = [...container.querySelectorAll('[data-part]')].map((el) => el.getAttribute('data-part'));
+    const parts = [...container.querySelectorAll('[data-component="Select"] > [data-part]')].map((el) => el.getAttribute('data-part'));
     expect(parts).toEqual(['label', 'hint', 'error', 'control']);
+  });
+
+  it('shows the error with the same sign as every field, which screen readers skip', () => {
+    const { container } = render(<Select label="Nhóm máu" error="Chọn nhóm máu" options={groups} />);
+    const mark = container.querySelector('[data-part="error"] [data-part="mark"]');
+    expect(mark).toHaveTextContent('!');
+    expect(mark).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.getByRole('combobox')).toHaveAccessibleDescription('Lỗi: Chọn nhóm máu');
   });
 
   it('accepts option elements as children and keeps a hidden label for screen readers', () => {

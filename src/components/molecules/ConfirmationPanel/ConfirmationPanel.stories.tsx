@@ -27,14 +27,15 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 /**
- * Pressed but not finished: pale status-info with an "i", never green. Done steps say what happened, the step being
- * waited for says "Chờ …" with a small clock in the info blue, later steps are plain event names.
+ * Pressed but not finished: pale status-info with an "i", never green. The title is a fixed "Chờ gửi lên Sở": a focused
+ * title keeps one name, so the countdown goes in the text under it ("Còn 27 giây để hủy."). Done steps say what
+ * happened, the step being waited for says "Chờ …" with a small clock in the info blue, later steps are plain event names.
  */
 export const Pending: Story = {
   parameters: { density: 'compact' },
   args: {
     tone: 'pending',
-    title: 'Chờ gửi · còn 27 giây',
+    title: 'Chờ gửi lên Sở',
     reference: undefined,
     headingLevel: 2,
     steps: [
@@ -43,7 +44,11 @@ export const Pending: Story = {
       { label: 'Sở tiếp nhận', state: 'todo' },
       { label: 'Bộ xác nhận', state: 'todo' },
     ],
-    children: <p>Chưa có gì lên Sở. Chị có thể hủy.</p>,
+    children: (
+      <p>
+        <strong>Còn 27 giây để hủy.</strong> Chưa có gì lên Sở. Chị có thể hủy.
+      </p>
+    ),
   },
 };
 

@@ -2,11 +2,11 @@
 
 The end of a flow, or where it stands: a panel with the result ("Đã đặt lịch khám", "Sở đã tiếp nhận") and the reference code, an optional step line, then what happens next.
 
-It moves focus to its heading so screen readers announce the result. Always say what happens next ("Chúng tôi sẽ gọi … trong vòng 30 phút"), what to bring, and how to change or cancel with the hotline. The code is large and selectable so people can read it over the phone, and it **never breaks across lines**: in a narrow column it gets a little smaller instead (below 22rem on pale panels, below 17rem on the strong one). Inside a page that already has an h1, set `headingLevel={2}`.
+It moves focus to its heading so screen readers announce the result. **A focused title keeps one name; put a countdown in the text under it** ("Chờ gửi lên Sở", then "Còn 27 giây để hủy." in the text): a heading whose name changed every second would be announced again and again while it has focus. Always say what happens next ("Chúng tôi sẽ gọi … trong vòng 30 phút"), what to bring, and how to change or cancel with the hotline. The code is large and selectable so people can read it over the phone, and it **never breaks across lines**: in a narrow column it gets a little smaller instead (below 22rem on pale panels, below 17rem on the strong one). Inside a page that already has an h1, set `headingLevel={2}`.
 
 **`tone`** says what the result is:
 - **`success`** (default): done and confirmed. Green is only ever for success.
-- **`pending`**: pressed but not finished ("Chờ gửi · còn 27 giây" / "Chưa có gì lên Sở. Chị có thể hủy."): `status-info-bg`, sign **i**.
+- **`pending`**: pressed but not finished ("Chờ gửi lên Sở" / "**Còn 27 giây để hủy.** Chưa có gì lên Sở. Chị có thể hủy."): `status-info-bg`, sign **i**. The title is fixed; the seconds are in the text.
 - **`error`**: the other side refused and said why ("Bị từ chối"): `status-error-bg`, sign **!**. Give the reason in their words, the button that opens the part to fix ("Mở phần 7. Kết luận để sửa") and the way back after the fix (sửa → xem lại → gửi lại). Only a refusal with a reason opens the record for a resend.
 - **`attention`**: the outcome is not known ("Chưa rõ kết quả"): `status-warning-bg`, sign **!**. Offer "Kiểm tra lại trạng thái" and "Nhờ Minh kiểm tra", **never "Gửi lại"**: the department may already hold the record, and a second send makes a duplicate.
 
@@ -26,7 +26,7 @@ Each step also starts with its **state in words for screen readers**, hidden on 
 
 | Moment (staff) | Panel | Steps |
 |---|---|---|
-| Chờ gửi · còn n giây | `pending` | ✓ Đã xem lại → ◷ Chờ gửi → Sở tiếp nhận → Bộ xác nhận |
+| Chờ gửi lên Sở (còn n giây để hủy, in the text) | `pending` | ✓ Đã xem lại → ◷ Chờ gửi → Sở tiếp nhận → Bộ xác nhận |
 | Sở đã tiếp nhận | `success`, `subtle`, code "Mã tiếp nhận của Sở" | ✓ Đã xem lại → ✓ Đã gửi lên Sở → ✓ Sở đã tiếp nhận → ◷ Chờ Bộ xác nhận |
 | Bị từ chối | `error` | ✓ Đã gửi lên Sở → ! Sở từ chối → ◷ Chờ chị sửa → Xem lại → Gửi lại |
 | Chưa rõ kết quả | `attention` | ✓ Đã xem lại → ✓ Đã gửi lên Sở → ◷ Chờ Sở trả lời → Bộ xác nhận |

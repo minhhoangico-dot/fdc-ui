@@ -79,6 +79,42 @@ describe('sticky bar space', () => {
     expect(vars.map((v) => html.style.getPropertyValue(v))).toEqual(['', '', '']);
   });
 
+  it('counts a PatientContextBar block that sticks inside the content as the context bar (the review page)', () => {
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+      },
+    );
+    const realStyle = window.getComputedStyle.bind(window);
+    const isPerson = (el: Element) => el.matches('[data-component="PatientContextBar"]');
+    vi.spyOn(window, 'getComputedStyle').mockImplementation((el: Element) => {
+      const cs = realStyle(el);
+      if (!isPerson(el)) return cs;
+      return new Proxy(cs, {
+        get: (t, p) => {
+          if (p === 'position') return 'sticky';
+          const v = Reflect.get(t, p);
+          return typeof v === 'function' ? v.bind(t) : v;
+        },
+      });
+    });
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
+      const h = isPerson(this) ? 99.6 : 0;
+      return { x: 0, y: 0, top: 0, left: 0, right: 0, width: 0, bottom: h, height: h, toJSON: () => ({}) } as DOMRect;
+    });
+    render(
+      <StaffLayout header={header}>
+        <h1>Xem lại trước khi gửi</h1>
+        <section aria-label="Người đang làm" data-component="PatientContextBar" data-variant="block" />
+      </StaffLayout>,
+    );
+    expect(document.documentElement.style.getPropertyValue('--context-bar-space')).toBe('100px');
+    expect(document.documentElement.style.getPropertyValue('--header-space')).toBe('0px');
+  });
+
   it('without ResizeObserver (old browsers, jsdom) renders and writes nothing; the CSS fallbacks apply', () => {
     vi.stubGlobal('ResizeObserver', undefined);
     render(

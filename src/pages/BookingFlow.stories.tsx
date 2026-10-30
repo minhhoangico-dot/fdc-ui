@@ -130,9 +130,9 @@ function BookingFlow({ timeoutMs = 20 * 60_000, warnBeforeMs = 2 * 60_000 }: { t
             const next: Errors = {};
             if (!data.name.trim()) next.name = relative ? 'Nhập họ và tên người đi khám' : 'Nhập họ và tên của bạn';
             const birth = partsToDate(data.dob);
-            if (!birth) next.dob = 'Nhập ngày sinh có thật, ví dụ 27 3 1950';
+            if (!birth) next.dob = 'Nhập ngày sinh có thật, ví dụ 27\u00a03\u00a01950';
             else if (birth > new Date()) next.dob = 'Ngày sinh phải là một ngày trong quá khứ';
-            if (!relative && !normalizeVnPhone(data.phone)) next.phone = 'Nhập số điện thoại gồm 10 chữ số, ví dụ 0912 345 678';
+            if (!relative && !normalizeVnPhone(data.phone)) next.phone = 'Nhập số điện thoại gồm 10 chữ số, ví dụ 0912\u00a0345\u00a0678';
             if (relative && !data.contactName.trim()) next.contactName = 'Nhập họ và tên của bạn';
             if (relative && !normalizeVnPhone(data.contactPhone)) next.contactPhone = 'Nhập số điện thoại của bạn, gồm 10 chữ số';
             setErrors(next);
@@ -144,10 +144,10 @@ function BookingFlow({ timeoutMs = 20 * 60_000, warnBeforeMs = 2 * 60_000 }: { t
           {relative ? (
             <>
               <TextField id="contactName" label="Họ và tên của bạn (người liên hệ)" autoComplete="name" value={data.contactName} onChange={(e) => set('contactName', e.target.value)} required error={errors.contactName} />
-              <PhoneInput id="contactPhone" label="Số điện thoại của bạn" hint="Chúng tôi gọi số này để xác nhận lịch. Ví dụ: 0912 345 678" value={data.contactPhone} onPhoneChange={(_, raw) => set('contactPhone', raw)} required error={errors.contactPhone} />
+              <PhoneInput id="contactPhone" label="Số điện thoại của bạn" hint={'Chúng tôi gọi số này để xác nhận lịch. Ví dụ: 0912\u00a0345\u00a0678'} value={data.contactPhone} onPhoneChange={(_, raw) => set('contactPhone', raw)} required error={errors.contactPhone} />
             </>
           ) : (
-            <PhoneInput id="phone" hint="Chúng tôi gọi số này để xác nhận lịch. Ví dụ: 0912 345 678" value={data.phone} onPhoneChange={(_, raw) => set('phone', raw)} required error={errors.phone} />
+            <PhoneInput id="phone" hint={'Chúng tôi gọi số này để xác nhận lịch. Ví dụ: 0912\u00a0345\u00a0678'} value={data.phone} onPhoneChange={(_, raw) => set('phone', raw)} required error={errors.phone} />
           )}
         </BookingStep>
       );

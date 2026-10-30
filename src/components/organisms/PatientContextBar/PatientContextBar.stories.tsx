@@ -62,7 +62,8 @@ export const MissingId: Story = { args: { idEnd: undefined, name: 'Nguyễn Th�
 
 /**
  * On a phone the name is smaller, the spacing tighter, and "‹ Người trước" / "Người sau ›" share one row of two
- * 44px buttons, each on one line even at 320px.
+ * 44px buttons, each on one line even at 320px. The facts take as few lines as their whole chunks allow: 10px apart,
+ * and the code without its words ("RD26-0006", as in the header's thin bar). Two lines at 390px, three at 320px.
  */
 export const Phone: Story = {
   parameters: { viewport: { defaultViewport: 'mobile1' } },
@@ -73,5 +74,49 @@ export const Phone: Story = {
     // One line each: as tall as a compact control, not two lines of words.
     for (const b of [prev, next]) await expect(b.getBoundingClientRect().height).toBeLessThan(48);
     await expect(next.lastElementChild?.tagName.toLowerCase()).toBe('svg');
+  },
+};
+
+/**
+ * `variant="block"`: the person among the page's own blocks (the review page, after its title), with one light edge
+ * all round and a muted line of record facts (`recordFacts`: exam, signer, last save). Put no box around it. With
+ * `sticky` it stays at the top from 1024px, like the bar, when it is a direct child of the page's content.
+ */
+export const Block: Story = {
+  args: {
+    variant: 'block',
+    sticky: true,
+    headingLevel: 2,
+    name: 'Ngô Văn Nam',
+    sex: 'Nam',
+    birthDate: '15/03/1990',
+    idEnd: '0004',
+    recordCode: 'RD26-0004',
+    breadcrumb: undefined,
+    actions: undefined,
+    status: <StatusTag>Sẵn sàng xem lại</StatusTag>,
+    recordFacts: (
+      <>
+        <span>Khám 10/10/2026 08:15</span>
+        <span>
+          Người ký: <strong>BS Hoàng Thị Cúc</strong>
+        </span>
+        <span>Bản này lưu lúc 09:12 bởi chị Lan</span>
+      </>
+    ),
+  },
+  render: (args) => (
+    <div style={{ padding: 'var(--space-15)', background: 'var(--surface-alt)' }}>
+      <PatientContextBar {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const region = within(canvasElement).getByRole('region', { name: 'Người đang làm' });
+    // One edge all round, its own fill (so what scrolls under it is hidden when it sticks).
+    const cs = getComputedStyle(region);
+    await expect(cs.borderTopWidth).toBe('1px');
+    await expect(cs.borderBottomWidth).toBe('1px');
+    await expect(cs.backgroundColor).not.toBe('rgba(0, 0, 0, 0)');
+    await expect(within(region).getByRole('heading', { level: 2, name: 'Ngô Văn Nam' })).toBeInTheDocument();
   },
 };

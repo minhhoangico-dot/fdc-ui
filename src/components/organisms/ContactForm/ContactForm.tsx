@@ -50,7 +50,7 @@ export function ContactForm({
     const message = f.message.value.trim();
     const next: typeof errors = {};
     if (!name) next.name = 'Nhập họ và tên';
-    if (!phone) next.phone = 'Nhập số điện thoại gồm 10 chữ số, ví dụ 0912 345 678';
+    if (!phone) next.phone = 'Nhập số điện thoại gồm 10 chữ số, ví dụ 0912\u00a0345\u00a0678';
     setErrors(next);
     if (!next.name && phone) onSubmit?.({ name, phone, message });
   };

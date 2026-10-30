@@ -54,15 +54,15 @@ function PatientDetails({ defaultName = '' }: { defaultName?: string }) {
         const next: Record<string, string> = {};
         if (!f.name.value.trim()) next.name = 'Nhập họ và tên người bệnh';
         const birth = partsToDate(dob);
-        if (!birth) next.dob = 'Nhập ngày sinh có thật, ví dụ 27 3 1950';
+        if (!birth) next.dob = 'Nhập ngày sinh có thật, ví dụ 27\u00a03\u00a01950';
         else if (birth > new Date()) next.dob = 'Ngày sinh phải là một ngày trong quá khứ';
-        if (!normalizeVnPhone(f.phone.value)) next.phone = 'Nhập số điện thoại gồm 10 chữ số, ví dụ 0912 345 678';
+        if (!normalizeVnPhone(f.phone.value)) next.phone = 'Nhập số điện thoại gồm 10 chữ số, ví dụ 0912\u00a0345\u00a0678';
         setErrors(next);
       }}
     >
       <TextField id="name" name="name" label="Họ và tên người bệnh" autoComplete="name" defaultValue={defaultName} required error={errors.name} />
       <DateInput id="dob" name="dob" label="Ngày sinh" value={dob} onValueChange={setDob} required error={errors.dob} />
-      <PhoneInput id="phone" name="phone" label="Số điện thoại liên hệ" hint="Chúng tôi gọi số này để xác nhận lịch. Ví dụ: 0912 345 678" required error={errors.phone} />
+      <PhoneInput id="phone" name="phone" label="Số điện thoại liên hệ" hint={'Chúng tôi gọi số này để xác nhận lịch. Ví dụ: 0912\u00a0345\u00a0678'} required error={errors.phone} />
     </BookingStep>
   );
 }

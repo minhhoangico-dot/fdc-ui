@@ -21,12 +21,42 @@
 }
 .Hint {
   font-size: 1rem;
+  line-height: 1.4;
   color: var(--text-muted);
 }
 .Error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-5);
   font-size: 1rem;
   font-weight: 600;
+  line-height: 1.4;
   color: var(--status-error-text);
+}
+/* The error's sign, the same on every field (TextField, NumberField, DateInput, Select, Combobox, CodeList,
+   RadioGroup, Checkbox): a red circle with "!", so the error does not rest on red alone. Hidden from screen readers,
+   which hear "Lỗi:". Centred on the first line: the mark's font is 0.75em, so the line (1.4em of the text) is
+   1.4 / 0.75 em here. */
+.Mark {
+  box-sizing: border-box;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.65em;
+  block-size: 1.65em;
+  margin-block-start: calc((1.4em / 0.75 - 1.65em) / 2);
+  /* Transparent edge: invisible here, drawn in forced-colors mode where the fill is dropped. */
+  border: 1px solid transparent;
+  border-radius: var(--radius-round);
+  background: var(--status-error-text);
+  color: var(--text-on-action);
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1;
+}
+.ErrorText {
+  min-inline-size: 0;
 }
 .Empty {
   margin: 0;
@@ -96,9 +126,16 @@
   text-decoration: line-through;
   color: var(--text-muted);
 }
+/* The 2px error edge is a 1px border plus a 1px inset shadow, as on every field, so a slot does not grow. */
 .TimeSlotPicker:where([data-invalid]) .Slot:not([data-taken]) {
   box-sizing: border-box;
-  border: var(--border-width-strong) solid var(--status-error-text);
+  border-color: var(--status-error-text);
+  box-shadow: inset 0 0 0 calc(var(--border-width-strong) - 1px) var(--status-error-text);
+}
+/* The one focus rule for fields in error: a dark-ink ring, so the nursing-home orange never merges with the red edge. */
+.TimeSlotPicker:where([data-invalid]) .Slot:has(.Radio:focus-visible) {
+  outline: var(--focus-ring-width) solid var(--text-default);
+  outline-offset: var(--focus-ring-offset);
 }
 @media (forced-colors: active) {
   .Slot:where([data-selected]) {

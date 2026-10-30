@@ -105,11 +105,15 @@
 }
 
 /* Keep the focused field clear of the sticky bars (WCAG 2.4.11 and 2.4.12). StaffLayout writes the bars' measured
-   heights on <html>; scrolling to a field leaves those heights plus a gap: 70px at the top, so the field's label and
-   the hint or message line above its box show as well (Shift+Tab lands the box at the top edge), and 15px at the
-   bottom for the focus ring. The fallback is the action bar's usual phone height before it is measured. */
+   heights on <html>; scrolling to a field leaves those heights plus a gap: 80px at the top, so the field's label and
+   the message line above its box show as well, even when that line runs to two lines on a phone (label 22.4 + two
+   lines 44.8 + 10 = 77.2px; Shift+Tab lands the box at the top edge), and 15px at the bottom for the focus ring.
+   After a keyboard move StaffLayout also brings a taller label out from under the top bars. The fallback is the
+   action bar's usual phone height before it is measured. */
 :global(html):has(.StaffLayout) {
-  scroll-padding-block-start: calc(var(--header-space, 0px) + var(--context-bar-space, 0px) + var(--space-50) + var(--space-20));
+  scroll-padding-block-start: calc(var(--header-space, 0px) + var(--context-bar-space, 0px) + var(--space-50) + var(--space-30));
+  /* No action bar (the review page): still room for the focus ring at the bottom edge. */
+  scroll-padding-block-end: var(--space-15);
 }
 :global(html):has(.ActionBar) {
   scroll-padding-block-end: calc(var(--action-bar-space, 9rem) + var(--space-15));

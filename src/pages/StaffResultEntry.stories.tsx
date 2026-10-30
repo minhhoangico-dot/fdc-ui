@@ -33,16 +33,19 @@ type PartKey = 'the-luc' | 'ket-luan';
 type Values = Record<string, string>;
 
 /**
- * Required items of the two parts built on this page. `label` is the field's name inside a sentence ("Điền mạch");
- * `name` is the short name the error summary links with ("Mạch"), so four links share a line.
+ * Required items of the two parts built on this page. `label` is the field's name inside its own error ("Điền mạch",
+ * "Điền tâm thu"): short, because a NumberField's error shares its one message line, one 9rem column on a phone;
+ * the group label above already says "Huyết áp". A two-word measure keeps its words together ("Điền" / "tâm trương"
+ * if the 146px column of a 375px phone wraps it). `name` is the short name the error summary links with ("Mạch"), so
+ * four links share a line.
  */
 const required: Record<PartKey, Array<{ id: string; label: string; name: string }>> = {
   'the-luc': [
     { id: 'chieu-cao', label: 'chiều cao', name: 'Chiều cao' },
     { id: 'can-nang', label: 'cân nặng', name: 'Cân nặng' },
     { id: 'mach', label: 'mạch', name: 'Mạch' },
-    { id: 'ha-thu', label: 'huyết áp tâm thu', name: 'Tâm thu' },
-    { id: 'ha-truong', label: 'huyết áp tâm trương', name: 'Tâm trương' },
+    { id: 'ha-thu', label: `tâm${NBSP}thu`, name: 'Tâm thu' },
+    { id: 'ha-truong', label: `tâm${NBSP}trương`, name: 'Tâm trương' },
     { id: 'phan-loai-the-luc', label: 'phân loại thể lực', name: 'Phân loại thể lực' },
   ],
   'ket-luan': [
@@ -89,12 +92,17 @@ function accepted(text: string | undefined, { min, max, decimals }: Limits): num
 
 /** BMI with one decimal always shown ("21,0"). */
 const formatBmi = (n: number) => formatViNumber(n, 1, 1);
-/** The BMI hint: one line in every column (a two-line hint would push the row's boxes down, or move them when it comes). */
+/**
+ * The BMI hint: one line in every column, down to 9rem (a two-line hint would push the row's boxes down, or leave a
+ * blank line over the box once BMI shows). "Tự tính, chờ số đo" is 138px; "Tự tính khi đủ số đo" (150px) took two
+ * lines in the 146px column of a 375px phone.
+ */
 const BMI_DONE = 'Tự tính';
-const BMI_WAITING = 'Tự tính khi đủ số đo';
+const BMI_WAITING = 'Tự tính, chờ số đo';
 
+/** Empty fields say "Chưa điền"; the example shows while the person is in the field (as NumberField does). */
+const EMPTY = 'Chưa điền';
 const ADVICE_EXAMPLE = `ví${NBSP}dụ “Đo lại huyết áp sau 1 tháng”`;
-const ADVICE_EMPTY = `Chưa điền${NBSP}· ${ADVICE_EXAMPLE}`;
 
 /** The part's heading: it takes focus when a part is chosen in the side list. */
 const PART_HEADING = 'phan-hien-tai';
@@ -239,6 +247,7 @@ function ResultEntry({ part: openPart = 'the-luc', initial = savedAtOpen, typed 
   const [focused, setFocused] = useState<string | null>(null);
   const timer = useRef<number>();
   const pendingFocus = useRef<{ id: string; block: ScrollLogicalPosition } | null>(null);
+  const summaryBox = useRef<HTMLDivElement>(null);
   const phoneUp = useMedia(PHONE_UP);
 
   /** Focus `id` once the next render is on screen (a part switched in, or the conflict block gone). */
@@ -336,6 +345,14 @@ function ResultEntry({ part: openPart = 'the-luc', initial = savedAtOpen, typed 
     return () => document.removeEventListener('keydown', onKey);
   });
   useEffect(() => () => window.clearTimeout(timer.current), []);
+  useEffect(() => {
+    // On a phone a press of "Xem lại" puts the summary on screen with focus, which the browser centres in the little
+    // space between the bars, and the first field ends up under the action bar. The summary goes to the top of that
+    // space instead (under the bars and the scroll gap), so the first fields show under it. ErrorSummary's own effect
+    // runs first (child before parent), so nothing is painted in between. From 40rem the summary is already near the
+    // top and nothing scrolls.
+    if (justReviewed && reviewCount && !mediaMatches(PHONE_UP)) summaryBox.current?.scrollIntoView?.({ block: 'start' });
+  }, [justReviewed, reviewCount]);
 
   const errorFor = (id: string) => (review?.scope === 'here' ? review.items.find((e) => e.fieldId === id)?.message : undefined);
 
@@ -525,7 +542,7 @@ function ResultEntry({ part: openPart = 'the-luc', initial = savedAtOpen, typed 
 
       {review ? (
         // Reads the clicks of the links inside (Enter on a link is a click too); it is not a control of its own.
-        <div onClick={onSummaryClick}>
+        <div ref={summaryBox} onClick={onSummaryClick}>
           <ErrorSummary
             key={reviewCount}
             layout="inline"
@@ -541,7 +558,7 @@ function ResultEntry({ part: openPart = 'the-luc', initial = savedAtOpen, typed 
       ) : null}
 
       <section aria-labelledby={PART_HEADING} className={styles.Part}>
-        <Inline align="baseline" gap={15}>
+        <Inline align="baseline" gap={15} className={styles.PartHead}>
           <h2 id={PART_HEADING} tabIndex={-1} className={styles.PartTitle}>
             {partLabel(part)}
           </h2>
@@ -673,13 +690,14 @@ function ResultEntry({ part: openPart = 'the-luc', initial = savedAtOpen, typed 
               value={values['dien-giai'] ?? ''}
               onChange={(e) => set('dien-giai')(e.target.value)}
             />
-            {/* One message line that keeps its room: "Chưa điền · ví dụ …" while empty, the example while typing,
-                nothing once filled and left, the error alone after a press of "Xem lại". Nothing under it moves. */}
+            {/* One message line that keeps its room, as in a NumberField: "Chưa điền" while empty, the example while
+                the field has focus, nothing once filled and left, the error alone after a press of "Xem lại". Nothing
+                under it moves. */}
             <TextField
               id="loi-khuyen"
               label="Lời khuyên"
-              hint={!adviceFilled ? ADVICE_EMPTY : focused === 'loi-khuyen' ? ADVICE_EXAMPLE : undefined}
-              reserve={[ADVICE_EMPTY, { error: 'Điền lời khuyên' }]}
+              hint={focused === 'loi-khuyen' ? ADVICE_EXAMPLE : !adviceFilled ? EMPTY : undefined}
+              reserve={[EMPTY, ADVICE_EXAMPLE, { error: 'Điền lời khuyên' }]}
               multiline
               rows={5}
               className={styles.Grow}
@@ -716,7 +734,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * Part 4 with height and weight saved: empty fields are grey "Chưa điền · ví dụ 78", never red. BMI is worked out
+ * Part 4 with height and weight saved: empty fields are grey "Chưa điền", never red; the example ("ví dụ 78") shows
+ * while the cursor is in the field. BMI is worked out
  * (read-only, not a Tab stop). Saved but items missing, so the main button is "Đến mục còn thiếu" and takes the cursor to Mạch.
  */
 export const TheLuc: Story = {};
@@ -781,11 +800,13 @@ export const XemLaiRoiDien: Story = {
     await userEvent.type(pulse, '78');
     await userEvent.tab();
     await expect(offset()).toBe(before);
-    await expect(within(canvas.getByRole('alert')).getAllByRole('link')).toHaveLength(4);
+    // Read once: an alert when it appeared, a group named by its heading once focus has left it.
+    await expect(canvas.queryByRole('alert')).not.toBeInTheDocument();
+    await expect(within(canvas.getByRole('group', { name: 'Còn 4 mục chưa điền' })).getAllByRole('link')).toHaveLength(4);
     await expect(pulse).toHaveAccessibleDescription(/Điền mạch/);
     await userEvent.click(pulse);
     await userEvent.keyboard('{Control>}s{/Control}');
-    await waitFor(() => expect(within(canvas.getByRole('alert')).getAllByRole('link')).toHaveLength(3));
+    await waitFor(() => expect(within(canvas.getByRole('group', { name: 'Còn 3 mục chưa điền' })).getAllByRole('link')).toHaveLength(3));
     await expect(pulse).toHaveFocus();
     await expect(pulse).not.toHaveAttribute('aria-invalid');
   },

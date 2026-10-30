@@ -5,7 +5,7 @@ import { TextField, type TextFieldProps } from '../../atoms/TextField';
 export type PhoneInputProps = {
   /** Default "Số điện thoại". */
   label?: string;
-  /** Default "Ví dụ: 0912 345 678". */
+  /** Default "Ví dụ: 0912 345 678" (the number joined by no-break spaces, so it never breaks over two lines). */
   hint?: string;
   /** Called with the normalized digits (0912345678), or null while incomplete or invalid. */
   onPhoneChange?: (digits: string | null, raw: string) => void;
@@ -16,7 +16,7 @@ export type PhoneInputProps = {
  * Tidies the number on blur (0912 345 678); validate with normalizeVnPhone().
  */
 export const PhoneInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, PhoneInputProps>(function PhoneInput(
-  { label = 'Số điện thoại', hint = 'Ví dụ: 0912 345 678', onPhoneChange, value, defaultValue, onChange, onBlur, ...rest },
+  { label = 'Số điện thoại', hint = 'Ví dụ: 0912\u00a0345\u00a0678', onPhoneChange, value, defaultValue, onChange, onBlur, ...rest },
   ref,
 ) {
   const [inner, setInner] = useState(String(defaultValue ?? ''));

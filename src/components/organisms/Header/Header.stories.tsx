@@ -39,10 +39,9 @@ export const SubmenuOpensOnClick: Story = {
 
 const staffTools = (
   <>
-    {/* Running, not finished: info, never the success green. It names the one batch it runs for. */}
-    <StatusTag tone="info" size="sm" style={{ whiteSpace: 'normal' }}>
-      Gửi tự động đang chạy: chỉ đợt F.D.I KSK 2026
-    </StatusTag>
+    {/* Running, not finished: info, never the success green. It names the one batch it runs for, whole (the batch
+        name never breaks), at the body size. */}
+    <StatusTag tone="info">Gửi tự động: chỉ đợt F.D.I{'\u00a0'}KSK{'\u00a0'}2026</StatusTag>
     <span>Chị Lan</span>
     <TextLink href="#" arrow={false}>
       Đăng xuất

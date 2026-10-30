@@ -13,7 +13,7 @@ describe('NumberField', () => {
   it('reads the unit and a neutral hint while empty', () => {
     render(<NumberField label="Mạch" unit="lần/phút" example="78" />);
     const input = screen.getByRole('textbox', { name: 'Mạch' });
-    expect(input).toHaveAccessibleDescription(exactly('lần/phút Chưa điền · ví dụ 78'));
+    expect(input).toHaveAccessibleDescription(exactly('lần/phút Chưa điền'));
     expect(input).toHaveAttribute('inputmode', 'numeric');
     expect(input).not.toHaveAttribute('aria-invalid');
   });
@@ -35,30 +35,49 @@ describe('NumberField', () => {
     expect(input).not.toHaveAttribute('aria-invalid');
     await userEvent.tab();
     expect(input).toHaveAttribute('aria-invalid', 'true');
-    expect(input).toHaveAccessibleDescription(exactly('lần/phút Lỗi: Nhập từ 30 đến 250'));
+    expect(input).toHaveAccessibleDescription(exactly('lần/phút Lỗi: Từ 30 đến 250'));
     await userEvent.clear(input);
     await userEvent.type(input, '78');
     expect(input).not.toHaveAttribute('aria-invalid');
   });
 
   it('checks the range before the decimals', async () => {
-    // Height typed in metres: the fix is the range in centimetres, not "Nhập số nguyên".
+    // Height typed in metres: the fix is the range in centimetres, not "Chỉ số nguyên".
     render(<NumberField label="Chiều cao" unit="cm" min={50} max={250} />);
     const input = screen.getByRole('textbox', { name: 'Chiều cao' });
     await userEvent.type(input, '1,58');
     await userEvent.tab();
-    expect(input).toHaveAccessibleDescription(exactly('cm Lỗi: Nhập từ 50 đến 250'));
+    expect(input).toHaveAccessibleDescription(exactly('cm Lỗi: Từ 50 đến 250'));
     await userEvent.clear(input);
     await userEvent.type(input, '158,5');
     await userEvent.tab();
-    expect(input).toHaveAccessibleDescription(exactly('cm Lỗi: Nhập số nguyên'));
+    expect(input).toHaveAccessibleDescription(exactly('cm Lỗi: Chỉ số nguyên'));
+  });
+
+  it('says how many digits may follow the comma', async () => {
+    render(<NumberField label="Cân nặng" unit="kg" decimals={1} min={2} max={300} />);
+    const input = screen.getByRole('textbox', { name: 'Cân nặng' });
+    await userEvent.type(input, '52,55');
+    await userEvent.tab();
+    expect(input).toHaveAccessibleDescription(exactly('kg Lỗi: Chỉ 1 số lẻ'));
+  });
+
+  it('says the range with only a lower or an upper limit', async () => {
+    render(<NumberField label="Mạch lúc nghỉ" min={30} defaultValue="20" />);
+    render(<NumberField label="Mạch khi gắng sức" max={250} defaultValue="300" />);
+    for (const input of screen.getAllByRole('textbox')) {
+      await userEvent.click(input);
+      await userEvent.tab();
+    }
+    expect(screen.getByRole('textbox', { name: 'Mạch lúc nghỉ' })).toHaveAccessibleDescription(exactly('Lỗi: Từ 30 trở lên'));
+    expect(screen.getByRole('textbox', { name: 'Mạch khi gắng sức' })).toHaveAccessibleDescription(exactly('Lỗi: Tối đa 250'));
   });
 
   it('says what to type when the text is not a number', async () => {
     render(<NumberField label="Mạch" example="78" />);
     await userEvent.type(screen.getByRole('textbox'), '120/80');
     await userEvent.tab();
-    expect(screen.getByText('Nhập số, ví dụ 78')).toBeInTheDocument();
+    expect(screen.getByText('Chỉ nhập số')).toBeInTheDocument();
   });
 
   it('flags a value outside the normal range with a word and the range, not an error', () => {
@@ -76,29 +95,34 @@ describe('NumberField', () => {
     expect(container.querySelector('[data-part="control"] [data-component="StatusTag"]')).toBeNull();
   });
 
-  it('lets the page error win, in the same line, with the example', () => {
-    render(<NumberField label="Mạch" example="78" error="Điền mạch trước khi xem lại." />);
-    expect(screen.getByRole('textbox')).toHaveAccessibleDescription(exactly('Lỗi: Điền mạch trước khi xem lại, ví dụ 78'));
+  it('lets the page error win, in the same line, as given', () => {
+    render(<NumberField label="Mạch" example="78" error="Điền mạch" />);
+    expect(screen.getByRole('textbox')).toHaveAccessibleDescription(exactly('Lỗi: Điền mạch'));
   });
 });
 
 describe('NumberField one message line', () => {
-  it('shows the page error in place of the hint, with the example, and no line of its own', () => {
+  it('shows the page error in place of the hint, and no line of its own', () => {
     const { container } = render(<NumberField label="Mạch" unit="lần/phút" example="78" error="Điền mạch" />);
     expect(screen.queryByText(/Chưa điền/)).not.toBeInTheDocument();
-    expect(screen.getByRole('textbox')).toHaveAccessibleDescription(exactly('lần/phút Lỗi: Điền mạch, ví dụ 78'));
+    expect(screen.getByRole('textbox')).toHaveAccessibleDescription(exactly('lần/phút Lỗi: Điền mạch'));
     expect(container.querySelector('[data-part="error"]')).toBeNull();
   });
 
-  it('shows only the error when there is no example', () => {
-    render(<NumberField label="Mạch" unit="lần/phút" error="Điền mạch" />);
-    expect(screen.getByRole('textbox')).toHaveAccessibleDescription(exactly('lần/phút Lỗi: Điền mạch'));
+  it('keeps the page error while the field has focus', async () => {
+    render(<NumberField label="Mạch" unit="lần/phút" example="78" error="Điền mạch" />);
+    const input = screen.getByRole('textbox');
+    await userEvent.click(input);
+    expect(input).toHaveAccessibleDescription(exactly('lần/phút Lỗi: Điền mạch'));
   });
 
-  it('keeps the example while typing, then shows nothing once filled and left', async () => {
+  it('shows the example from focus, then nothing once filled and left', async () => {
     render(<NumberField label="Chiều cao" unit="cm" example="158" />);
     const input = screen.getByRole('textbox');
-    expect(input).toHaveAccessibleDescription(exactly('cm Chưa điền · ví dụ 158'));
+    expect(input).toHaveAccessibleDescription(exactly('cm Chưa điền'));
+    // Focused, still empty: the example, the moment it helps.
+    await userEvent.click(input);
+    expect(input).toHaveAccessibleDescription(exactly('cm ví dụ 158'));
     await userEvent.type(input, '1');
     expect(input).toHaveAccessibleDescription(exactly('cm ví dụ 158'));
     await userEvent.type(input, '62');
@@ -115,9 +139,9 @@ describe('NumberField one message line', () => {
     const input = screen.getByRole('textbox');
     // Filled and left: nothing is shown, but the line is still there with its hidden copies.
     expect(messageLine(input)).toHaveTextContent('');
-    expect(reserved(input)).toEqual(['Chưa điền · ví dụ 78', 'Nhập từ 30 đến 250', 'Nhập số, ví dụ 78', 'Nhập số nguyên']);
+    expect(reserved(input)).toEqual(['Chưa điền', 'ví dụ 78', 'Từ 30 đến 250', 'Chỉ nhập số', 'Chỉ số nguyên']);
     // The copies are not page text and not read out.
-    expect(screen.queryByText('Nhập từ 30 đến 250')).not.toBeInTheDocument();
+    expect(screen.queryByText('Từ 30 đến 250')).not.toBeInTheDocument();
     expect(input).toHaveAccessibleDescription('lần/phút');
   });
 
@@ -126,7 +150,7 @@ describe('NumberField one message line', () => {
     rerender(<NumberField label="Mạch" example="78" defaultValue="78" />);
     const input = screen.getByRole('textbox');
     expect(input).not.toHaveAttribute('aria-invalid');
-    expect(reserved(input)).toContain('Điền mạch, ví dụ 78');
+    expect(reserved(input)).toContain('Điền mạch');
   });
 
   it('shows no hint for a value that was already filled in', () => {
@@ -143,6 +167,6 @@ describe('NumberField one message line', () => {
     expect(onFocus).toHaveBeenCalled();
     expect(input).toHaveAccessibleDescription('Đo lúc nghỉ 5 phút');
     rerender(<NumberField label="Mạch" example="78" hint="Đo lúc nghỉ 5 phút" defaultValue="78" error="Kiểm tra lại" />);
-    expect(input).toHaveAccessibleDescription(exactly('Lỗi: Kiểm tra lại, ví dụ 78'));
+    expect(input).toHaveAccessibleDescription(exactly('Lỗi: Kiểm tra lại'));
   });
 });

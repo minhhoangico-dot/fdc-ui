@@ -1,13 +1,19 @@
-<!-- @dsCard group="Organisms" height=170 subtitle="who is being worked on: name and state, date of birth, record code, previous / next" -->
-<div id="root" data-density="compact"></div>
+<!-- @dsCard group="Organisms" height=270 subtitle="who is being worked on: the bar on a record form; the block on the review page" -->
+<div id="root" data-density="compact" style="display:flex;flex-direction:column;gap:16px;background:var(--surface-alt);padding-bottom:16px"></div>
 <script>
 var h = React.createElement, F = window.FDC;
-ReactDOM.createRoot(document.getElementById('root')).render(h(F.PatientContextBar, {
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null, h(F.PatientContextBar, {
   name: 'Đặng Thanh Chi', sex: 'Nữ', birthDate: '07/07/1990', ageOn: new Date(2026, 9, 10), idEnd: '0006',
   recordCode: 'RD26-0006', organization: 'Công ty TNHH Rạng Đông',
   breadcrumb: [{label: 'Việc của tôi', href: '#'}, {label: 'Rạng Đông KSK 2026', href: '#'}, {label: 'Người 6 / 2.033'}],
   status: h(F.StatusTag, null, 'Cần điền · còn 3 mục'),
   actions: h(React.Fragment, null,
     h(F.Button, {icon: 'simple-left', href: '#', 'aria-label': 'Người trước: Ngô Văn Nam'}, 'Người trước'),
-    h(F.Button, {icon: 'simple-right', iconPosition: 'end', href: '#', 'aria-label': 'Người sau: Nguyễn Thị Mai Anh'}, 'Người sau'))}));
+    h(F.Button, {icon: 'simple-right', iconPosition: 'end', href: '#', 'aria-label': 'Người sau: Nguyễn Thị Mai Anh'}, 'Người sau'))}),
+  h('div', {style: {padding: '0 15px'}}, h(F.PatientContextBar, {
+    variant: 'block', headingLevel: 2, name: 'Ngô Văn Nam', sex: 'Nam', birthDate: '15/03/1990', ageOn: new Date(2026, 9, 10), idEnd: '0004',
+    recordCode: 'RD26-0004', organization: 'Công ty TNHH Rạng Đông',
+    status: h(F.StatusTag, null, 'Sẵn sàng xem lại'),
+    recordFacts: h(React.Fragment, null, h('span', null, 'Khám 10/10/2026 08:15'),
+      h('span', null, 'Người ký: ', h('strong', null, 'BS Hoàng Thị Cúc')), h('span', null, 'Bản này lưu lúc 09:12 bởi chị Lan'))}))));
 </script>
