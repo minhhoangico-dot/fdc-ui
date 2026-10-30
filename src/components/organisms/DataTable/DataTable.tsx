@@ -120,6 +120,7 @@ export function DataTable<Row>({
   // so a table that stacks states every role itself.
   const role = (name: string) => (stacked ? name : undefined);
   const empty = status === 'ready' && rows.length === 0;
+  const scrollable = overflows && status === 'ready' && rows.length > 0;
   const count = pagination ? rangeText(pagination) : `${formatViInteger(rows.length)} dòng`;
 
   useEffect(() => {
@@ -245,10 +246,11 @@ export function DataTable<Row>({
       <div
         ref={scroller}
         className={styles.Scroller}
-        // Only a box that really scrolls needs to be a tab stop (WCAG 2.1.1); otherwise it would be an empty stop.
-        role={overflows ? 'region' : undefined}
-        aria-labelledby={overflows ? captionId : undefined}
-        tabIndex={overflows ? 0 : undefined}
+        // Only a box that really scrolls to something needs to be a tab stop (WCAG 2.1.1). With no rows (loading,
+        // failed, nothing found) it would scroll only the column names: the message under it says what matters.
+        role={scrollable ? 'region' : undefined}
+        aria-labelledby={scrollable ? captionId : undefined}
+        tabIndex={scrollable ? 0 : undefined}
       >
         <table
           ref={table}

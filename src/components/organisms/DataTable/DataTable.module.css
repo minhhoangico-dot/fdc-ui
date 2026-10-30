@@ -221,6 +221,8 @@ th.Cell > a:first-child:focus-visible {
   }
   .Table:where([data-stack='phone']) th.Cell {
     order: -1;
+    /* The stretched name link covers this cell, so the cell is the tap target: never under 44px. */
+    min-block-size: var(--target-min);
     margin-block-end: var(--space-5);
   }
   /* Label and value share a line while both fit; a value that cannot shrink moves under its label. A line without a
