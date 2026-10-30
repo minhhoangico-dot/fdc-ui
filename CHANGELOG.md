@@ -4,46 +4,61 @@ Versions follow the FDC Medical Group design system in Claude Design (the master
 
 ## 2.4.0 — 2026-10-30
 
-Answers to an outside review of the 2.3 staff screens by ChatGPT and Gemini (business rules first, then looks and phones). Every finding was checked against the code before acting; one was wrong (table cells were already top-aligned) and was not changed.
+Answers to an outside review of the 2.3 staff screens by ChatGPT and Gemini (business rules first, then looks and phones). Every finding was checked against the code before acting; one was wrong (table cells were already top-aligned) and was not changed. Before release, eight independent reviewers checked the result against each finding, on rendered pages at 320–1280px in both themes and with the keyboard and a screen reader's view (1 Blocker, 11 High, 33 Medium, 38 Nit, and 19 findings only partly fixed); everything they found is fixed below unless listed under "Known and accepted".
 
 ### Business rules (the costly ones)
-- **Send outcomes split.** "Gửi lỗi" is now "Bị từ chối" (the department refused and gave a reason: fix, then resend) and "Chưa rõ kết quả" (no answer: the department may already hold the record, so check the status or ask Minh, never "Gửi lại"). "Đã gửi lên Sở" is renamed "Sở đã tiếp nhận", "Bộ đã nhận" "Bộ đã xác nhận". Master README states table updated.
-- **Conflicts are never shown as saved.** SaveStatus `conflict`: "Cần xử lý 1 giá trị trước khi lưu", amber; the save button explains why it cannot save until a value is chosen.
-- **Sending never blocks the next person.** During "Chờ gửi" the review page offers "Sang người sau cần làm"; the next person's page shows "Ngô Văn Nam: chờ gửi lên Sở · còn 22 giây" with "Hủy gửi"; the list finds records waiting to be sent.
+- **Send outcomes split.** "Gửi lỗi" is now "Bị từ chối" (the department refused and gave a reason: fix, then resend) and "Chưa rõ kết quả" (no answer: the department may already hold the record, so check the status or ask Minh, never "Gửi lại"). "Đã gửi lên Sở" as an outcome is "Sở đã tiếp nhận"; "Bộ đã nhận" is "Bộ đã xác nhận". The words are the same in the pages, the fixtures, the component stories, the Claude Design cards and the README states table.
+- **Say who sends.** Rạng Đông is sent by hand: the list says "Đợt này gửi tay: chị xem lại rồi tự gửi từng hồ sơ." (plain text, not a tag) and the review page repeats it at the send button. Auto-send runs for one other batch, and the header tag names it, in `info` blue (running is not success). This replaces the 2.4 draft "Bạn nhập liệu · Minh duyệt gửi", which contradicted the page where chị Lan sends herself.
+- **Say where the answer lands.** Đang gửi tells staff: accepted → group "Sở đã tiếp nhận"; refused → "Cần điền hoặc sửa" (reason, then sửa → lưu → xem lại → gửi lại); unknown → stays in "Đang gửi". The list groups follow: "Chưa rõ kết quả" sits in Đang gửi and counts in "làm được ngay"; the "Đã gửi" pill is now "Sở đã tiếp nhận" (with Bộ đã xác nhận).
+- **Conflicts are never shown as saved.** SaveStatus `conflict`: "Cần xử lý 1 giá trị trước khi lưu", amber with "!". The field is read-only until a value is chosen; Ctrl + S moves focus to the question, never to one answer, and both answers are described by it; "Giữ … của tôi" names the current value.
+- **Sending never blocks the next person.** During "Chờ gửi lên Sở" the review page offers "Sang người sau: Đặng Thanh Chi"; the next person's page shows "Ngô Văn Nam: chờ gửi lên Sở · còn 22 giây" with "Hủy gửi", then "Mở hồ sơ Ngô Văn Nam" after a cancel and "Xem trạng thái gửi" after the countdown; the list row says "Hủy được đến 09:31:22".
+- **Nothing moves while staff work.** Field errors and the error summary are set by "Xem lại" or "Lưu" and stay until the next press (as on GOV.UK); no hint, tag or error appears or disappears on focus, typing or leaving a field. Before, leaving a filled field removed its hint and moved the form 27px between mouse down and up, so the click on the next control was lost.
 - **Several diagnoses and the doctor's words.** New CodeList (name first, code after, add and remove) plus a free-text field for the wording on the paper form.
-- **The step line tells the truth.** "Sở đã tiếp nhận" ✓ with its code; "Chờ Bộ xác nhận" is an outline, never a filled pill that looks finished.
+- **The step line tells the truth.** Done steps say what happened with a ✓ ("Sở đã tiếp nhận" with its code); the step waited for says "Chờ Bộ xác nhận" with a clock, never a dashed edge (dashed means an unavailable button); a failed step has a red "!"; each step has a hidden state word for screen readers.
 
 ### New components
 - **Checkbox** and **Select** (atoms). The review page's tick box is now a system component; the list filter collapses into a Select on phones.
-- **CodeList** (molecule): several coded items for one question.
+- **CodeList** (molecule): several coded items for one question; says "… (I10) đã có trong danh sách." instead of "Không tìm thấy" for an item already chosen.
 - **FormPartNav** (molecule): the parts of a long form; full side list from 1024px, one "4. Thể lực · còn 2" toggle on phones.
 
 ### Changes
-- **Tokens 2.4:** `success-50`, `danger-50` with roles `status-success-bg`, `status-error-bg`. Contrast matrix 88 pairs per theme (176), all passing. The lint forbids `success-*` and `danger-*` in components.
-- **StatusTag:** tinted fills with a dot, never a dark edge (tags no longer look like buttons), weight 500; new tone `attention` (amber) for values outside the normal range; long tags wrap instead of overflowing.
-- **NumberField:** "Cao"/"Thấp" use `attention`, not red. The hint says only what helps: "Chưa điền · ví dụ 78" while empty, only "ví dụ 78" next to an error or while typing, nothing once filled and left.
-- **FormNotice:** a sign per type ("!", "i", "✓") as well as color (the nursing-home orange sits close to red and amber); boxed notices tinted by type; `text` may be rich; `live={false}` for countdowns.
-- **ConfirmationPanel:** `emphasis="subtle"` for staff screens; done steps ✓, the waited-for step outlined; the arrow ends a step so a wrapped line never starts with "→".
+- **Tokens 2.4:** `success-50`, `danger-50` with roles `status-success-bg`, `status-error-bg`. The lint forbids `success-*` and `danger-*` in components. Contrast matrix 92 pairs per theme (184), all passing, now including the white signs in their circles and the step colours on the error and attention panels.
+- **StatusTag:** tinted fills with a dot, never an edge, weight 500; new tone `attention` (amber) for values outside the normal range; `muted` is a grey tint with no edge; `strong` is deprecated (drawn as neutral, removed in 3.0), so no tag is solid; long tags wrap with the dot on the first line.
+- **NumberField:** "Cao"/"Thấp" use `attention`, not red. One message line above the box that keeps its room: "Chưa điền · ví dụ 78" while empty, "ví dụ 78" while typing, nothing once filled and left, "Cao · bình thường 60–100" when outside the normal range, "! Điền mạch, ví dụ 78" for an error. The tag never sits beside the box, so a saved 112 or 145 is never clipped and boxes in a column keep one right edge. The range is checked before the decimals; own errors are short ("Nhập từ 30 đến 250").
+- **TextField:** `reserve` keeps one stable message line (the error takes the hint's place); `hint` may be rich; errors carry a red "!"; the error edge no longer grows the box; read-only fields (BMI) look read-only; `after` is deprecated (removed in 3.0).
+- **FormNotice:** a sign per type ("!", "i", "✓") as well as color (the nursing-home orange sits close to red and amber); boxed notices are a tint and a sign, with no side bar and no dark edge; `text` may be rich; `live={false}` for countdowns.
+- **ConfirmationPanel:** tones `error` (Bị từ chối) and `attention` (Chưa rõ kết quả) besides `success` and `pending`; pale panels are a tint and a sign with no edge; `emphasis="subtle"` for staff screens; `donePrefix`, `currentPrefix`, `todoPrefix` hidden state words; reference codes never wrap; the arrow ends a step so a wrapped line never starts with "→".
+- **SaveStatus:** "!" on the failed and conflict lines; a failed save is read once, as an alert, with the count and "Lưu lại" outside the live region; the last save time never breaks and its dot never starts a line.
+- **ErrorSummary:** `layout="inline"` for staff screens: a count heading with "!", the fields' short names as 44px links separated by space (no dots), 129px for four names at 320px; read once (an alert when it appears, then a group named by its heading); a dark-ink focus ring on its red edge.
 - **RadioGroup:** `variant="pills"` for list filters; `row` options never shrink below their words.
-- **ErrorSummary:** `layout="inline"` keeps the form in view on staff screens.
-- **DataTable:** `stackBelow="phone"` shows each record as a block (explicit ARIA roles), slightly tighter rows.
-- **PatientContextBar:** facts set apart by space, not "·" ("Sinh 07/07/1990 (36 tuổi)", "CCCD …0006", "Mã lượt khám RD26-0006"); smaller and tighter on phones with the two buttons on one row; `variant="block"`; the breadcrumb collapses to "‹ parent" on phones.
-- **Breadcrumb:** the "›" ends an item; `collapseOnPhone`.
-- **TextField:** read-only fields (BMI) look read-only. **Kbd:** lighter keycaps. **FieldRow:** aligns Combobox and Select too (it skipped Combobox in 2.3). **StaffLayout:** tighter rhythm on phones. **Header** compact: the menu button keeps "Menu" when open, so the bar stays one row at 320px.
+- **DataTable:** `stackBelow="phone"` shows each record as a block; `variant="plain"` for a table inside a card (no outer edge, no header band); loading, empty and error messages sit under the table outside the sideways scroll, the error with "!"; one polite live region says the result on every change; after "Tải lại" focus moves to the first record; the header rule uses the light `border`; slightly tighter rows. **Pagination:** `live` prop.
+- **Combobox:** a chosen coded value keeps its code in view ("Nhà chuy… (22)"); `aria-describedby` and `aria-invalid` pass through; "Xóa" stays outside the box (44px target).
+- **PatientContextBar:** facts set apart by space, not "·"; the status beside the name; nav buttons on the name row from 640px (121px tall at 1024, was 185); one-line 44px "Người trước" / "Người sau" on phones, named with the person; `variant="block"`; the breadcrumb collapses to "‹ parent" on phones.
+- **StaffLayout:** measures its sticky header, context bar and action bar and sets the scroll padding from their real heights (`--header-space`, `--context-bar-space`, `--action-bar-space`), so a focused field is never under a bar (it was, at 320, 390 and 1024); the side list's sticky top follows the bars; tighter rhythm on phones.
+- **Header:** compact thin bar takes the name plus fact chunks and is never taller than the full row; the menu button keeps its name when open and is icon-only in the collapsed bar below 480px.
+- **Button:** `iconPosition="end"` for "next" actions; a link button passes `aria-label` through. **TextLink:** `arrow` back / next / none, body-size text. **Base styles:** every link gets the 3px focus ring.
+- **SummaryList:** "Thay đổi" is a link in the link colour; the details toggle is the bold one.
+- **Breadcrumb:** the "›" ends an item; `collapseOnPhone`. **Kbd:** lighter keycaps. **FieldRow:** aligns Combobox and Select too.
 - `formatViNumber(n, decimals, minDecimals)` for fixed decimals ("21,0").
 
 ### Sample pages
-- **Danh sách hồ sơ:** search under the title; filter pills on desktop, a Select on phones; records as blocks on phones; every typed word must match; near-duplicate "Phạm Văn Năm" and a hint when matches sit in another group; mode "Bạn nhập liệu · Minh duyệt gửi"; the header says which batch auto-send runs for.
-- **Nhập kết quả:** FormPartNav; conflict state; "Lưu lại" after a failure (no second retry button); "Đến mục còn thiếu"; BMI read-only "21,0"; blood pressure as one group; inline error summary; CodeList and the doctor's words; multiline advice; new stories MatMangChuaLuu and SauKhiGui.
-- **Xem lại trước khi gửi:** SoDaTiepNhan, BiTuChoi, ChuaRoKetQua (no resend) replace DaGuiLenSo and GuiLoi; "Sang người sau cần làm" during the undo window; the stale notice names the change ("Cân nặng 52,5 → 53 kg"); HIS source next to the lab row; the tick box names what to compare.
+- **Danh sách hồ sơ:** search under the title; filter pills on desktop, a Select on phones; records as blocks on phones; every typed word must match; near-duplicate "Phạm Văn Năm" and a hint when matches sit in another group; the state tag on one line with "còn 61 mục" under it; fixed column widths; 14px facts; the batch action under the list on phones; focus kept after "Tìm trong Tất cả" and "Tải lại". New stories TimTrongTatCa and MatMangTaiLai.
+- **Nhập kết quả:** FormPartNav (choosing a part moves focus to its heading); conflict state; "Lưu lại" after a failure; "Đến mục còn thiếu"; BMI read-only "21,0", computed only from values in range and out of the Tab order; blood pressure as one group; inline error summary with short names; CodeList and the doctor's words; text areas grow with their content; one-row phone action bar (97px, was 137 and 207 in a conflict). New stories ChiSoCao, XemLaiRoiDien, HaiNguoiCungSuaBamLuu, MatMangChuaLuu and SauKhiGui.
+- **Xem lại trước khi gửi:** every outcome is a ConfirmationPanel with its own heading (Chờ gửi lên Sở, Đang gửi lên Sở, Sở đã tiếp nhận, Bị từ chối, Chưa rõ kết quả); the focused heading never counts; one status line announces the start, the move to Đang gửi and a cancel; focus follows the panel when the undo window ends; Kết luận shows the classification, two diagnoses (I10, E11), the doctor's words and the advice; the data source as whole chunks; the phone header keeps the person; facts agree across pages. New stories HuyGui and HetGioHuy.
 
 ### Process
 - **Usability test protocol** `docs/usability-test-v2.4.md` (Vietnamese): one 60–75 minute session per staff member, eight tasks on the sample pages, timings, errors, understanding of states, Giữ / Sửa / Làm lại thresholds.
 - The visual review no longer reports text inside a visually hidden table header as clipped (skill fix).
 
+### Decisions
+- Codes stay in Be Vietnam Pro, not monospace: capital I is a 2px bar (4.1px advance), 1 has a flag and is 49% wider; O is round, 0 a narrower oval; an ICD-10 code is a letter then digits after its name.
+- Combobox "Xóa" stays outside the box for its 44px target; the name is cut before the code instead.
+- On a red edge the focus ring is dark ink, so the nursing-home orange and the error red never read as one frame.
+
 ### Decisions kept open for Minh
 - Dashed edge for unavailable buttons: kept (approved 25/10); a reviewer read it as a drop zone.
 - Normal ranges and any confirmation for very abnormal values: example ranges only; a doctor sets them.
+- Who sends: by hand per batch for now. If Minh should approve each record before it goes to the department, that is a new state ("Chờ Minh duyệt") for 2.5.
 
 ## 2.3.0 — 2026-10-29
 

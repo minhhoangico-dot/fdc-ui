@@ -62,19 +62,24 @@
     "fg": [
       "--text-default",
       "--status-error-text",
-      "--text-link"
+      "--text-link",
+      "--status-info-text",
+      "--text-muted"
     ],
     "bg": "--status-error-bg",
-    "note": "error tag and boxed error notice"
+    "note": "error tag, boxed error notice, error ConfirmationPanel (status-info-text: the step waited for; text-muted: steps still to come)"
   },
   {
     "fg": [
       "--text-default",
       "--status-warning-text",
-      "--text-link"
+      "--text-link",
+      "--status-info-text",
+      "--text-muted",
+      "--status-error-text"
     ],
     "bg": "--status-warning-bg",
-    "note": "warning panel, boxed warning notice, attention tag (\"Cao\", \"Thấp\")"
+    "note": "attention tag (\"Cao\", \"Thấp\"), boxed warning notice, conflict save line, attention ConfirmationPanel (status-info-text: the step waited for; text-muted: steps still to come)"
   },
   {
     "fg": "--text-on-action",
@@ -130,31 +135,23 @@
     "note": "control edges, focus ring, bars (WCAG 1.4.11)"
   },
   {
-    "fg": "--status-info-border",
-    "bg": "--status-info-bg",
-    "min": 3,
-    "note": "pending panel edge"
-  },
-  {
-    "fg": "--status-warning-border",
-    "bg": "--status-warning-bg",
-    "min": 3,
-    "note": "warning panel edge"
-  },
-  {
     "fg": "--text-on-action",
     "bg": "--status-info-border",
-    "note": "current step in a pending panel"
-  },
-  {
-    "fg": "--status-info-border",
-    "bg": "--status-success-bg",
-    "min": 3,
-    "note": "dashed edge of the step still waited for, in the subtle confirmation panel"
+    "note": "white i in the pending sign circle (FormNotice, ConfirmationPanel)"
   },
   {
     "fg": "--text-on-action",
     "bg": "--status-warning-border",
-    "note": "white mark in the warning notice circle (\"!\")"
+    "note": "white ! in the warning sign circle (FormNotice, ConfirmationPanel attention, SaveStatus conflict)"
+  },
+  {
+    "fg": "--text-on-action",
+    "bg": "--status-error-text",
+    "note": "white ! in the error sign circle (FormNotice, ConfirmationPanel error, field errors, ErrorSummary, SaveStatus failed)"
+  },
+  {
+    "fg": "--text-on-action",
+    "bg": "--status-success-text",
+    "note": "white ✓ in the success sign circle (FormNotice, ConfirmationPanel)"
   }
 ]

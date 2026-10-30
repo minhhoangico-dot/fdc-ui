@@ -125,7 +125,7 @@ Hoặc trong Storybook, mở màn rồi bấm nút "Open canvas in new tab" (mũ
 | 3 | Nhập kết quả › Mat Mang Chua Luu | `pages-nhân-viên-nhập-kết-quả--mat-mang-chua-luu` | Mất mạng giả: lần lưu nào cũng lỗi; đã có một ô gõ sẵn chưa lưu |
 | 4 | Nhập kết quả › Hai Nguoi Cung Sua | `pages-nhân-viên-nhập-kết-quả--hai-nguoi-cung-sua` | |
 | 5 | Nhập kết quả › Ket Luan | `pages-nhân-viên-nhập-kết-quả--ket-luan` | Phần 7. Kết luận |
-| 6 | Xem lại trước khi gửi › Xem Lai, rồi Nhập kết quả › Sau Khi Gui | `pages-nhân-viên-xem-lại-trước-khi-gửi--xem-lai`, `pages-nhân-viên-nhập-kết-quả--sau-khi-gui` | Ngô Văn Nam, chưa tích ô đối chiếu. Khi người tham gia bấm "Sang người sau cần làm", người dẫn mở màn thứ hai (người sau, có dòng "Hủy gửi Ngô Văn Nam" ở đầu trang) |
+| 6 | Xem lại trước khi gửi › Xem Lai, rồi Nhập kết quả › Sau Khi Gui | `pages-nhân-viên-xem-lại-trước-khi-gửi--xem-lai`, `pages-nhân-viên-nhập-kết-quả--sau-khi-gui` | Ngô Văn Nam, chưa tích ô đối chiếu. Khi người tham gia bấm "Sang người sau: Đặng Thanh Chi", người dẫn mở màn thứ hai (người sau, có dòng "Hủy gửi Ngô Văn Nam" ở đầu trang) |
 | 7A | Xem lại trước khi gửi › Dang Gui | `pages-nhân-viên-xem-lại-trước-khi-gửi--dang-gui` | Đang gửi |
 | 7B | Xem lại trước khi gửi › So Da Tiep Nhan | `pages-nhân-viên-xem-lại-trước-khi-gửi--so-da-tiep-nhan` | Sở đã tiếp nhận, mã SYT-HN-2026-118204 |
 | 7C | Xem lại trước khi gửi › Bi Tu Choi | `pages-nhân-viên-xem-lại-trước-khi-gửi--bi-tu-choi` | Lý do của Sở: thiếu kết luận phân loại sức khỏe |
@@ -270,11 +270,11 @@ Hoàn thành đúng: tìm ra **Tôn Nữ Hoàng Bảo Ngọc Phương Thảo, RD
 
 **Hoàn thành đúng khi:** người tham gia **tự thấy** lưu không được (không cần nhắc), **không** sang người sau khi chưa lưu được, và bấm "Lưu lại" hoặc nói một cách làm an toàn (chờ có mạng rồi lưu lại, ghi số ra giấy, báo Minh).
 
-**Ghi chú cho người dẫn:** màn mẫu luôn lỗi. Khi người tham gia đã bấm "Lưu lại" và vẫn lỗi, nói: *"Giả sử mạng vẫn chưa có. Chị làm gì tiếp?"* rồi ghi câu trả lời. Nút "Người sau cần làm" trong bản mẫu không chuyển trang; nếu họ bấm, ghi là đã bấm.
+**Ghi chú cho người dẫn:** màn mẫu luôn lỗi. Khi người tham gia đã bấm "Lưu lại" và vẫn lỗi, nói: *"Giả sử mạng vẫn chưa có. Chị làm gì tiếp?"* rồi ghi câu trả lời. Nút "Người sau" trong bản mẫu không chuyển trang; nếu họ bấm, ghi là đã bấm.
 
 **Quan sát:**
 - Bao nhiêu giây sau khi bấm Lưu thì nhận ra lỗi; nhìn vào đâu (dòng lưu màu đỏ, nút chính).
-- Có bấm "Người sau cần làm" luôn không?
+- Có bấm "Người sau" luôn không?
 - Có đọc câu "Chữ đã gõ vẫn còn" không, hay gõ lại số (không cần)?
 
 **Hỏi sau bài:**
@@ -357,7 +357,7 @@ Hoàn thành đúng: tìm ra **Tôn Nữ Hoàng Bảo Ngọc Phương Thảo, RD
 
 **Người dẫn:** khi đồng hồ trên màn hình còn **20 giây**, nói đúng câu: *"Chị Lan vừa nhắn: kết quả X-quang của anh Nam nhập nhầm, phải sửa lại."* Bấm đồng hồ thứ hai từ lúc nói.
 
-Trong lúc chờ, màn có nút "Sang người sau cần làm". Khi người tham gia bấm, người dẫn mở màn Nhập kết quả › Sau Khi Gui (người sau; đầu trang có dòng "Ngô Văn Nam: chờ gửi lên Sở · còn … giây" và nút "Hủy gửi Ngô Văn Nam"). Vẫn nói câu của chị Lan lúc còn 20 giây và xem họ tìm lại anh Nam ở đâu.
+Trong lúc chờ, màn có nút "Sang người sau: Đặng Thanh Chi". Khi người tham gia bấm, người dẫn mở màn Nhập kết quả › Sau Khi Gui (người sau; đầu trang có dòng "Ngô Văn Nam: chờ gửi lên Sở · còn … giây" và nút "Hủy gửi Ngô Văn Nam"). Vẫn nói câu của chị Lan lúc còn 20 giây và xem họ tìm lại anh Nam ở đâu.
 
 **Hoàn thành đúng khi:** (1) xem phần nhập tay (X-quang) rồi mới tích "Tôi đã đối chiếu phần nhập tay với phiếu giấy"; (2) bấm "Gửi lên Sở: Ngô Văn Nam" một lần; (3) bấm **"Hủy gửi" trước khi hết giờ**; (4) nói được "chưa có gì lên Sở".
 
@@ -367,7 +367,7 @@ Trong lúc chờ, màn có nút "Sang người sau cần làm". Khi người tha
 - Có tích ô xác nhận mà không nhìn phần nhập tay không?
 - Bấm gửi xong họ làm gì: **ngồi nhìn đếm ngược**, hay sang người sau?
 - Từ câu của chị Lan đến lúc bấm "Hủy gửi" mất bao nhiêu giây; tìm lại hồ sơ đang chờ ở đâu.
-- Có hiểu khung xanh nhạt "Chờ gửi · còn … giây" là **chưa** gửi không?
+- Có hiểu khung xanh nhạt "Chờ gửi lên Sở" (còn … giây để hủy) là **chưa** gửi không?
 
 **Hỏi sau bài:**
 
