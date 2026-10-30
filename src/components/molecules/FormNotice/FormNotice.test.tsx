@@ -25,7 +25,7 @@ describe('FormNotice', () => {
       ['success', '✓'],
     ];
     for (const [type, sign] of signs) {
-      const { unmount } = render(<FormNotice boxed notice={{ type, text: 'Chưa gửi được lên Sở.' }} />);
+      const { unmount } = render(<FormNotice boxed notice={{ type, text: 'Bị từ chối: Sở trả lại hồ sơ lúc 09:32.' }} />);
       const note = screen.getByRole('status');
       const mark = note.querySelector('[data-part="mark"]');
       expect(mark, type).toHaveTextContent(sign);

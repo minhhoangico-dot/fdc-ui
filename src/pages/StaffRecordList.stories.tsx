@@ -1,16 +1,15 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, within } from '@storybook/test';
+import { expect, userEvent, waitFor, within } from '@storybook/test';
 import { Button } from '../components/atoms/Button';
 import { Select } from '../components/atoms/Select';
-import { StatusTag } from '../components/atoms/StatusTag';
 import { TextField } from '../components/atoms/TextField';
 import { Inline } from '../components/layout/Inline';
 import { Breadcrumb } from '../components/molecules/Breadcrumb';
 import { RadioGroup } from '../components/molecules/RadioGroup';
 import { DataTable } from '../components/organisms/DataTable';
 import { StaffLayout } from '../components/templates/StaffLayout';
-import { recordGroups, records as allRecords, type KskRecord } from '../fixtures/ksk';
+import { actionableStatuses, recordGroups, records as allRecords, type KskRecord } from '../fixtures/ksk';
 import { recordColumns } from '../fixtures/kskTable';
 import { staffHeader } from '../fixtures/staff';
 import { foldVi, formatViInteger } from '../utils/vi';
@@ -49,6 +48,10 @@ function RecordList({ records = allRecords, initialGroup = 'can-lam', initialQue
   const [query, setQuery] = useState(initialQuery);
   const [page, setPage] = useState(1);
   const [failed, setFailed] = useState(Boolean(failFirstLoad));
+  // "Tìm trong Tất cả" goes away once the group is Tất cả: focus then moves to the group control that now says so.
+  const focusGroup = useRef(false);
+  const pills = useRef<HTMLDivElement>(null);
+  const groupSelect = useRef<HTMLSelectElement>(null);
   // Counts, the batch line and the next person come from the list, so they show only once it has loaded.
   const ready = !loading && !failed;
 
@@ -66,8 +69,8 @@ function RecordList({ records = allRecords, initialGroup = 'can-lam', initialQue
   const current = Math.min(page, pages);
   const shown = rows.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE);
 
-  const received = records.filter((r) => r.status === 'Sở đã tiếp nhận').length;
-  const now = counts['can-lam'] + counts['xem-lai'];
+  // "làm được ngay": fill or fix, review, and check an unknown outcome (it waits for staff, not for the department).
+  const now = records.filter((r) => actionableStatuses.includes(r.status)).length;
   // The first record to fill or fix that nobody else has open.
   const nextUp = records.find((r) => inGroup('can-lam')(r) && !r.openBy);
 
@@ -76,14 +79,29 @@ function RecordList({ records = allRecords, initialGroup = 'can-lam', initialQue
     setGroup(v);
     setPage(1);
   };
+  const findInAll = () => {
+    focusGroup.current = true;
+    choose('tat-ca');
+  };
+  useEffect(() => {
+    if (!focusGroup.current) return;
+    focusGroup.current = false;
+    // The checked "Tất cả" pill from 40rem; the Select on phones (the pills are not shown there).
+    const wide = pills.current && getComputedStyle(pills.current).display !== 'none';
+    const target = wide ? pills.current?.querySelector<HTMLInputElement>('input:checked') : groupSelect.current;
+    target?.focus();
+  }, [group]);
+  const elsewhereNote = ready && query.trim() && elsewhere > 0 ? `Còn ${formatViInteger(elsewhere)} người khớp “${query.trim()}” ở nhóm khác.` : undefined;
+  const batchAction = <Button>Lấy kết quả xét nghiệm cả đợt</Button>;
 
   return (
     <StaffLayout header={staffHeader}>
       <Breadcrumb items={[{ label: 'Việc của tôi', href: '#' }, { label: BATCH }]} />
-      <Inline align="center" gap={10}>
+      <div className={styles.Heading}>
         <h1 className={styles.Title}>{BATCH}</h1>
-        <StatusTag tone="muted">Bạn nhập liệu · Minh duyệt gửi</StatusTag>
-      </Inline>
+        {/* How this batch is sent, in plain words (not a tag: it is a note, not a state). */}
+        <p className={styles.Mode}>Đợt này gửi tay: chị xem lại rồi tự gửi từng hồ sơ.</p>
+      </div>
 
       {/* Search first, then the group: on phones the field sits right under the title. */}
       <div className={styles.Search}>
@@ -100,31 +118,42 @@ function RecordList({ records = allRecords, initialGroup = 'can-lam', initialQue
       </div>
 
       {/* One filter control per width: pills from 40rem, a Select on phones. */}
-      <div className={styles.WideOnly}>
+      <div className={styles.WideOnly} ref={pills}>
         <RadioGroup label="Nhóm người" name="nhom" variant="pills" layout="wrap" value={group} onValueChange={choose} options={groupOptions} />
       </div>
       <div className={styles.PhoneOnly}>
-        <Select label="Nhóm người" value={group} onChange={(e) => choose(e.target.value)} options={groupOptions} />
+        <Select ref={groupSelect} label="Nhóm người" value={group} onChange={(e) => choose(e.target.value)} options={groupOptions} />
       </div>
 
-      {ready && query.trim() && elsewhere > 0 ? (
+      {elsewhereNote ? (
         <p className={styles.Elsewhere}>
-          <span>
-            Còn {formatViInteger(elsewhere)} người khớp “{query.trim()}” ở nhóm khác.
-          </span>
-          <Button onClick={() => choose('tat-ca')}>Tìm trong Tất cả</Button>
+          <span>{elsewhereNote}</span>
+          <Button onClick={findInAll}>Tìm trong Tất cả</Button>
         </p>
       ) : null}
 
       <div className={styles.Toolbar}>
         {ready ? (
+          // Each figure is one unbreakable chunk; the dot is glued to the chunk before it, so no line starts or ends
+          // with a lone "·".
           <p className={`${styles.Stats} ${styles.WideOnly}`}>
-            Cả đợt <strong>{formatViInteger(records.length)}</strong> người · <strong>{formatViInteger(now)}</strong> làm được ngay ·{' '}
-            <strong>{formatViInteger(counts['dang-cho'])}</strong> đang chờ · <strong>{formatViInteger(received)}</strong> Sở đã tiếp nhận
+            <span>
+              Cả đợt <strong>{formatViInteger(records.length)}</strong> người
+            </span>{' '}
+            <span>
+              <strong>{formatViInteger(now)}</strong> làm được ngay
+            </span>{' '}
+            <span>
+              <strong>{formatViInteger(counts['dang-cho'])}</strong> đang chờ
+            </span>{' '}
+            <span>
+              <strong>{formatViInteger(counts['da-gui'])}</strong> Sở đã tiếp nhận
+            </span>
           </p>
         ) : null}
         <Inline gap={10} className={styles.Actions}>
-          <Button>Lấy kết quả xét nghiệm cả đợt</Button>
+          {/* The rare batch action: here from 40rem; on phones under the list, so the records come first. */}
+          <div className={styles.WideOnly}>{batchAction}</div>
           {ready && nextUp ? (
             <Button variant="primary" href={`#ho-so-${nextUp.recordCode}`}>
               Làm tiếp: {nextUp.name}
@@ -144,6 +173,7 @@ function RecordList({ records = allRecords, initialGroup = 'can-lam', initialQue
         status={loading ? 'loading' : failed ? 'error' : 'ready'}
         errorText="Không tải được danh sách: mất mạng. Kiểm tra wifi rồi bấm Tải lại; chữ tìm và nhóm đang chọn vẫn giữ."
         onRetry={() => setFailed(false)}
+        resultNote={elsewhereNote}
         emptyText={
           !query.trim()
             ? `Nhóm ${groupDef.label} đang trống.`
@@ -153,6 +183,7 @@ function RecordList({ records = allRecords, initialGroup = 'can-lam', initialQue
         }
         pagination={{ page: current, pageSize: PAGE_SIZE, total: rows.length, itemLabel: 'người', onPageChange: setPage }}
       />
+      <div className={styles.PhoneOnly}>{batchAction}</div>
     </StaffLayout>
   );
 }
@@ -165,13 +196,16 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** The table's one live region: it says the count, the empty result or the failure whenever it changes. */
+const liveRegion = (canvasElement: HTMLElement) => within(canvasElement.querySelector<HTMLElement>('[data-component="DataTable"]')!).getByRole('status');
+
 /**
  * The working list: people to fill in or fix (a refusal from the department is work to redo, so it is here too),
  * 50 a page, with a long name, a missing ID and a record open elsewhere.
  */
 export const CanLam: Story = {};
 
-/** All 2.033 people: 41 pages; "Sau ›" moves on and the range is announced. */
+/** All 2.033 people: 41 pages; "Sau ›" moves on and the table's live region says the new range once. */
 export const TatCa: Story = {
   args: { initialGroup: 'tat-ca' },
   play: async ({ canvasElement }) => {
@@ -180,31 +214,64 @@ export const TatCa: Story = {
     await expect(nav).toHaveTextContent('Hiển thị 1–50 trong 2.033 người');
     await userEvent.click(within(nav).getByRole('button', { name: 'Sau ›' }));
     await expect(nav).toHaveTextContent('Hiển thị 51–100 trong 2.033 người');
+    await waitFor(() => expect(liveRegion(canvasElement)).toHaveTextContent('Tất cả: hiển thị 51–100 trong 2.033 người.'));
+    // Only the table's region speaks: the range line under it is not a second live region.
+    await expect(nav.querySelector('[aria-live]')).toBeNull();
   },
 };
 
 /** Typed without tone marks, and every word counts: "ton nu thao" finds Tôn Nữ Hoàng Bảo Ngọc Phương Thảo. */
 export const TimKhongDau: Story = { args: { initialQuery: 'ton nu thao' } };
 
-/** No match anywhere in the batch: the table says why and how to get back. */
-export const KhongKhop: Story = { args: { initialQuery: 'Hằng Nga' } };
+/**
+ * Search finds a person in another group: "pham van nam" in Cần điền hoặc sửa shows Phạm Văn Năm and says one more
+ * matches elsewhere (Phạm Văn Nam, Đang chờ); the live region says so too. "Tìm trong Tất cả" shows both, and focus
+ * moves to the group control that now reads Tất cả (the pill from 40rem, the Select on phones), not to the page body.
+ */
+export const TimTrongTatCa: Story = {
+  args: { initialQuery: 'pham van nam' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getAllByRole('rowheader')).toHaveLength(1);
+    await userEvent.click(canvas.getByRole('button', { name: 'Tìm trong Tất cả' }));
+    await expect(canvas.getAllByRole('rowheader')).toHaveLength(2);
+    const focused = canvasElement.ownerDocument.activeElement as HTMLInputElement | HTMLSelectElement | null;
+    await expect(focused?.value).toBe('tat-ca');
+    await waitFor(() => expect(liveRegion(canvasElement)).toHaveTextContent('Tất cả, khớp “pham van nam”: hiển thị 1–2 trong 2 người.'));
+  },
+};
+
+/** No match anywhere in the batch: the table says why and how to get back, and the live region says it too. */
+export const KhongKhop: Story = {
+  args: { initialQuery: 'Hằng Nga' },
+  play: async ({ canvasElement }) => {
+    await waitFor(() => expect(liveRegion(canvasElement)).toHaveTextContent('Không có ai khớp “Hằng Nga” trong cả đợt.'));
+  },
+};
 
 /** Loading: the header stays, the counts and the next person wait for the list. */
 export const DangTai: Story = { args: { loading: true } };
 
-/** The list did not load: say what failed, keep the search and the group, "Tải lại". */
-export const MatMang: Story = {
+/** The list did not load: say what failed (with the "!" sign), keep the search and the group, "Tải lại". */
+export const MatMang: Story = { args: { failFirstLoad: true, initialQuery: 'ton nu' } };
+
+/** After "Tải lại" the list loads; the button is gone, so focus moves to the first record's link, not the page body. */
+export const MatMangTaiLai: Story = {
   args: { failFirstLoad: true, initialQuery: 'ton nu' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole('alert')).toHaveTextContent('mất mạng');
+    await waitFor(() => expect(liveRegion(canvasElement)).toHaveTextContent('mất mạng'));
     await userEvent.click(canvas.getByRole('button', { name: 'Tải lại' }));
-    await expect(canvas.getByRole('rowheader', { name: /Tôn Nữ Hoàng Bảo Ngọc Phương Thảo/ })).toBeInTheDocument();
+    await expect(canvas.getByRole('link', { name: 'Tôn Nữ Hoàng Bảo Ngọc Phương Thảo' })).toHaveFocus();
+    await waitFor(() => expect(liveRegion(canvasElement)).toHaveTextContent('hiển thị 1–1 trong 1 người.'));
     await expect(canvas.getByRole('searchbox', { name: /Tìm người/ })).toHaveValue('ton nu');
   },
 };
 
-/** Phone: search under the title, the group as a Select, each record a block; the first screen shows records. */
+/**
+ * Phone: search under the title, the group as a Select, each record a block (the status tag in the value column);
+ * the first screen shows records, and the rare batch action sits under the list.
+ */
 export const DienThoai: Story = { parameters: { viewport: { defaultViewport: 'mobile1' } } };
 
 /**

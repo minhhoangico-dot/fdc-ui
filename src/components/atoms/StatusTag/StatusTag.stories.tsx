@@ -6,27 +6,33 @@ const meta = {
   component: StatusTag,
   parameters: { density: 'compact' },
   args: { children: 'Chờ gửi', tone: 'info' },
+  // 'strong' is deprecated (shown as neutral), so it is not offered here.
+  argTypes: { tone: { control: 'select', options: ['neutral', 'muted', 'info', 'success', 'error', 'attention'] } },
 } satisfies Meta<typeof StatusTag>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Info: Story = {};
 
-/** Tinted fills, no dark edges: a tag is a label, never a button. The dot marks a state even in grayscale. */
+const row = { display: 'flex', flexWrap: 'wrap', gap: 'var(--space-10)', alignItems: 'center' } as const;
+
+/**
+ * Six tones, all tinted fills with no edge: a tag is a label, never a button, and no tag is solid. The dot marks a
+ * state even in grayscale; muted (a source such as "Nhập tay") has none. The words are the record states.
+ */
 export const AllTones: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-15)' }}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-10)', alignItems: 'center' }}>
+      <div style={row}>
         <StatusTag>Cần điền</StatusTag>
         <StatusTag tone="muted">Nhập tay</StatusTag>
-        <StatusTag tone="info">Chờ gửi · còn 27 giây</StatusTag>
-        <StatusTag tone="success">Đã gửi</StatusTag>
-        <StatusTag tone="error">Cần sửa</StatusTag>
-        <StatusTag tone="attention">Cao</StatusTag>
-        <StatusTag tone="strong">Đang làm</StatusTag>
+        <StatusTag tone="info">Đang gửi</StatusTag>
+        <StatusTag tone="success">Sở đã tiếp nhận</StatusTag>
+        <StatusTag tone="error">Bị từ chối</StatusTag>
+        <StatusTag tone="attention">Chưa rõ kết quả</StatusTag>
       </div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-10)', alignItems: 'center' }}>
-        <StatusTag size="sm">Cần điền</StatusTag>
+      <div style={row}>
+        <StatusTag size="sm">Sẵn sàng xem lại</StatusTag>
         <StatusTag tone="muted" size="sm">
           Nhập tay
         </StatusTag>
@@ -34,16 +40,13 @@ export const AllTones: Story = {
           Chờ gửi
         </StatusTag>
         <StatusTag tone="success" size="sm">
-          Đã gửi
+          Bộ đã xác nhận
         </StatusTag>
         <StatusTag tone="error" size="sm">
           Cần sửa
         </StatusTag>
         <StatusTag tone="attention" size="sm">
-          Thấp
-        </StatusTag>
-        <StatusTag tone="strong" size="sm">
-          Đang làm
+          Cao
         </StatusTag>
       </div>
     </div>
@@ -79,5 +82,19 @@ export const AbnormalValue: Story = {
         <strong>162 cm</strong>
       </dd>
     </dl>
+  ),
+};
+
+/**
+ * A long tag in a narrow column wraps inside its pill; the dot stays on the first line, beside the first word,
+ * rather than floating between the lines.
+ */
+export const LongTagWraps: Story = {
+  render: () => (
+    <div style={{ inlineSize: '8.5rem' }}>
+      <StatusTag tone="attention" size="sm">
+        Chưa rõ kết quả sau 10 phút
+      </StatusTag>
+    </div>
   ),
 };

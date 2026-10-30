@@ -9,6 +9,43 @@
   line-height: 1.4;
   color: var(--text-default);
 }
+/* The sign (when there is one) and the words: the sign stays with the first line when the words wrap. */
+.Message {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-10);
+  min-inline-size: 0;
+}
+.Text {
+  min-inline-size: 0;
+}
+
+/* The polite region: the state's words, then the last save time as a chunk of its own that never breaks.
+   Between the two, a dot drawn in the gap in front of the time. When the time wraps to the next line its dot
+   falls outside the region's left edge and is clipped, so no line starts or ends with a dot. */
+.Live {
+  display: inline-flex;
+  flex-wrap: wrap;
+  column-gap: var(--space-15);
+  max-inline-size: 100%;
+  overflow: hidden;
+  overflow: clip visible;
+}
+.Aside {
+  position: relative;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.Aside::before {
+  content: '·';
+  content: '·' / '';
+  position: absolute;
+  inset-inline-end: 100%;
+  inline-size: var(--space-15);
+  text-align: center;
+  font-weight: 700;
+}
+
 /* Work started but not finished is info blue in both themes; green only once the server confirmed. */
 .Unsaved {
   color: var(--status-info-text);
@@ -20,20 +57,41 @@
   color: var(--status-warning-text);
   font-weight: 600;
 }
-.Muted {
-  color: var(--text-muted);
-}
 .Saved {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-5);
   color: var(--status-success-text);
   font-weight: 600;
 }
-.Mark {
+.Tick {
+  flex: none;
+  color: var(--status-success-text);
   font-weight: 700;
 }
 .Error {
   color: var(--status-error-text);
   font-weight: 600;
+}
+
+/* The type as a sign, not only a color, as in FormNotice: a circle with "!" for the conflict (amber) and the failed
+   save (red). Hidden from screen readers, which read the words. Centred on the first line: the mark's font is 0.75em,
+   so the line (1.4) is 1.4em / 0.75 here. */
+.Mark {
+  box-sizing: border-box;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.65em;
+  block-size: 1.65em;
+  margin-block-start: calc((1.4em / 0.75 - 1.65em) / 2);
+  /* Transparent edge: invisible here, drawn in forced-colors mode where the fill is dropped. */
+  border: 1px solid transparent;
+  border-radius: var(--radius-round);
+  background: var(--status-error-text);
+  color: var(--text-on-action);
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1;
+}
+.SaveStatus:where([data-state='conflict']) .Mark {
+  background: var(--status-warning-border);
 }

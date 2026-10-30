@@ -1,21 +1,22 @@
-<!-- @dsCard group="Atoms" height=170 subtitle="seven tinted tones with a dot; attention for out-of-range values" -->
+<!-- @dsCard group="Atoms" height=190 subtitle="six tinted tones, no edges, a dot for a state; the record-state words; attention for out-of-range values" -->
 <div id="root" style="display:flex;flex-direction:column;gap:14px;padding:16px" data-density="compact"></div>
 <script>
 var h = React.createElement, F = window.FDC;
+var row = {display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'};
+var line = {display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', fontFamily: 'var(--font-body)', fontSize: '1rem', color: 'var(--text-default)'};
 ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
-  h('div', {style: {display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}},
+  h('div', {style: row},
     h(F.StatusTag, null, 'Cần điền'),
     h(F.StatusTag, {tone: 'muted'}, 'Nhập tay'),
-    h(F.StatusTag, {tone: 'info'}, 'Chờ gửi · còn 27 giây'),
-    h(F.StatusTag, {tone: 'success'}, 'Đã gửi'),
-    h(F.StatusTag, {tone: 'error'}, 'Cần sửa'),
-    h(F.StatusTag, {tone: 'attention'}, 'Cao'),
-    h(F.StatusTag, {tone: 'strong'}, 'Đang làm')),
-  h('div', {style: {display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', fontFamily: 'var(--font-body)', fontSize: '1rem', color: 'var(--text-default)'}},
+    h(F.StatusTag, {tone: 'info'}, 'Đang gửi'),
+    h(F.StatusTag, {tone: 'success'}, 'Sở đã tiếp nhận'),
+    h(F.StatusTag, {tone: 'error'}, 'Bị từ chối'),
+    h(F.StatusTag, {tone: 'attention'}, 'Chưa rõ kết quả')),
+  h('div', {style: line},
     h('span', null, 'Huyết áp'), h('strong', null, '150/95 mmHg'),
     h(F.StatusTag, {tone: 'attention', size: 'sm'}, 'Cao'),
     h(F.StatusTag, {tone: 'muted', size: 'sm'}, 'Nhập tay')),
-  h('div', {style: {display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', fontFamily: 'var(--font-body)', fontSize: '1rem', color: 'var(--text-default)'}},
+  h('div', {style: line},
     h('span', null, 'Glucose'), h('strong', null, '3,2 mmol/L'),
     h(F.StatusTag, {tone: 'attention', size: 'sm'}, 'Thấp'))));
 </script>

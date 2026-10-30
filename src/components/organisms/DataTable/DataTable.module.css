@@ -1,4 +1,5 @@
-/* One surface with a 1px edge: staff screens separate blocks with edges and space, not shadows. */
+/* One surface with a 1px edge: staff screens separate blocks with edges and space, not shadows.
+   variant="plain" (inside a card): no edge, no header band; the rows and their dividers only. */
 .DataTable {
   box-sizing: border-box;
   border: 1px solid var(--border);
@@ -42,7 +43,8 @@
 }
 .Head {
   padding: var(--space-10) var(--space-15);
-  border-block-end: 1px solid var(--border-control);
+  /* The pale edge, like every other divider: the strong border-control is for inputs and the chosen option. */
+  border-block-end: 1px solid var(--border);
   background: var(--surface-alt);
   font-weight: 600;
   text-align: start;
@@ -80,9 +82,17 @@ th.Cell > a:first-child:focus-visible {
 .Cell:where([data-nowrap]) {
   white-space: nowrap;
 }
+/* Loading, empty, failed: under the header, outside the sideways scroll, as wide as the box. */
 .Message {
   padding: var(--space-20) var(--space-15);
   color: var(--text-muted);
+}
+.Message:focus {
+  outline: none;
+}
+.Message:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: calc(-1 * var(--focus-ring-width));
 }
 .Message:where([data-tone='error']) {
   color: var(--status-error-text);
@@ -94,9 +104,68 @@ th.Cell > a:first-child:focus-visible {
   align-items: center;
   gap: var(--space-10) var(--space-20);
 }
+.ErrorText {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-10);
+  min-inline-size: 0;
+}
+/* "!" in a circle, as FormNotice draws it: the type is a sign as well as a color. The sign's font is 0.75em, so the
+   line-height of 1.4 is 1.867em here and the 1.65em circle is centred on the first line. */
+.Sign {
+  box-sizing: border-box;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.65em;
+  block-size: 1.65em;
+  margin-block-start: calc((1.867em - 1.65em) / 2);
+  /* Transparent edge: drawn in forced-colors mode, where the fill is dropped. */
+  border: 1px solid transparent;
+  border-radius: var(--radius-round);
+  background: var(--status-error-text);
+  color: var(--text-on-action);
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1;
+}
+/* The one live region: always on the page, read by screen readers, never seen. */
+.Live {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 .Footer {
   padding: var(--space-5) var(--space-15);
   border-block-start: 1px solid var(--border);
+}
+
+/* Plain: no box inside a box. The text lines up with the card's own text, so the first and last columns lose their
+   outer padding. */
+.DataTable:where([data-variant='plain']) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.DataTable:where([data-variant='plain']) .Scroller {
+  border-radius: 0;
+}
+.DataTable:where([data-variant='plain']) .Head {
+  background: none;
+}
+.DataTable:where([data-variant='plain']) :is(.Head, .Cell):first-child,
+.DataTable:where([data-variant='plain']) .Message,
+.DataTable:where([data-variant='plain']) .Footer {
+  padding-inline-start: 0;
+}
+.DataTable:where([data-variant='plain']) :is(.Head, .Cell):last-child,
+.DataTable:where([data-variant='plain']) .Message,
+.DataTable:where([data-variant='plain']) .Footer {
+  padding-inline-end: 0;
 }
 /* Labels exist only on a stacking table and show only on phones. */
 .StackLabel {
@@ -114,8 +183,7 @@ th.Cell > a:first-child:focus-visible {
   }
   .Table:where([data-stack='phone']) > caption,
   .Table:where([data-stack='phone']) > tbody,
-  .Table:where([data-stack='phone']) > tbody > tr,
-  .Table:where([data-stack='phone']) .Message {
+  .Table:where([data-stack='phone']) > tbody > tr {
     display: block;
   }
   .Table:where([data-stack='phone']) > .Caption {
@@ -134,6 +202,9 @@ th.Cell > a:first-child:focus-visible {
     flex-direction: column;
     padding: var(--space-10) var(--space-15);
   }
+  .DataTable:where([data-variant='plain']) .Table:where([data-stack='phone']) .Row {
+    padding-inline: 0;
+  }
   .Table:where([data-stack='phone']) .Row + .Row {
     border-block-start: 1px solid var(--border);
   }
@@ -144,11 +215,16 @@ th.Cell > a:first-child:focus-visible {
     text-align: start;
     white-space: normal;
   }
+  /* Codes and statuses never break, stacked or not. */
+  .Table:where([data-stack='phone']) .Cell:where([data-nowrap]) .StackValue {
+    white-space: nowrap;
+  }
   .Table:where([data-stack='phone']) th.Cell {
     order: -1;
     margin-block-end: var(--space-5);
   }
-  /* Label and value share a line while both fit; a value that cannot shrink (a status tag) moves under its label. */
+  /* Label and value share a line while both fit; a value that cannot shrink moves under its label. A line without a
+     label keeps the empty label column, so its value (a status tag) lines up with the other values. */
   .Table:where([data-stack='phone']) .Cell:where([data-labelled]) {
     display: flex;
     flex-wrap: wrap;

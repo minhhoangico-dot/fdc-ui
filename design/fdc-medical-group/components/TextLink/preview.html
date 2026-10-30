@@ -1,8 +1,13 @@
-<!-- @dsCard group="Atoms" height=72 subtitle="default and custom label" -->
-<div id="root" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;padding:16px;font-family:var(--font-sans)"></div>
+<!-- @dsCard group="Atoms" height=130 subtitle="default and custom label; back, next and plain links for staff forms" -->
+<div id="root" style="display:flex;flex-direction:column;gap:8px;padding:16px;font-family:var(--font-sans)"></div>
 <script>
 var h = React.createElement, F = window.FDC;
 ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
-  h(F.TextLink, {href: '#'}),
-  h(F.TextLink, {href: '#'}, 'Xem bảng giá dịch vụ')));
+  h('div', {style: {display: 'flex', gap: '24px', alignItems: 'center', flexWrap: 'wrap'}},
+    h(F.TextLink, {href: '#'}),
+    h(F.TextLink, {href: '#'}, 'Xem bảng giá dịch vụ')),
+  h('div', {'data-density': 'compact', style: {display: 'flex', gap: '24px', alignItems: 'center', flexWrap: 'wrap'}},
+    h(F.TextLink, {href: '#', arrow: 'back'}, '3. Tiền sử'),
+    h(F.TextLink, {href: '#', arrow: 'next'}, '5. Lâm sàng'),
+    h(F.TextLink, {href: '#', arrow: false}, 'Đăng xuất'))));
 </script>

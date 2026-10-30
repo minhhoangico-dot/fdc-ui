@@ -1,13 +1,16 @@
-/* Text label, not a control: no target size. Tags are tinted fills with no dark edge, so a tag never reads as a button.
-   Every tone keeps a 1px edge (the fill's own color, or the light 'border' on muted) so all tags are the same height. */
+/* Text label, not a control: no target size. Tags are tinted fills with no edge, so a tag never reads as a button
+   (an outlined pill is what an unselected filter looks like). Every tone keeps a 1px edge in its own fill color, so
+   all tags are the same height and forced-colors mode can draw it. */
 .StatusTag {
   box-sizing: border-box;
   --tag-bg: var(--surface-alt);
   --tag-fg: var(--text-default);
   --tag-edge: var(--tag-bg);
+  --tag-line: 1.5;
 
   display: inline-flex;
-  align-items: center;
+  /* Top, not centre: when a long tag wraps, the dot stays on the first line (see .Dot). */
+  align-items: flex-start;
   gap: var(--space-5);
   max-inline-size: 100%;
   padding: 0 var(--space-10);
@@ -18,7 +21,7 @@
   font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 500;
-  line-height: 1.5;
+  line-height: var(--tag-line);
   /* Short tags stay on one line; a long one wraps inside its container instead of running past it. */
   overflow-wrap: anywhere;
   vertical-align: middle;
@@ -26,13 +29,12 @@
 .StatusTag:where([data-size='sm']) {
   padding: 0 var(--space-5);
   font-size: 0.875rem;
-  line-height: 1.4;
+  --tag-line: 1.4;
 }
-/* A source, not a state ("Nhập tay"): white with a light edge, muted words, no dot. */
+/* A source, not a state ("Nhập tay"): the same pale grey tint as neutral, with no edge, muted words and no dot, so it
+   is the quietest tag and never looks like a filter pill. */
 .StatusTag:where([data-tone='muted']) {
-  --tag-bg: var(--surface);
   --tag-fg: var(--text-muted);
-  --tag-edge: var(--border);
 }
 .StatusTag:where([data-tone='info']) {
   --tag-bg: var(--status-info-bg);
@@ -49,21 +51,19 @@
   --tag-fg: var(--status-error-text);
   --tag-edge: var(--status-error-bg);
 }
-/* Outside the normal range ("Cao", "Thấp"): worth a look, not an input error, so amber rather than red. */
+/* Worth a look, not an input error, so amber rather than red: a value outside the normal range ("Cao", "Thấp")
+   or an outcome not known yet ("Chưa rõ kết quả"). */
 .StatusTag:where([data-tone='attention']) {
   --tag-bg: var(--status-warning-bg);
   --tag-fg: var(--status-warning-text);
   --tag-edge: var(--status-warning-bg);
 }
-.StatusTag:where([data-tone='strong']) {
-  --tag-bg: var(--surface-brand);
-  --tag-fg: var(--text-on-action);
-  --tag-edge: var(--surface-brand);
-}
 
-/* Leading dot in the text color: tags differ from buttons even in grayscale. */
+/* Leading dot in the text color: tags differ from buttons even in grayscale. Centred on the first line:
+   (line height - dot) / 2 from the top, so a one-line tag looks the same as when it was centred. */
 .Dot {
   flex: none;
+  margin-block-start: calc((var(--tag-line) * 1em - 0.5em) / 2);
   inline-size: 0.5em;
   block-size: 0.5em;
   border-radius: var(--radius-round);

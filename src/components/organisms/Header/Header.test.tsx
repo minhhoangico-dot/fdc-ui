@@ -66,7 +66,19 @@ describe('Header compact', () => {
   });
 
   it('collapseOnScroll: sticks, and marks itself collapsed after scrolling down', () => {
-    render(<Header {...props} collapseOnScroll compactBar={<span>Đặng Thanh Chi · 07/07/1990 · TESTA-0006</span>} />);
+    render(
+      <Header
+        {...props}
+        collapseOnScroll
+        compactBar={
+          <>
+            <strong>Đặng Thanh Chi</strong>
+            <span>Sinh 07/07/1990</span>
+            <span>RD26-0006</span>
+          </>
+        }
+      />,
+    );
     const header = screen.getByRole('banner');
     expect(header).toHaveAttribute('data-sticky', 'true');
     expect(header).not.toHaveAttribute('data-collapsed');
@@ -75,7 +87,9 @@ describe('Header compact', () => {
       window.dispatchEvent(new Event('scroll'));
     });
     expect(header).toHaveAttribute('data-collapsed', 'true');
-    expect(screen.getByText('Đặng Thanh Chi · 07/07/1990 · TESTA-0006')).toBeInTheDocument();
+    expect(screen.getByText('RD26-0006')).toBeInTheDocument();
+    // The menu button keeps its name in the thin bar, even when only its icon shows.
+    expect(screen.getByRole('button', { name: 'Menu' })).toBeInTheDocument();
     act(() => {
       Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
       window.dispatchEvent(new Event('scroll'));

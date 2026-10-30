@@ -1,4 +1,4 @@
-<!-- @dsCard group="Molecules" height=1000 subtitle="strong (patient), subtle (staff), pending, a failed step; the current step is an outline" -->
+<!-- @dsCard group="Molecules" height=1360 subtitle="strong (patient); pale staff panels: Chờ gửi, Sở đã tiếp nhận, Bị từ chối, Chưa rõ kết quả; the step waited for has a clock" -->
 <div id="root" style="padding:16px;max-width:640px;display:flex;flex-direction:column;gap:28px"></div>
 <script>
 var h = React.createElement, F = window.FDC;
@@ -7,10 +7,20 @@ ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, nu
     h('h2', null, 'Tiếp theo'),
     h('p', null, 'Chúng tôi sẽ gọi số 0912 345 678 trong vòng 30 phút để xác nhận lịch.')),
   h('div', {'data-density': 'compact', style: {display: 'flex', flexDirection: 'column', gap: '28px'}},
-    h(F.ConfirmationPanel, {emphasis: 'subtle', title: 'Đã gửi lên Sở', reference: 'SYT-HN-2026-118204', referenceLabel: 'Mã Sở trả về', headingLevel: 2, focusOnMount: false, steps: [{label: 'Đã xem lại', state: 'done'}, {label: 'Chờ gửi', state: 'done'}, {label: 'Đã gửi lên Sở', state: 'done'}, {label: 'Bộ đã nhận', state: 'current'}]},
-      h('p', null, 'Bộ Y tế chưa xác nhận. Khi Bộ nhận, trạng thái đổi thành “Bộ đã nhận”; không cần làm gì thêm.')),
-    h(F.ConfirmationPanel, {tone: 'pending', title: 'Chờ gửi · còn 27 giây', headingLevel: 2, focusOnMount: false, steps: [{label: 'Chờ gửi', state: 'current'}, {label: 'Đang gửi', state: 'todo'}, {label: 'Đã gửi lên Sở', state: 'todo'}, {label: 'Bộ đã nhận', state: 'todo'}]},
-      h('p', null, 'Hồ sơ chưa được gửi. Chị có thể hủy.')),
-    h(F.ConfirmationPanel, {tone: 'pending', title: 'Chưa gửi được lên Sở', headingLevel: 2, focusOnMount: false, steps: [{label: 'Chờ gửi', state: 'done'}, {label: 'Đang gửi', state: 'failed'}, {label: 'Đã gửi lên Sở', state: 'todo'}, {label: 'Bộ đã nhận', state: 'todo'}]},
-      h('p', null, 'Sở không trả lời sau 30 giây. Bấm Gửi lại, hoặc Nhờ Minh kiểm tra.')))));
+    h(F.ConfirmationPanel, {tone: 'pending', title: 'Chờ gửi · còn 27 giây', headingLevel: 2, focusOnMount: false, steps: [{label: 'Đã xem lại', state: 'done'}, {label: 'Chờ gửi', state: 'current'}, {label: 'Sở tiếp nhận', state: 'todo'}, {label: 'Bộ xác nhận', state: 'todo'}]},
+      h('p', null, 'Chưa có gì lên Sở. Chị có thể hủy.')),
+    h(F.ConfirmationPanel, {emphasis: 'subtle', title: 'Sở đã tiếp nhận', reference: 'SYT-HN-2026-118204', referenceLabel: 'Mã tiếp nhận của Sở', headingLevel: 2, focusOnMount: false, steps: [{label: 'Đã xem lại', state: 'done'}, {label: 'Đã gửi lên Sở', state: 'done'}, {label: 'Sở đã tiếp nhận', state: 'done'}, {label: 'Chờ Bộ xác nhận', state: 'current'}]},
+      h('p', null, 'Bộ Y tế chưa xác nhận. Khi Bộ xác nhận, trạng thái đổi thành “Bộ đã xác nhận”; chị không cần làm gì thêm.')),
+    h(F.ConfirmationPanel, {tone: 'error', title: 'Bị từ chối', headingLevel: 2, focusOnMount: false, steps: [{label: 'Đã gửi lên Sở', state: 'done'}, {label: 'Sở từ chối', state: 'failed'}, {label: 'Chờ chị sửa', state: 'current'}, {label: 'Xem lại', state: 'todo'}, {label: 'Gửi lại', state: 'todo'}]},
+      h('p', null, 'Sở trả lại hồ sơ lúc 09:32. Lý do của Sở: “Thiếu kết luận phân loại sức khỏe”. Chưa có gì được ghi nhận.'),
+      h('p', null, 'Sau khi sửa và lưu, hồ sơ chuyển sang nhóm Sẵn sàng xem lại: chị xem lại rồi gửi lại.'),
+      h(F.Inline, {gap: 10},
+        h(F.Button, {variant: 'primary', href: '#'}, 'Mở phần 7. Kết luận để sửa'),
+        h(F.Button, null, 'Nhờ Minh kiểm tra'))),
+    h(F.ConfirmationPanel, {tone: 'attention', title: 'Chưa rõ kết quả', headingLevel: 2, focusOnMount: false, steps: [{label: 'Đã xem lại', state: 'done'}, {label: 'Đã gửi lên Sở', state: 'done'}, {label: 'Chờ Sở trả lời', state: 'current'}, {label: 'Bộ xác nhận', state: 'todo'}]},
+      h('p', null, 'Đã gửi lúc 09:31 nhưng Sở chưa trả lời sau 10 phút. Sở có thể đã nhận hồ sơ, nên chưa gửi lại để tránh gửi trùng.'),
+      h('p', null, 'Hồ sơ vẫn ở nhóm Đang gửi cho đến khi Sở trả lời.'),
+      h(F.Inline, {gap: 10},
+        h(F.Button, {variant: 'primary'}, 'Kiểm tra lại trạng thái'),
+        h(F.Button, null, 'Nhờ Minh kiểm tra'))))));
 </script>

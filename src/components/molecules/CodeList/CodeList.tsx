@@ -2,6 +2,7 @@ import { useId, useMemo, useRef, useState } from 'react';
 import { cx } from '../../../utils/cx';
 import { VisuallyHidden } from '../../atoms/VisuallyHidden';
 import { Combobox, optionText, type ComboboxOption } from '../Combobox';
+import { matchOptions, notFoundText } from '../Combobox/Combobox';
 import styles from './CodeList.module.css';
 
 export type CodeListProps = {
@@ -77,6 +78,15 @@ export function CodeList({
     setMessage(`Đã thêm ${optionText(o)}`);
   };
 
+  // Typing something already chosen ("i10" with I10 in the list) finds nothing to add: say it is there,
+  // so nobody is told the code does not exist.
+  const noResultsText = (q: string) => {
+    if (!q.trim() && items.length) return 'Mọi mục đã có trong danh sách.';
+    const there = matchOptions(items, q, 3).map(optionText);
+    if (!there.length) return notFoundText(q);
+    return there.length === 1 ? `${there[0]} đã có trong danh sách.` : `Đã có trong danh sách: ${there.join('; ')}.`;
+  };
+
   const remove = (o: ComboboxOption) => {
     update(chosen.filter((v) => v !== o.value));
     setMessage(`Đã bỏ ${optionText(o)}`);
@@ -127,7 +137,18 @@ export function CodeList({
         </p>
       )}
       {/* Always empty (value null): each choice moves into the list above. */}
-      <Combobox className={styles.Add} label={addLabel} options={remaining} value={null} onValueChange={(_, o) => add(o)} id={id} />
+      <Combobox
+        className={styles.Add}
+        label={addLabel}
+        options={remaining}
+        value={null}
+        onValueChange={(_, o) => add(o)}
+        noResultsText={noResultsText}
+        id={id}
+        // The group's error is the add field's error too: a link from an ErrorSummary lands here and reads it.
+        aria-describedby={errorId}
+        aria-invalid={error ? true : undefined}
+      />
       <VisuallyHidden role="status">{message}</VisuallyHidden>
     </fieldset>
   );

@@ -1,10 +1,14 @@
-<!-- @dsCard group="Molecules" height=190 subtitle="a measurement with its unit; neutral when empty, no hint once filled, only the example next to an error" -->
-<div id="root" style="padding:16px;max-width:900px" data-density="compact"></div>
+<!-- @dsCard group="Molecules" height=260 subtitle="a measurement with its unit; one message line above the box (hint, Cao/Thấp tag, error) that never moves the box" -->
+<div id="root" style="padding:16px;max-width:720px;display:flex;flex-direction:column;gap:20px" data-density="compact"></div>
 <script>
 var h = React.createElement, F = window.FDC;
-ReactDOM.createRoot(document.getElementById('root')).render(h(F.FieldRow, {minColumn: '12rem'},
-  h(F.NumberField, {label: 'Cân nặng', unit: 'kg', decimals: 1, example: '52,5', min: 2, max: 300, defaultValue: '52,5'}),
-  h(F.NumberField, {label: 'Nhịp thở', unit: 'lần/phút', example: '18', min: 5, max: 60}),
-  h(F.NumberField, {label: 'Huyết áp tâm thu', unit: 'mmHg', example: '120', min: 50, max: 300, normalRange: [90, 139], defaultValue: '145'}),
-  h(F.NumberField, {label: 'Mạch', unit: 'lần/phút', example: '78', min: 30, max: 250, required: true, error: 'Điền mạch'})));
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+  h(F.FieldRow, {minColumn: '9rem'},
+    h(F.NumberField, {label: 'Cân nặng', unit: 'kg', decimals: 1, example: '52,5', min: 2, max: 300, defaultValue: '65'}),
+    h(F.NumberField, {label: 'Nhịp thở', unit: 'lần/phút', example: '18', min: 5, max: 60}),
+    h(F.NumberField, {label: 'Chiều cao', unit: 'cm', example: '158', min: 50, max: 250, required: true, error: 'Điền chiều cao'})),
+  h(F.FieldRow, {minColumn: '9rem'},
+    h(F.NumberField, {label: 'Mạch', unit: 'lần/phút', example: '78', min: 30, max: 250, normalRange: [60, 100], defaultValue: '112'}),
+    h(F.NumberField, {label: 'Tâm thu', unit: 'mmHg', example: '120', min: 50, max: 300, normalRange: [90, 139], defaultValue: '145'}),
+    h(F.NumberField, {label: 'Tâm trương', unit: 'mmHg', example: '80', min: 30, max: 200, normalRange: [60, 89], defaultValue: '45'}))));
 </script>

@@ -28,6 +28,8 @@
   outline: none;
 }
 .Reference {
+  /* The code is measured against this line, so it can shrink in a narrow column instead of wrapping. */
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
@@ -39,7 +41,16 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   font-variant-numeric: tabular-nums;
+  /* A code is read out and copied: it never breaks across lines, not even at its hyphens. */
+  white-space: nowrap;
   user-select: all;
+}
+/* Narrow column (a phone, or 400% zoom): a little smaller and without the spacing, still on one line. */
+@container (max-width: 17rem) {
+  .Code {
+    font-size: 1.375rem;
+    letter-spacing: 0;
+  }
 }
 .Next {
   display: flex;
@@ -57,65 +68,104 @@
   margin: 0;
 }
 
-/* Pending: pressed but not finished. Pale status-info panel, ordinary text, left-aligned like the page. */
+/* Pale panels: every tone except the strong success. A tint, a sign in a circle before the title and ordinary
+   text, left-aligned like the page. No edge and no side bar: the tint and the sign carry the type (the same
+   rule as a boxed FormNotice). The status colors are the same in both themes. */
+.ConfirmationPanel:where([data-pale]) {
+  gap: var(--space-15);
+  --panel-bg: var(--status-success-bg);
+  --panel-title: var(--status-success-text);
+  --panel-mark: var(--status-success-text);
+}
+/* Pending: pressed but not finished. Never green. */
 .ConfirmationPanel:where([data-tone='pending']) {
-  gap: var(--space-15);
+  --panel-bg: var(--status-info-bg);
+  --panel-title: var(--status-info-text);
+  --panel-mark: var(--status-info-border);
 }
-.ConfirmationPanel:where([data-tone='pending']) .Panel {
+/* Error: refused with a reason ("Bị từ chối"). */
+.ConfirmationPanel:where([data-tone='error']) {
+  --panel-bg: var(--status-error-bg);
+  --panel-title: var(--status-error-text);
+  --panel-mark: var(--status-error-text);
+}
+/* Attention: the outcome is not known ("Chưa rõ kết quả"). Amber, never the nursing-home orange. */
+.ConfirmationPanel:where([data-tone='attention']) {
+  --panel-bg: var(--status-warning-bg);
+  --panel-title: var(--status-warning-text);
+  --panel-mark: var(--status-warning-border);
+}
+.ConfirmationPanel:where([data-pale]) .Panel {
   padding: var(--space-20);
-  border: 1px solid var(--status-info-border);
-  background: var(--status-info-bg);
+  /* Transparent edge: invisible here, drawn in forced-colors mode where the tint is dropped. */
+  border: 1px solid transparent;
+  background: var(--panel-bg);
   color: var(--text-default);
   text-align: start;
 }
-.ConfirmationPanel:where([data-tone='pending']) .Title {
+.Head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-10);
   font-size: 1.375rem;
-  color: var(--status-info-text);
 }
-.ConfirmationPanel:where([data-tone='pending']) .Next {
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-/* Subtle: a success on a staff screen, one block among many. Pale status-success-bg, a 1px green edge,
-   the title in green, ordinary text, left-aligned; the code in a white box so it can be read out and copied. */
-.ConfirmationPanel:where([data-emphasis='subtle']) {
-  gap: var(--space-15);
-}
-.ConfirmationPanel:where([data-emphasis='subtle']) .Panel {
-  padding: var(--space-20);
-  border: 1px solid var(--status-success-text);
-  background: var(--status-success-bg);
-  color: var(--text-default);
-  text-align: start;
-}
-.ConfirmationPanel:where([data-emphasis='subtle']) .Title {
+.ConfirmationPanel:where([data-pale]) .Title {
+  min-inline-size: 0;
   font-size: 1.375rem;
-  color: var(--status-success-text);
+  color: var(--panel-title);
 }
-.ConfirmationPanel:where([data-emphasis='subtle']) .Reference {
+/* The sign, centred on the title's first line: the mark's font is 0.7em of the title, so the title's line
+   (1.3em) is 1.3em / 0.7 here and the circle (1.6em) sits in its middle. */
+.Mark {
+  box-sizing: border-box;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.6em;
+  block-size: 1.6em;
+  margin-block-start: calc((1.3em / 0.7 - 1.6em) / 2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-round);
+  background: var(--panel-mark);
+  color: var(--text-on-action);
+  font-family: var(--font-body);
+  font-size: 0.7em;
+  font-weight: 700;
+  line-height: 1;
+}
+.ConfirmationPanel:where([data-pale]) .Reference {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--space-5) var(--space-10);
   font-size: 1rem;
 }
-.ConfirmationPanel:where([data-emphasis='subtle']) .Code {
+/* The code in a white box with a light edge, so it can be read out and copied; not a dark edge, which is for inputs. */
+.ConfirmationPanel:where([data-pale]) .Code {
   padding: 0 var(--space-10);
-  border: 1px solid var(--status-success-text);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--surface);
   color: var(--text-default);
   font-size: 1.25rem;
 }
-.ConfirmationPanel:where([data-emphasis='subtle']) .Next {
+@container (max-width: 22rem) {
+  .ConfirmationPanel:where([data-pale]) .Code {
+    padding: 0 var(--space-5);
+    font-size: 1.0625rem;
+    letter-spacing: 0;
+  }
+}
+.ConfirmationPanel:where([data-pale]) .Next {
   font-size: 1rem;
   line-height: 1.5;
 }
 
-/* Step line: Chờ gửi → Đang gửi → Đã gửi lên Sở → Bộ đã nhận. A done step carries "✓" at normal weight.
-   The current step is what we are still waiting for: an outlined pill with a dashed edge and no fill, so it never
-   looks more finished than the done steps. Steps still to come are muted where the panel is pale. */
+/* Step line, e.g. Đã xem lại → Đã gửi lên Sở → Sở đã tiếp nhận → Chờ Bộ xác nhận. Each step has a sign as well as
+   words: done "✓", the step being waited for a small clock in the info color (never a dashed edge, which means an
+   unavailable button), failed "!" in a red circle. Each step also starts with its state in words for screen readers.
+   Steps still to come are muted where the panel is pale. */
 .Steps {
   display: flex;
   flex-wrap: wrap;
@@ -128,7 +178,7 @@
   font-size: 1rem;
   line-height: 1.5;
 }
-.ConfirmationPanel:where([data-tone='pending'], [data-emphasis='subtle']) .Steps {
+.ConfirmationPanel:where([data-pale]) .Steps {
   justify-content: flex-start;
 }
 .Step {
@@ -140,33 +190,64 @@
   /* The arrow ends a step, so a wrapped line never starts with a lone "→". */
   content: '→' / '';
 }
+/* Top-aligned, so if a long label wraps, its sign stays on the first line. */
+.StepLabel {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.3em;
+}
+/* One line tall (the step line's line-height is 1.5), with the sign centred in it. */
+.StepMark {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  block-size: 1.5em;
+}
+.Clock {
+  inline-size: 1em;
+  block-size: 1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .Step:where([data-state='done']) .StepLabel {
   font-weight: 400;
 }
-/* On the green strong panel this is a white dashed outline with white text (currentColor). */
+/* The step being waited for: the clock and slightly heavier words. On the green strong panel it stays white. */
 .Step:where([data-state='current']) .StepLabel {
-  box-sizing: border-box;
-  padding: 0 var(--space-10);
-  border: 1px dashed currentColor;
-  border-radius: var(--radius-pill);
   font-weight: 500;
 }
 /* On pale panels the step still waited for is pending work, so it takes the status blue: never green for pending. */
-.ConfirmationPanel:where([data-tone='pending'], [data-emphasis='subtle']) .Step:where([data-state='current']) .StepLabel {
-  border-color: var(--status-info-border);
+.ConfirmationPanel:where([data-pale]) .Step:where([data-state='current']) .StepLabel {
   color: var(--status-info-text);
 }
-.ConfirmationPanel:where([data-tone='pending'], [data-emphasis='subtle']) .Step:where([data-state='todo']) {
+.ConfirmationPanel:where([data-pale]) .Step:where([data-state='todo']) {
   color: var(--text-muted);
 }
-/* A failed step: red words with a heavy underline, so it does not rely on color alone. */
+/* A failed step: red words after a "!" in a red circle, so it does not rely on color alone. No underline:
+   a wavy red line reads as a spelling mark. */
 .Step:where([data-state='failed']) .StepLabel {
   color: var(--status-error-text);
   font-weight: 600;
-  text-decoration: underline wavy;
-  text-underline-offset: 0.2em;
 }
-.ConfirmationPanel:where([data-tone='success']:not([data-emphasis='subtle'])) .Step:where([data-state='failed']) .StepLabel {
+/* The circle's font is 0.75em, so the label's line (1.5em) is 2em here: a 1.5em circle starts 0.25em down. */
+.Step:where([data-state='failed']) .StepMark {
+  box-sizing: border-box;
+  inline-size: 1.5em;
+  block-size: 1.5em;
+  margin-block-start: 0.25em;
+  border: 1px solid transparent;
+  border-radius: var(--radius-round);
+  background: var(--status-error-text);
+  color: var(--text-on-action);
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1;
+}
+.ConfirmationPanel:where(:not([data-pale])) .Step:where([data-state='failed']) .StepLabel {
   padding: 0 var(--space-10);
   border-radius: var(--radius-pill);
   background: var(--surface);

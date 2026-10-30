@@ -68,7 +68,33 @@ describe('CodeList', () => {
     await userEvent.clear(input);
     await userEvent.type(input, 'i10');
     expect(screen.queryAllByRole('option')).toHaveLength(0);
-    expect(screen.getByText('Không tìm thấy “i10”. Thử gõ tên khác hoặc mã.')).toBeInTheDocument();
+  });
+
+  it('says a typed item is already in the list, instead of "not found"', async () => {
+    render(<CodeList label="Bệnh, tật" options={icd10} defaultValue={['I10', 'K21', 'K29']} />);
+    const input = screen.getByRole('combobox');
+    for (const q of ['i1', 'i10', 'tang huyet']) {
+      await userEvent.clear(input);
+      await userEvent.type(input, q);
+      expect(screen.getByText(`${I10} đã có trong danh sách.`, { selector: 'div' })).toBeInTheDocument();
+      // Read out too, in the add field's status.
+      expect(screen.getAllByRole('status').map((x) => x.textContent)).toContain(`${I10} đã có trong danh sách.`);
+    }
+    await userEvent.clear(input);
+    await userEvent.type(input, 'k2');
+    expect(
+      screen.getByText('Đã có trong danh sách: Bệnh trào ngược dạ dày – thực quản (K21); Viêm dạ dày và tá tràng (K29).', { selector: 'div' }),
+    ).toBeInTheDocument();
+    await userEvent.clear(input);
+    await userEvent.type(input, 'zzz');
+    expect(screen.getByText('Không tìm thấy “zzz”. Thử gõ tên khác hoặc mã.', { selector: 'div' })).toBeInTheDocument();
+  });
+
+  it('says everything is in the list when nothing is left to add', async () => {
+    const two = icd10.slice(0, 2);
+    render(<CodeList label="Bệnh, tật" options={two} defaultValue={two.map((o) => o.value)} />);
+    await userEvent.click(screen.getByRole('combobox'));
+    expect(screen.getByText('Mọi mục đã có trong danh sách.', { selector: 'div' })).toBeInTheDocument();
   });
 
   it('follows a controlled value', async () => {
@@ -85,10 +111,21 @@ describe('CodeList', () => {
     expect(screen.getByText('Chưa có mục nào.')).toBeInTheDocument();
   });
 
-  it('links one error to the group and puts the id on the add field', () => {
+  it('links one error to the group and to the add field, which carries the id', () => {
     render(<CodeList label="Bệnh, tật" options={icd10} error="Thêm ít nhất một bệnh, tật" id="ket-luan-benh" />);
     expect(screen.getByRole('group', { name: 'Bệnh, tật' })).toHaveAccessibleDescription('Lỗi: Thêm ít nhất một bệnh, tật');
-    expect(screen.getByRole('combobox')).toHaveAttribute('id', 'ket-luan-benh');
+    const input = screen.getByRole('combobox');
+    expect(input).toHaveAttribute('id', 'ket-luan-benh');
+    // An ErrorSummary link lands on the add field: it must read the error there too.
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+    expect(input).toHaveAccessibleDescription('Gõ tên hoặc mã, có dấu hay không dấu đều được. Lỗi: Thêm ít nhất một bệnh, tật');
+    // One message only: the add field shows no error line of its own.
+    expect(screen.getAllByText('Thêm ít nhất một bệnh, tật')).toHaveLength(1);
+  });
+
+  it('marks nothing invalid without an error', () => {
+    render(<CodeList label="Bệnh, tật" options={icd10} />);
+    expect(screen.getByRole('combobox')).not.toHaveAttribute('aria-invalid');
   });
 
   it('takes its own words', () => {

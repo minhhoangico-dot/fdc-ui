@@ -32,8 +32,11 @@
   }
   .Aside {
     position: sticky;
-    /* Under the sticky PatientContextBar (about two lines tall). */
-    inset-block-start: var(--aside-top, 7rem);
+    /* Under the sticky bars as measured, with the same 20px gap as above the content, so it does not jump. */
+    inset-block-start: calc(var(--header-space, 0px) + var(--context-bar-space, 0px) + var(--space-20));
+    /* On a short screen it scrolls inside itself rather than running under the action bar. */
+    max-block-size: calc(100vh - var(--header-space, 0px) - var(--context-bar-space, 0px) - var(--action-bar-space, 0px) - var(--space-20) * 2);
+    overflow-y: auto;
   }
 }
 .Aside {
@@ -96,13 +99,18 @@
   }
 }
 
-/* Keep the focused field clear of the sticky bars (WCAG 2.4.11): scrolling to it leaves room
-   under the context bar and above the action bar. */
-:global(html):has(.ActionBar) {
-  scroll-padding-block-end: var(--action-bar-space, 9rem);
+/* The context slot has no box of its own: a sticky PatientContextBar inside sticks for the whole page. */
+.Context {
+  display: contents;
 }
-@media (min-width: 64rem) {
-  :global(html):has(.StaffLayout [data-component='PatientContextBar'][data-sticky]) {
-    scroll-padding-block-start: var(--context-bar-space, 8rem);
-  }
+
+/* Keep the focused field clear of the sticky bars (WCAG 2.4.11 and 2.4.12). StaffLayout writes the bars' measured
+   heights on <html>; scrolling to a field leaves those heights plus a gap: 70px at the top, so the field's label and
+   the hint or message line above its box show as well (Shift+Tab lands the box at the top edge), and 15px at the
+   bottom for the focus ring. The fallback is the action bar's usual phone height before it is measured. */
+:global(html):has(.StaffLayout) {
+  scroll-padding-block-start: calc(var(--header-space, 0px) + var(--context-bar-space, 0px) + var(--space-50) + var(--space-20));
+}
+:global(html):has(.ActionBar) {
+  scroll-padding-block-end: calc(var(--action-bar-space, 9rem) + var(--space-15));
 }

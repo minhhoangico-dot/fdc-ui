@@ -64,25 +64,34 @@
   color: var(--text-default);
 }
 
-/* A result that is a notice (refused, unknown, changed): the notice, then its buttons; no white box around it. */
+/* The slot where the result appears; it adds no box, so the page's gap still separates the blocks. */
+.OutcomeSlot {
+  display: contents;
+}
+
+/* A notice that is not a send result (changed record, cancelled send): its h2, the notice, then its buttons. */
 .Outcome {
   display: flex;
   flex-direction: column;
   gap: var(--space-10);
 }
-.Outcome:focus,
-.Focus:focus {
-  /* Focus is moved here by script after a change, so screen readers read it; it is not a control. */
+.Outcome .H2:focus {
+  /* Focus is moved to the heading by script after a change, so screen readers read it; it is not a control. */
   outline: none;
 }
 
-/* A sentence and its button on one line while they fit; the button goes under the words on a phone. */
-.Line {
+/* The undo countdown: digits of one width, so the sentence does not shift as the seconds run down. */
+.Seconds {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Where each answer of the department lands in the list. */
+.Answers {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-10) var(--space-15);
-  margin: 0;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding-inline-start: var(--space-20);
 }
 
 /* The points that differ from normal. */
@@ -94,10 +103,11 @@
   padding-inline-start: var(--space-20);
 }
 
-/* A code after its name: in brackets and lighter ("Tăng huyết áp (I10)"). */
+/* A code after its name: in brackets and lighter ("Tăng huyết áp (I10)"). A code never breaks across lines. */
 .Code {
   color: var(--text-muted);
   font-weight: 400;
+  white-space: nowrap;
 }
 .Muted {
   color: var(--text-muted);
@@ -112,6 +122,20 @@
   display: flex;
   flex-direction: column;
 }
+/* Facts on one line while they fit: whole chunks set apart by space, never by "·" (like the context bar's facts). */
+.Facts {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--space-15);
+}
+.Facts > * {
+  white-space: nowrap;
+}
+/* The diagnoses of part 7: one per line, name first and the code after it. */
+.SubList {
+  margin: 0;
+  padding-inline-start: var(--space-20);
+}
 
 /* The send row: the sentence about signing, then the buttons. Not boxed: it ends the page. */
 .Send {
@@ -123,16 +147,7 @@
   margin: 0;
 }
 
-/* Exactly one breadcrumb per width: the full trail from 40rem, a shorter one below. */
-@media (max-width: 39.99rem) {
-  .WideOnly {
-    display: none;
-  }
-}
 @media (min-width: 40rem) {
-  .PhoneOnly {
-    display: none;
-  }
   .Title {
     font-size: 2rem;
   }

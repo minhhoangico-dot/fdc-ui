@@ -10,8 +10,8 @@ const marks: Record<NonNullable<FormNoticeValue['type']>, string> = { error: '!'
 export type FormNoticeProps = {
   notice?: FormNoticeValue | null;
   /**
-   * Stand-alone notice in a page (not under a form): a box tinted in the type's color, with a 1px edge and a
-   * 6px bar on the left in the same color (warning amber, error red, success green, info blue; the same in every theme).
+   * Stand-alone notice in a page (not under a form): a pale tint in the type's color (warning amber, error red,
+   * success green, info blue; the same in every theme), the sign and the words. No edge and no side bar.
    */
   boxed?: boolean;
   /**

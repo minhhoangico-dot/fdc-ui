@@ -6,7 +6,8 @@
   min-block-size: var(--target-min);
   color: var(--text-link);
   font-family: var(--font-body);
-  font-size: 1.125rem;
+  /* Body size: 18px on patient pages, 16px in the compact staff density. */
+  font-size: var(--font-size-body);
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 0.2em;
@@ -21,17 +22,23 @@
   border-radius: var(--radius-sm);
 }
 .Arrow {
+  flex: none;
   transition: transform 0.3s;
 }
+/* The mark nudges the way the link goes. */
 .TextLink:hover .Arrow {
   transform: translateX(var(--space-5));
+}
+.TextLink:hover .Arrow:where([data-dir='back']) {
+  transform: translateX(calc(var(--space-5) * -1));
 }
 /* Reduced motion: the arrow stays put; the link's color change still shows the hover. */
 @media (prefers-reduced-motion: reduce) {
   .Arrow {
     transition: none;
   }
-  .TextLink:hover .Arrow {
+  .TextLink:hover .Arrow,
+  .TextLink:hover .Arrow:where([data-dir='back']) {
     transform: none;
   }
 }

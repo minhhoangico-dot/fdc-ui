@@ -48,8 +48,9 @@ describe('Combobox', () => {
     const input = screen.getByRole('combobox');
     await userEvent.clear(input);
     await userEvent.type(input, 'zzz');
-    expect(screen.getByText('Không tìm thấy “zzz”. Thử gõ tên khác hoặc mã.')).toBeInTheDocument();
-    expect(screen.getByRole('status')).toHaveTextContent('Không có kết quả');
+    expect(screen.getByText('Không tìm thấy “zzz”. Thử gõ tên khác hoặc mã.', { selector: 'div' })).toBeInTheDocument();
+    // The status reads the same words as the screen, not only a count.
+    expect(screen.getByRole('status')).toHaveTextContent('Không tìm thấy “zzz”. Thử gõ tên khác hoặc mã.');
     await userEvent.keyboard('{Escape}');
     expect(input).toHaveValue('Béo phì (E66)');
     await userEvent.type(input, 'x');
@@ -70,5 +71,47 @@ describe('Combobox', () => {
   it('links an error', () => {
     render(<Combobox label="Nghề" options={[]} error="Chọn nghề" />);
     expect(screen.getByRole('combobox')).toHaveAccessibleDescription(/Lỗi: Chọn nghề/);
+  });
+
+  it('takes a group error by id, invalid without a message of its own', () => {
+    render(
+      <>
+        <span id="group-error">Lỗi: Thêm ít nhất một bệnh</span>
+        <Combobox label="Thêm bệnh" options={icd10} aria-describedby="group-error" aria-invalid />
+      </>,
+    );
+    const input = screen.getByRole('combobox', { name: 'Thêm bệnh' });
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+    expect(input).toHaveAccessibleDescription('Gõ tên hoặc mã, có dấu hay không dấu đều được. Lỗi: Thêm ít nhất một bệnh');
+    expect(input.closest('[data-component="Combobox"]')).not.toHaveAttribute('data-invalid');
+  });
+
+  it('draws a chosen coded item so the name may be cut but the code never is', async () => {
+    const { container } = render(<Combobox label="Chẩn đoán" options={icd10} defaultValue="I10" />);
+    const input = screen.getByRole('combobox');
+    // The field keeps the full text for screen readers and while focused.
+    expect(input).toHaveValue('Tăng huyết áp vô căn (nguyên phát) (I10)');
+    expect(input).toHaveAttribute('data-masked');
+    const shown = container.querySelector('[data-part="shown"]');
+    expect(shown).toHaveAttribute('aria-hidden', 'true');
+    expect(shown?.children[0]).toHaveTextContent('Tăng huyết áp vô căn (nguyên phát)');
+    expect(shown?.children[1]).toHaveTextContent('(I10)');
+    // Typing replaces the drawn copy with what was typed.
+    await userEvent.clear(input);
+    await userEvent.type(input, 'tang');
+    expect(input).not.toHaveAttribute('data-masked');
+    expect(container.querySelector('[data-part="shown"]')).toBeNull();
+  });
+
+  it('says there is nothing to choose, not "not found", when the list is empty', async () => {
+    render(<Combobox label="Nghề" options={[]} />);
+    await userEvent.click(screen.getByRole('combobox'));
+    expect(screen.getByText('Không có mục nào để chọn.')).toBeInTheDocument();
+  });
+
+  it('draws nothing over an item without a code', () => {
+    const { container } = render(<Combobox label="Nghề" options={[{ value: 'a', label: 'An' }]} defaultValue="a" />);
+    expect(screen.getByRole('combobox')).toHaveValue('An');
+    expect(container.querySelector('[data-part="shown"]')).toBeNull();
   });
 });

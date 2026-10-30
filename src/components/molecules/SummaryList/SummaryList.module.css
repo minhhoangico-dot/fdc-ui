@@ -74,18 +74,20 @@
   margin: 0;
 }
 .Link {
-  /* Smaller and quieter than the details toggle, still underlined and a 44px target. */
+  /* A link looks like a link: the link color, underlined, a 44px target. Regular weight, so the bold details
+     toggle (brand text with "▸", no underline) still reads as the thing that opens under the row. */
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   min-block-size: var(--target-min);
-  color: var(--text-muted);
+  color: var(--text-link);
   font-size: 1rem;
   font-weight: 400;
   text-decoration: underline;
+  text-underline-offset: 0.15em;
 }
 .Link:hover {
-  color: var(--text-default);
+  color: var(--text-link-hover);
 }
 .Link:focus-visible {
   outline: var(--focus-ring-width) solid var(--focus-ring);

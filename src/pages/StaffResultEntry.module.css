@@ -1,4 +1,5 @@
-/* Nhập kết quả: layout the page needs beyond inline styles. Role tokens only. */
+/* Nhập kết quả: layout the page needs beyond its components. Role tokens only; sticky offsets come from StaffLayout's
+   measured --header-space / --context-bar-space / --action-bar-space (through the scroll padding), never from here. */
 
 /* The part being filled: a white block with a light edge on the grey work surface. Tighter on phones. */
 .Part {
@@ -17,6 +18,34 @@
   }
 }
 
+/* The part's heading. On a phone 18px, below the page's h1 (the person's name, 20px there), so the headings keep
+   their order; 22px from 40rem. It takes focus when a part is chosen in the side list (tabIndex -1): no ring, it is
+   not a control. */
+.PartTitle {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  line-height: 1.3;
+}
+.PartTitle:focus {
+  outline: none;
+}
+@media (min-width: 40rem) {
+  .PartTitle {
+    font-size: 1.375rem;
+  }
+}
+/* What is left in this part, beside the heading. On a phone the part toggle right above says it ("4. Thể lực · còn 4")
+   and each empty field says "Chưa điền", so the line goes and the first field comes up the screen. */
+.PartLeft {
+  color: var(--text-muted);
+}
+@media (max-width: 39.99rem) {
+  .PartLeft {
+    display: none;
+  }
+}
+
 /* The fields of a part. Measurements hold two or three digits, so the block stays narrow instead of
    stretching every box across the screen. */
 .Fields {
@@ -27,35 +56,33 @@
   max-inline-size: 44rem;
 }
 
-/* Mạch beside the blood-pressure group (Tâm thu, Tâm trương). Five shared row tracks: group label, field label,
-   hint, error, box. Each field takes four of them through subgrid (the data-part contract FieldRow uses), so labels
-   line up with labels and boxes with boxes, whichever field has a hint or an error.
+/* Mạch beside the blood-pressure group (Tâm thu, Tâm trương). Four shared row tracks: group label, field label,
+   message line, box. Each field takes the last three through subgrid (the data-part contract FieldRow uses: NumberField's
+   one message line is its hint part), so labels line up with labels and boxes with boxes. Every level has the same
+   5px row gap: a subgrid with a different gap from its parent shifts its items by half the difference.
    Narrow: Mạch on its own line (its unit and a "Cao" tag need the width), the two pressures side by side under it. */
 .Vitals {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: var(--space-20);
-  row-gap: 0;
+  row-gap: var(--space-5);
 }
 .Vitals .Field {
   display: grid;
-  grid-row: span 4;
+  grid-row: span 3;
   grid-template-rows: subgrid;
   row-gap: var(--space-5);
 }
 .Vitals .Field > [data-part='label'] {
   grid-row: 1;
+  align-self: end;
 }
 .Vitals .Field > [data-part='hint'] {
   grid-row: 2;
   align-self: start;
 }
-.Vitals .Field > [data-part='error'] {
-  grid-row: 3;
-  align-self: start;
-}
 .Vitals .Field > [data-part='control'] {
-  grid-row: 4;
+  grid-row: 3;
   align-self: start;
 }
 .Vitals > .Field {
@@ -64,18 +91,23 @@
 .Pressure {
   display: grid;
   grid-column: 1 / -1;
-  grid-row: span 5;
+  grid-row: span 4;
   grid-template-columns: subgrid;
   grid-template-rows: subgrid;
   row-gap: var(--space-5);
-  margin-block-start: var(--space-20);
+  /* With the 5px row gap: 20px under Mạch's box. */
+  margin-block-start: var(--space-15);
 }
 .Pressure > .Field {
-  grid-row: 2 / span 4;
+  grid-row: 2 / span 3;
 }
+/* The pair's heading, with a light rule under it across both boxes, so it reads as the heading of Tâm thu and
+   Tâm trương together, not of Tâm thu alone. */
 .GroupLabel {
   grid-column: 1 / -1;
   grid-row: 1;
+  padding-block-end: var(--space-5);
+  border-block-end: 1px solid var(--border);
   color: var(--text-default);
   font-size: 1rem;
   font-weight: 600;
@@ -89,56 +121,106 @@
   }
   .Vitals > .Field {
     grid-column: 1;
-    grid-row: 2 / span 4;
+    grid-row: 2 / span 3;
   }
   .Pressure {
     grid-column: 2 / span 2;
-    grid-row: 1 / span 5;
+    grid-row: 1 / span 4;
     margin-block-start: 0;
   }
 }
 
+/* Free text grows with what is typed, so a note copied from a paper form can be checked whole: 3 lines at least
+   (the box's padding and edge added). Browsers without field-sizing keep rows="5" and scroll after that. */
+.Grow textarea {
+  field-sizing: content;
+  min-block-size: calc(3 * 1.4em + 2 * var(--space-10) + 2px);
+}
+
+/* The conflict's question takes focus on Ctrl + S or Ctrl + Enter during a conflict: the ring shows where focus went.
+   :focus, not :focus-visible: browsers do not count a Ctrl combination as keyboard use, so :focus-visible would not match. */
+.Conflict {
+  border-radius: var(--radius-sm);
+}
+.Conflict:focus {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
 /* The previous person's record in its undo window, at the top of the next person's page: the notice and its
-   "Hủy gửi" button on one line, the button under the notice on a phone. Focus lands here when the button goes. */
+   "Hủy gửi" button (then the link to the record or its status) on one line, under the notice on a phone. */
 .Pending {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-10) var(--space-15);
 }
-.Pending:focus {
-  outline: none;
-}
 .PendingNotice {
   flex: 1 1 20rem;
 }
 
-/* The action bar on a phone is two lines, so the form keeps most of the screen: the counts and the save line,
-   then the buttons. Below 360px "ở 4 phần" goes (the part picker has each part's count), so "Còn 48 mục" and
-   "✓ Đã lưu 09:12" still share the first line. */
-@media (max-width: 22.49rem) {
-  .PartsCount {
+/* The action bar. Phones: the save line, then one row of buttons side by side, each label on one line ("Xem lại",
+   "Đến mục còn thiếu"), so the form keeps the screen. The count of items left shows from 40rem: on a phone the part
+   toggle and the context bar's state say it. From 40rem: count, save line and buttons in one row. */
+.Count {
+  flex: 1 1 auto;
+}
+@media (max-width: 39.99rem) {
+  .Count {
     display: none;
   }
 }
-/* The screen's buttons. Phones: a line of their own in equal halves; labels may wrap, with a narrower inner edge
-   so "Xem lại trước khi gửi" takes two lines at 320px, not three. From 40rem: their natural width, beside the save line. */
+/* The save line is one text row here: its 44px minimum is for a retry button, which this page does not show. */
+.Save[data-component] {
+  min-block-size: 0;
+}
+/* The screen's buttons. Phones: a row of their own, each as wide as its label and sharing what is left, so at 320px
+   "Xem lại" stays small and "Đến mục còn thiếu" keeps one line (equal halves would wrap it). From 40rem: their
+   natural width, beside the save line. */
 .Actions {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  display: flex;
   gap: var(--space-10);
   inline-size: 100%;
 }
+.Actions > * {
+  flex: 1 0 auto;
+}
 @media (max-width: 39.99rem) {
   .Actions [data-component='Button'] {
+    flex: 1 0 auto;
     padding-inline: var(--space-10);
+  }
+  /* "Xem lại trước khi gửi" reads "Xem lại" on a phone, where the whole label would wrap; screen readers still hear
+     the whole name, which starts with the visible words. */
+  .WideWords,
+  /* During a conflict "Lưu" cannot be used. On a phone the save line right above says why ("Cần xử lý 1 giá trị
+     trước khi lưu"), so the reason under the button is left to screen readers (it stays the button's description). */
+  .Actions [data-component='Button'][aria-disabled='true'] + span {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 @media (min-width: 40rem) {
   .Actions {
-    display: flex;
     flex-wrap: wrap;
     align-items: center;
     inline-size: auto;
   }
+  .Actions > * {
+    flex: none;
+  }
+}
+
+/* Keyboard hints (from 64rem): whole chunks set apart by space, never by a "·" that could start or end a line. */
+.Shortcuts {
+  display: inline-flex;
+  flex-wrap: wrap;
+  column-gap: var(--space-15);
+}
+.Shortcut {
+  white-space: nowrap;
 }

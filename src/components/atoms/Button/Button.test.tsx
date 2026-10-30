@@ -17,6 +17,33 @@ describe('Button', () => {
     expect(screen.getByRole('link', { name: '024 35 430 430' })).toHaveAttribute('href', 'tel:02435430430');
   });
 
+  it('puts the icon after the words with iconPosition="end", before them by default', () => {
+    render(
+      <>
+        <Button icon="simple-left">Người trước</Button>
+        <Button icon="simple-right" iconPosition="end">
+          Người sau
+        </Button>
+      </>,
+    );
+    const prev = screen.getByRole('button', { name: 'Người trước' });
+    const next = screen.getByRole('button', { name: 'Người sau' });
+    expect(prev.firstElementChild?.tagName.toLowerCase()).toBe('svg');
+    expect(next.firstElementChild?.tagName.toLowerCase()).toBe('span');
+    expect(next.lastElementChild?.tagName.toLowerCase()).toBe('svg');
+  });
+
+  it('as a link keeps aria-label and other attributes, so the name can add who it goes to', () => {
+    render(
+      <Button href="#nguoi-sau" icon="simple-right" iconPosition="end" aria-label="Người sau: Đặng Thanh Chi" id="next">
+        Người sau
+      </Button>,
+    );
+    const link = screen.getByRole('link', { name: 'Người sau: Đặng Thanh Chi' });
+    expect(link).toHaveAttribute('href', '#nguoi-sau');
+    expect(link).toHaveAttribute('id', 'next');
+  });
+
   it('blocks clicks and announces busy while loading', async () => {
     const onClick = vi.fn();
     render(<Button loading onClick={onClick}>Gửi</Button>);

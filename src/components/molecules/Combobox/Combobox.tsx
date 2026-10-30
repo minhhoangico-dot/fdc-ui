@@ -32,9 +32,9 @@ export type ComboboxProps = {
   onValueChange?: (value: string | null, option: ComboboxOption | null) => void;
   /** Most options shown at once; staff refine by typing. Default 50. */
   maxResults?: number;
-  /** Shown when nothing matches. */
+  /** Shown when nothing matches, and read out in place of the count. */
   noResultsText?: (query: string) => string;
-  /** Read after the result count changes. */
+  /** Read after the result count changes, while something matches. */
   resultsText?: (count: number) => string;
   /** Text of the button that empties the field. Default "Xóa". */
   clearLabel?: string;
@@ -43,12 +43,20 @@ export type ComboboxProps = {
   /** id of the input, so an ErrorSummary can link to it. */
   id?: string;
   name?: string;
+  /** More ids that describe the input, read after the hint and error: e.g. the error of the group the field adds to (CodeList). */
+  'aria-describedby'?: string;
+  /** Marks the input invalid without a message or red edge of its own, when the message belongs to the group around it (CodeList). */
+  'aria-invalid'?: boolean;
   className?: string;
 };
 
 /** "Tăng huyết áp (I10)": how a chosen option reads in the field and in summaries. */
 export const optionText = (o: ComboboxOption) => (o.code ? `${o.label} (${o.code})` : o.label);
 
+/** The default message when nothing matches (or, with nothing typed, when there is nothing to choose). */
+export const notFoundText = (q: string) => (q.trim() ? `Không tìm thấy “${q}”. Thử gõ tên khác hoặc mã.` : 'Không có mục nào để chọn.');
+
+/** How well an option matches a folded query: 0 exact code, 1 code start, 2 name start, 3 word start, 4 anywhere; -1 no match. */
 function rank(o: ComboboxOption, q: string): number {
   if (!q) return 1;
   const code = o.code ? foldVi(o.code) : '';
@@ -59,6 +67,17 @@ function rank(o: ComboboxOption, q: string): number {
   if (label.split(' ').some((w) => w.startsWith(q))) return 3;
   if (label.includes(q) || foldVi(o.keywords ?? '').includes(q)) return 4;
   return -1;
+}
+
+/** The options that match what was typed, best first, as the list shows them (tone marks and case ignored). */
+export function matchOptions(options: ComboboxOption[], query: string, max = Infinity): ComboboxOption[] {
+  const q = foldVi(query);
+  return options
+    .map((o, i) => ({ o, i, r: rank(o, q) }))
+    .filter((x) => x.r >= 0)
+    .sort((a, b) => a.r - b.r || a.i - b.i)
+    .slice(0, max)
+    .map((x) => x.o);
 }
 
 /**
@@ -77,13 +96,15 @@ export function Combobox({
   defaultValue = null,
   onValueChange,
   maxResults = 50,
-  noResultsText = (q) => `Không tìm thấy “${q}”. Thử gõ tên khác hoặc mã.`,
+  noResultsText = notFoundText,
   resultsText = (n) => (n === 0 ? 'Không có kết quả' : `${n} kết quả`),
   clearLabel = 'Xóa',
   required,
   disabled,
   id,
   name,
+  'aria-describedby': describedBy,
+  'aria-invalid': ariaInvalid,
   className,
 }: ComboboxProps) {
   const autoId = useId();
@@ -102,21 +123,28 @@ export function Combobox({
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
-  const results = useMemo(() => {
-    const q = foldVi(query ?? '');
-    return options
-      .map((o, i) => ({ o, i, r: rank(o, q) }))
-      .filter((x) => x.r >= 0)
-      .sort((a, b) => a.r - b.r || a.i - b.i)
-      .slice(0, maxResults)
-      .map((x) => x.o);
-  }, [options, query, maxResults]);
+  const results = useMemo(() => matchOptions(options, query ?? '', maxResults), [options, query, maxResults]);
 
   useEffect(() => {
     if (!open) return;
     const el = listRef.current?.querySelector<HTMLElement>(`[data-index="${active}"]`);
     el?.scrollIntoView?.({ block: 'nearest' });
   }, [active, open]);
+
+  // While focused the field shows its own full text. When the whole choice is selected (Tab) or the caret sits
+  // after it (just chosen), scroll its end into view, so the code just chosen is what shows, not only the name.
+  const revealCode = () => {
+    const run = () => {
+      const el = inputRef.current;
+      if (!el || document.activeElement !== el || !selected?.code || el.value !== optionText(selected)) return;
+      const end = el.value.length;
+      if (el.selectionEnd === end && (el.selectionStart === 0 || el.selectionStart === end)) el.scrollLeft = el.scrollWidth;
+    };
+    // Two frames: the browser's own caret scroll after a new value comes first, then this one.
+    if (typeof window.requestAnimationFrame === 'function') window.requestAnimationFrame(() => window.requestAnimationFrame(run));
+    else run();
+  };
+  useEffect(revealCode, [selectedValue]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const choose = (o: ComboboxOption | null) => {
     if (value === undefined) setInner(o ? o.value : null);
@@ -167,6 +195,9 @@ export function Combobox({
   const shown = query ?? (selected ? optionText(selected) : '');
   const activeId = open && results[active] ? `${listId}-${active}` : undefined;
   const typed = query !== null && query.trim() !== '';
+  // A chosen coded item is drawn over the input while it rests, so a long name is cut but its code never is:
+  // "Tăng huyết áp v… (I10)". The input keeps the full text for screen readers, and shows it while focused.
+  const coded = query === null && selected?.code ? selected : null;
 
   return (
     <div className={cx(styles.Combobox, className)} data-component="Combobox" data-invalid={error ? 'true' : undefined}>
@@ -205,10 +236,11 @@ export function Combobox({
             aria-expanded={open && results.length > 0}
             aria-controls={listId}
             aria-activedescendant={activeId}
-            aria-describedby={[hintId, errorId].filter(Boolean).join(' ') || undefined}
-            aria-invalid={error ? true : undefined}
+            aria-describedby={[hintId, errorId, describedBy].filter(Boolean).join(' ') || undefined}
+            aria-invalid={error || ariaInvalid ? true : undefined}
             aria-required={required || undefined}
             disabled={disabled}
+            data-masked={coded ? '' : undefined}
             value={shown}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -217,11 +249,18 @@ export function Combobox({
             }}
             onKeyDown={onKeyDown}
             onClick={() => (open ? setOpen(false) : openList())}
+            onFocus={revealCode}
             onBlur={() => {
               setOpen(false);
               setQuery(null);
             }}
           />
+          {coded ? (
+            <span className={styles.Shown} aria-hidden="true" data-part="shown">
+              <span className={styles.ShownName}>{coded.label}</span>
+              <span className={styles.ShownCode}>{`\u00a0(${coded.code})`}</span>
+            </span>
+          ) : null}
           <Icon name={open ? 'rounded-up' : 'rounded-down'} size={14} className={styles.Chevron} />
         </div>
         {selected && !required && !disabled ? (
@@ -257,7 +296,9 @@ export function Combobox({
           ))}
         </ul>
         {open && results.length === 0 ? <div className={styles.Empty}>{noResultsText(query ?? '')}</div> : null}
-        <VisuallyHidden role="status">{open && typed ? resultsText(results.length) : ''}</VisuallyHidden>
+        <VisuallyHidden role="status">
+          {open && typed ? (results.length === 0 ? noResultsText(query ?? '') : resultsText(results.length)) : ''}
+        </VisuallyHidden>
       </div>
     </div>
   );

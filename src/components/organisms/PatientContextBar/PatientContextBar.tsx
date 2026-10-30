@@ -22,9 +22,15 @@ export type PatientContextBarProps = {
   organization?: string;
   /** Where this page sits, above the name. */
   breadcrumb?: BreadcrumbItem[];
-  /** A StatusTag with the record's state: "Cần điền · còn 47 mục". */
+  /** A StatusTag with the record's state: "Cần điền · còn 47 mục". It sits right after the name. */
   status?: ReactNode;
-  /** Buttons such as "Người trước" and "Người sau cần làm". */
+  /**
+   * The way to the previous and next person: two Buttons with short visible words, the next arrow after them, and
+   * an accessible name that starts with those words and adds the person:
+   * `<Button icon="simple-left" aria-label="Người trước: Ngô Văn Nam">Người trước</Button>`,
+   * `<Button icon="simple-right" iconPosition="end" aria-label="Người sau: Lê Thị Hà">Người sau</Button>`.
+   * They sit on the name's row from 40rem up, and share one row of two 44px buttons on phones.
+   */
   actions?: ReactNode;
   /** The name is the page's heading. Default 1. */
   headingLevel?: 1 | 2;
@@ -43,6 +49,8 @@ export type PatientContextBarProps = {
  * the record code, the state and the way to the previous or next person.
  * Name, date of birth and record code are the three facts that tell two people apart; they are never hidden.
  * Facts are whole chunks set apart by space, not by dots: a dot left at a line end reads like a stray mark.
+ * Rows: the breadcrumb; the name with its state (and, from 40rem, the previous/next buttons at the end); the facts.
+ * From 64rem, where it sticks, that is one row of buttons, not a second row under the facts.
  */
 export function PatientContextBar({
   name,
@@ -83,15 +91,13 @@ export function PatientContextBar({
   return (
     <section aria-label="Người đang làm" className={cx(styles.PatientContextBar, className)} data-component="PatientContextBar" data-sticky={(sticky && variant !== 'block') || undefined} data-variant={variant}>
       <div className={styles.Inner}>
-        <div className={styles.Who}>
-          {breadcrumb?.length ? <Breadcrumb items={breadcrumb} collapseOnPhone className={styles.Breadcrumb} /> : null}
-          <div className={styles.NameLine}>
-            <Heading className={styles.Name}>{name}</Heading>
-            {/* A real space between facts, so copied text and screen readers do not run them together. */}
-            <p className={styles.Facts}>{facts.flatMap((f, i) => (i ? [' ', f] : [f]))}</p>
-          </div>
+        {breadcrumb?.length ? <Breadcrumb items={breadcrumb} collapseOnPhone className={styles.Breadcrumb} /> : null}
+        <div className={styles.NameLine}>
+          <Heading className={styles.Name}>{name}</Heading>
+          {status ? <div className={styles.Status}>{status}</div> : null}
         </div>
-        {status ? <div className={styles.Status}>{status}</div> : null}
+        {/* A real space between facts, so copied text and screen readers do not run them together. */}
+        <p className={styles.Facts}>{facts.flatMap((f, i) => (i ? [' ', f] : [f]))}</p>
         {actions ? <div className={styles.Actions}>{actions}</div> : null}
       </div>
     </section>

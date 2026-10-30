@@ -22,19 +22,20 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 /**
- * Staff form after "Xem lại" with four fields still empty: a smaller heading and the links in one wrapping line,
- * so the form stays in view. Still a list of four for screen readers; each link moves focus to its field.
+ * Staff form after "Xem lại" with four fields still empty: a smaller heading that gives the count, and the fields'
+ * short names side by side as links, set apart by space (no dots), so the form stays in view. Still a list of four for
+ * screen readers; each link is a 44px target and moves focus to its field, which says what to do ("Điền mạch").
  */
 export const Inline: Story = {
   parameters: { density: 'compact' },
   args: {
     layout: 'inline',
-    title: 'Còn 4 mục ở phần 4. Thể lực',
+    title: 'Còn 4 mục chưa điền',
     errors: [
-      { fieldId: 'chieu-cao', text: 'Điền chiều cao' },
-      { fieldId: 'can-nang', text: 'Điền cân nặng' },
-      { fieldId: 'mach', text: 'Điền mạch' },
-      { fieldId: 'huyet-ap-tam-thu', text: 'Điền huyết áp tâm thu' },
+      { fieldId: 'chieu-cao', text: 'Chiều cao' },
+      { fieldId: 'can-nang', text: 'Cân nặng' },
+      { fieldId: 'mach', text: 'Mạch' },
+      { fieldId: 'huyet-ap-tam-thu', text: 'Huyết áp tâm thu' },
     ],
   },
   render: (args) => (

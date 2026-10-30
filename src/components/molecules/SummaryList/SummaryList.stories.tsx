@@ -31,10 +31,14 @@ const results = [
   ['Chiều cao', '162 cm', <StatusTag key="t" tone="muted" size="sm">Nhập tay</StatusTag>],
   ['X-quang tim phổi', 'Bình thường', null],
 ] as const;
+/**
+ * Details sit inside the list's card, so the table inside them is plain: rows and light dividers only, no outer edge
+ * and no header band (no box inside a box). On a page use DataTable variant="plain" for this.
+ */
 const resultsTable = (
   <table style={{ inlineSize: '100%', borderCollapse: 'collapse' }}>
     <thead>
-      <tr style={{ background: 'var(--surface-alt)' }}>
+      <tr style={{ borderBlockEnd: '1px solid var(--border)' }}>
         <th scope="col" style={cell}>Chỉ số</th>
         <th scope="col" style={cell}>Kết quả</th>
         <th scope="col" style={cell}>Ghi chú</th>
@@ -52,13 +56,28 @@ const resultsTable = (
   </table>
 );
 
-/** Staff review page: each section opens its read-only details right under the row. */
+/**
+ * Staff review page: each section opens its read-only details right under the row. "Thay đổi" is a link in the link
+ * color (regular weight, underlined); the details toggle is bold with "▸" and no underline.
+ */
 export const WithDetails: Story = {
   args: {
     rows: [
       { key: 'Người khám', value: 'Phạm Văn Nam (TESTA-0007)', changeHref: '#' },
-      { key: 'Tiền sử', value: '25 câu · 2 câu trả lời Có', changeHref: '#', details: <p style={{ margin: 0 }}>8. Tăng huyết áp (I10): Có · 14. Đái tháo đường (E11): Có</p>, detailsLabel: 'Xem 25 câu' },
-      { key: 'Cận lâm sàng', value: '12 chỉ số và X-quang · 2 chỉ số ngoài khoảng', changeHref: '#', details: resultsTable, detailsLabel: 'Xem 12 chỉ số và X-quang', defaultDetailsOpen: true },
+      {
+        key: 'Tiền sử',
+        value: '25 câu, 2 câu trả lời Có',
+        changeHref: '#',
+        // One answer per line: no "·" between them that a phone could leave at a line end.
+        details: (
+          <ul style={{ margin: 0, paddingInlineStart: 'var(--space-20)' }}>
+            <li>8. Tăng huyết áp (I10): Có</li>
+            <li>13. Đái tháo đường (E11): Có</li>
+          </ul>
+        ),
+        detailsLabel: 'Xem 25 câu',
+      },
+      { key: 'Cận lâm sàng', value: '12 chỉ số và X-quang, 2 chỉ số ngoài khoảng', changeHref: '#', details: resultsTable, detailsLabel: 'Xem 12 chỉ số và X-quang', defaultDetailsOpen: true },
       { key: 'Phân loại', value: 'Loại II', changeHref: '#' },
     ],
   },

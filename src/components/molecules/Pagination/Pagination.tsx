@@ -17,10 +17,28 @@ export type PaginationProps = {
   onPageChange?: (page: number) => void;
   /** aria-label of the nav. Default "Trang của danh sách". */
   label?: string;
+  /**
+   * Announce the range line when it changes (a polite live region). Default true. DataTable sets false: it keeps one
+   * live region of its own that says the count, the empty result or the failure, so nothing is read twice.
+   */
+  live?: boolean;
   previousLabel?: string;
   nextLabel?: string;
   className?: string;
 };
+
+/** The page and the rows it shows, clamped to the list: page 99 of a 41-page list is page 41. */
+export function pageRange(page: number, pageSize: number, total: number) {
+  const pages = Math.max(1, Math.ceil(total / pageSize));
+  const current = Math.min(Math.max(1, page), pages);
+  return { pages, current, from: (current - 1) * pageSize + 1, to: Math.min(current * pageSize, total) };
+}
+
+/** "Hiển thị 1–50 trong 2.033 người": the range line in plain text (DataTable's live region says it too). */
+export function rangeText({ page, pageSize, total, itemLabel = 'dòng' }: Pick<PaginationProps, 'page' | 'pageSize' | 'total' | 'itemLabel'>) {
+  const { from, to } = pageRange(page, pageSize, total);
+  return `Hiển thị ${formatViInteger(from)}–${formatViInteger(to)} trong ${formatViInteger(total)} ${itemLabel}`;
+}
 
 /**
  * "Hiển thị 1–50 trong 2.033 người · ‹ Trước · Trang 1 / 41 · Sau ›".
@@ -35,15 +53,13 @@ export function Pagination({
   getHref,
   onPageChange,
   label = 'Trang của danh sách',
+  live = true,
   previousLabel = 'Trước',
   nextLabel = 'Sau',
   className,
 }: PaginationProps) {
   if (total <= 0) return null;
-  const pages = Math.max(1, Math.ceil(total / pageSize));
-  const current = Math.min(Math.max(1, page), pages);
-  const from = (current - 1) * pageSize + 1;
-  const to = Math.min(current * pageSize, total);
+  const { pages, current, from, to } = pageRange(page, pageSize, total);
 
   const control = (target: number, text: ReactNode, rel: 'prev' | 'next') => {
     const unavailable = target < 1 || target > pages;
@@ -70,7 +86,7 @@ export function Pagination({
 
   return (
     <nav aria-label={label} className={cx(styles.Pagination, className)} data-component="Pagination">
-      <p className={styles.Range} aria-live="polite">
+      <p className={styles.Range} aria-live={live ? 'polite' : undefined}>
         Hiển thị{' '}
         <strong>
           {formatViInteger(from)}–{formatViInteger(to)}

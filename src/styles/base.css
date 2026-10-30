@@ -18,8 +18,17 @@ h1, h2, h3, h4 {
   line-height: 1.3;
   text-wrap: balance;
 }
+/* Pages without sticky bars: a heading jumped to is not flush with the top edge. StaffLayout replaces this with the
+   heights of its sticky bars, measured, plus a gap (WCAG 2.4.11). */
 html {
   scroll-padding-top: var(--space-50);
+}
+/* Every link shows the 3px focus ring, set off from the text by a 2px gap, so a link written straight into a page
+   never falls back to the browser's thin default ring. :where() keeps this rule at zero specificity: a component
+   that draws its own ring (Button, Breadcrumb, the Footer's white ring) replaces it rather than adding a second one. */
+:where(a[href]:focus-visible) {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 /* Reduced motion removes movement, not feedback: components drop their own transforms
    (see TextLink); short color fades stay so state changes remain visible. */

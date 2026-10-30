@@ -6,18 +6,47 @@
   background: var(--surface);
   font-family: var(--font-body);
 }
+/* The summary's own ring is dark ink, not the brand color: a brand ring just outside the red edge reads as one
+   red-orange frame in the nursing-home theme. Dark ink, the white gap and the red edge stay three separate lines.
+   Same 3px width and 2px gap as every other ring. */
 .ErrorSummary:focus-visible {
   box-sizing: border-box;
-  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline: var(--focus-ring-width) solid var(--text-default);
   outline-offset: var(--focus-ring-offset);
 }
 .Title {
+  --title-line: 1.35;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-10);
   margin: 0 0 var(--space-10);
   font-family: var(--font-heading);
   font-size: 1.25rem;
   font-weight: 700;
-  line-height: 1.35;
+  line-height: var(--title-line);
   color: var(--text-default);
+}
+/* The type as a sign, as in FormNotice: a red circle with "!" before the heading, hidden from screen readers (the
+   heading says what is wrong). Centred on the heading's first line: the mark's font is 0.75em, so that line is
+   (line-height / 0.75)em here. */
+.Mark {
+  box-sizing: border-box;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.65em;
+  block-size: 1.65em;
+  margin-block-start: calc((var(--title-line) * 1em / 0.75 - 1.65em) / 2);
+  /* Transparent edge: invisible here, drawn in forced-colors mode where the fill is dropped. */
+  border: 1px solid transparent;
+  border-radius: var(--radius-round);
+  background: var(--status-error-text);
+  color: var(--text-on-action);
+  font-family: var(--font-body);
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1;
 }
 .List {
   box-sizing: border-box;
@@ -43,36 +72,43 @@
   outline-offset: var(--focus-ring-offset);
 }
 
-/* Inline (staff forms): the same box, about half as tall. The heading is smaller, the padding tighter and the
-   links share one wrapping line, separated by a dot that screen readers skip (the list already says how many).
-   Each link keeps its 44px target height. */
+/* Inline (staff forms): the same red box, about half as tall. A smaller heading, tighter padding, and the links side
+   by side in rows that wrap, set apart by space only: no dots, so no line can start or end with one. Each link keeps
+   its 44px target height; the rows touch, and the last row's targets reach the bottom edge (no bottom padding), so
+   two rows of short names stay under 130px on a 320px phone. */
 .ErrorSummary:where([data-layout='inline']) {
-  padding: var(--space-10) var(--space-15);
+  /* A link's ring is drawn inside its 44px target, 2px in from the edge (see below); the side padding keeps the words
+     2px clear of the ring: 2 + 3 + 2 = 7px. */
+  --ring-inset: calc(var(--focus-ring-width) + var(--focus-ring-offset));
+  --link-pad: calc(var(--ring-inset) + var(--focus-ring-offset));
+  padding: var(--space-10) var(--space-15) 0;
 }
 .ErrorSummary:where([data-layout='inline']) .Title {
+  --title-line: 1.4;
   margin-block-end: 0;
   font-size: 1.125rem;
-  line-height: 1.4;
 }
 .ErrorSummary:where([data-layout='inline']) .List {
   flex-direction: row;
   flex-wrap: wrap;
-  column-gap: var(--space-10);
+  /* 20px between two names: the gap plus the side padding of both links. The underline stops between them. */
+  column-gap: calc(var(--space-20) - 2 * var(--link-pad));
   row-gap: 0;
   padding: 0;
+  /* The links' side padding hangs into the box's padding, so the first word of each row lines up with the heading. */
+  margin-inline: calc(-1 * var(--link-pad));
   list-style: none;
 }
 .ErrorSummary:where([data-layout='inline']) .Item {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-10);
   min-inline-size: 0;
-}
-.Separator {
-  color: var(--text-muted);
-  font-weight: 700;
+  max-inline-size: 100%;
 }
 .ErrorSummary:where([data-layout='inline']) .Link {
+  padding-inline: var(--link-pad);
   font-size: 1rem;
 }
-
+/* The ring is drawn inside the 44px target, with the usual 2px gap to the target's edge, and 2px clear of the words.
+   So on the last row a white gap always separates it from the red edge, and no ring reaches a neighbour. */
+.ErrorSummary:where([data-layout='inline']) .Link:focus-visible {
+  outline-offset: calc(-1 * var(--ring-inset));
+}

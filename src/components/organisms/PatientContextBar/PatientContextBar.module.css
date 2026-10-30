@@ -11,35 +11,46 @@
   border-block-end: 0;
   background: transparent;
 }
+/* Sticky from 64rem, under whatever else sticks above it (StaffLayout measures that as --header-space; 0 when the
+   header scrolls away, as it does from 64rem). */
 @media (min-width: 64rem) {
   .PatientContextBar:where([data-sticky]) {
     position: sticky;
-    inset-block-start: 0;
+    inset-block-start: var(--header-space, 0px);
     z-index: 5;
   }
 }
+/* Rows: breadcrumb / name and state / facts / the previous-next buttons (phones). From 40rem the buttons move up to
+   the end of the name's row, so the bar never grows a row of buttons under the facts. */
 .Inner {
   box-sizing: border-box;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'crumb' 'name' 'facts' 'actions';
   align-items: center;
-  gap: var(--space-10) var(--space-30);
+  gap: 0 var(--space-30);
   max-inline-size: var(--container-max);
   margin: 0 auto;
   padding: var(--space-5) var(--space-15) var(--space-10);
 }
-.Who {
-  flex: 1 1 32rem;
-  min-inline-size: 0;
+@media (min-width: 40rem) {
+  .Inner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: 'crumb crumb' 'name actions' 'facts facts';
+  }
 }
 .Breadcrumb {
+  grid-area: crumb;
   margin-block-end: calc(var(--space-5) * -1);
 }
+/* The name, then the state right after it; the state wraps under the name when the row is too narrow. */
 .NameLine {
+  grid-area: name;
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0 var(--space-15);
+  align-items: center;
+  gap: var(--space-5) var(--space-15);
+  min-inline-size: 0;
 }
 .Name {
   margin: 0;
@@ -49,9 +60,13 @@
   line-height: 1.3;
   overflow-wrap: anywhere;
 }
+.Status {
+  flex: none;
+}
 /* Facts are whole chunks set apart by a gap, never by punctuation, so nothing dangles at a line end.
    Each stays on one line; only the company or ward, the longest, wraps inside itself. */
 .Facts {
+  grid-area: facts;
   display: flex;
   flex-wrap: wrap;
   gap: 0 var(--space-15);
@@ -65,37 +80,34 @@
   min-inline-size: 0;
   white-space: normal;
 }
-.Status {
-  flex: none;
-}
 .Actions {
+  grid-area: actions;
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-end;
   gap: var(--space-10);
 }
-/* Phones: a smaller name, tighter spacing, and the previous/next buttons share one row
-   (equal columns; their words may wrap) instead of stacking. */
+/* Phones: a smaller name, tighter spacing, and the previous/next buttons share one row in two equal columns. With
+   the short words ("Người trước", "Người sau") each stays one line, so the row is one 44px button tall. */
 @media (max-width: 39.99rem) {
-  .Inner {
-    gap: var(--space-5) var(--space-15);
-  }
   .Breadcrumb {
     margin-block-start: calc(var(--space-5) * -1);
   }
   .NameLine {
-    gap: 0 var(--space-10);
+    gap: var(--space-5) var(--space-10);
   }
   .Name {
     font-size: 1.25rem;
   }
   .Actions {
     display: grid;
-    flex: 1 1 100%;
     grid-auto-columns: minmax(0, 1fr);
     grid-auto-flow: column;
+    margin-block-start: var(--space-5);
   }
-  /* Half a phone each: a narrower inner edge keeps "Người sau cần làm" to two lines at 320px. */
+  /* Half a phone each: a narrower inner edge and a closer arrow keep "‹ Người trước" on one line at 320px. */
   .Actions [data-component='Button'] {
+    gap: var(--space-5);
     padding-inline: var(--space-10);
   }
 }

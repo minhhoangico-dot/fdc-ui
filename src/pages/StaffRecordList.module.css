@@ -1,6 +1,12 @@
 /* Danh sách hồ sơ: the page's own layout only (title size, which filter control shows at which width).
    Role tokens only; the components bring their own look. 40rem matches DataTable's stackBelow="phone". */
 
+/* The title and how the batch is sent, kept together (the page's gap is for blocks). */
+.Heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
 .Title {
   margin: 0;
   font-family: var(--font-heading);
@@ -15,10 +21,28 @@
   max-inline-size: 36rem;
 }
 
-/* The batch in one line: plain words, bold only on the numbers. */
-.Stats {
+/* "Đợt này gửi tay: …": a plain muted line, not a tag (a tag is a state; this is a note about the batch). */
+.Mode {
   margin: 0;
   color: var(--text-muted);
+  text-wrap: pretty;
+}
+
+/* The batch in one line: plain words, bold only on the numbers. Each figure is a chunk that never breaks; the "·"
+   is drawn after a chunk (hidden from screen readers), so a wrapped line never starts or ends with a lone dot. */
+.Stats {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--space-10);
+  margin: 0;
+  color: var(--text-muted);
+}
+.Stats > span {
+  white-space: nowrap;
+}
+.Stats > span:not(:last-child)::after {
+  content: '·' / '';
+  margin-inline-start: var(--space-10);
 }
 .Stats strong {
   font-weight: 600;

@@ -1,19 +1,33 @@
-<!-- @dsCard group="Organisms" height=430 subtitle="records for staff: name first, status word, next step, paging; stacks on phones" -->
+<!-- @dsCard group="Organisms" height=540 subtitle="records for staff: name first, state tag, next step, paging; steady columns; stacks on phones" -->
 <div id="root" style="padding:16px" data-density="compact"></div>
 <script>
 var h = React.createElement, F = window.FDC;
 var rows = [
-  {stt: 1, name: 'Vũ Đức Khánh', meta: 'Nam · 12/04/1985 · CCCD …0001', code: 'RD26-0001', status: 'Cần điền · còn 61 mục', tone: 'neutral', next: 'Nhập phường / xã cư trú'},
-  {stt: 2, name: 'Lê Thị Hà', meta: 'Nữ · 03/09/1992 · CCCD …0002', code: 'RD26-0002', status: 'Cần sửa · còn 30 mục', tone: 'error', next: 'Kiểm tra lại số CCCD với năm sinh 1992'},
-  {stt: 3, name: 'Tôn Nữ Hoàng Bảo Ngọc Phương Thảo', meta: 'Nữ · 21/12/1978 · CCCD …0003', code: 'RD26-0003', status: 'Cần điền · còn 47 mục', tone: 'neutral', next: 'Chọn Không hoặc Có cho 17 câu tiền sử', busy: 'Chị Mai đang mở'}];
-var muted = {color: 'var(--text-muted)'};
+  {stt: 1, name: 'Vũ Đức Khánh', facts: ['Nam', 'Sinh 12/04/1985', 'CCCD …0001'], code: 'RD26-0001', status: 'Cần điền', count: 'còn 61 mục', tone: 'neutral', next: 'Nhập phường / xã cư trú'},
+  {stt: 2, name: 'Lê Thị Hà', facts: ['Nữ', 'Sinh 03/09/1992', 'CCCD …0002'], code: 'RD26-0002', status: 'Cần sửa', count: 'còn 30 mục', tone: 'error', next: 'Kiểm tra lại số CCCD với năm sinh 1992'},
+  {stt: 3, name: 'Tôn Nữ Hoàng Bảo Ngọc Phương Thảo', facts: ['Nữ', 'Sinh 21/12/1978', 'CCCD …0003'], code: 'RD26-0003', status: 'Cần điền', count: 'còn 47 mục', tone: 'neutral', next: 'Chọn Không hoặc Có cho 17 câu tiền sử', busy: 'Chị Mai đang mở'},
+  {stt: 4, name: 'Ngô Văn Nam', facts: ['Nam', 'Sinh 15/03/1990', 'CCCD …0004'], code: 'RD26-0004', status: 'Chờ gửi', tone: 'info', next: 'Hủy được đến 09:31:22'},
+  {stt: 10, name: 'Hoàng Minh Đức', facts: ['Nam', 'Sinh 02/01/1991', 'CCCD …0010'], code: 'RD26-0010', status: 'Sở đã tiếp nhận', tone: 'success', next: 'Chờ Bộ xác nhận', receipt: 'Mã Sở …118204'}];
+// Metadata (facts, the count, the department code): the caption size, muted; each chunk stays on one line.
+var meta = {fontSize: 'calc(var(--font-size-body) - 0.125rem)', color: 'var(--text-muted)'};
+var facts = Object.assign({display: 'flex', flexWrap: 'wrap', columnGap: 'var(--space-15)'}, meta);
+var nowrap = {whiteSpace: 'nowrap'};
 ReactDOM.createRoot(document.getElementById('root')).render(h(F.DataTable, {
-  caption: 'Người cần điền hoặc sửa', rows: rows, getRowKey: function (r) { return r.code; }, stackBelow: 'phone',
-  pagination: {page: 1, pageSize: 50, total: 1017, itemLabel: 'người', getHref: function (p) { return '#trang-' + p; }},
+  caption: 'Người trong đợt Rạng Đông KSK 2026', rows: rows, getRowKey: function (r) { return r.code; }, stackBelow: 'phone', minWidth: '40rem',
+  pagination: {page: 1, pageSize: 50, total: 2033, itemLabel: 'người', getHref: function (p) { return '#trang-' + p; }},
+  // Every column but the last has a width, so no column moves when a filter changes the rows.
   columns: [
-    {key: 'stt', header: 'STT', align: 'end', width: '4.5rem', cell: function (r) { return r.stt; }},
-    {key: 'name', header: 'Họ tên', rowHeader: true, cell: function (r) { return h(React.Fragment, null, h('a', {href: '#', style: {color: 'var(--text-link)', fontWeight: 600}}, r.name), h('div', {style: muted}, r.meta)); }},
-    {key: 'code', header: 'Mã lượt khám', nowrap: true, cell: function (r) { return r.code; }},
-    {key: 'status', header: 'Trạng thái', hideLabelWhenStacked: true, cell: function (r) { return h(F.StatusTag, {tone: r.tone, size: 'sm'}, r.status); }},
-    {key: 'next', header: 'Việc tiếp theo', cell: function (r) { return h(React.Fragment, null, r.next, r.busy ? h('div', {style: muted}, r.busy) : null); }}]}));
+    {key: 'stt', header: 'STT', align: 'end', width: '4.5rem', nowrap: true, cell: function (r) { return r.stt; }},
+    {key: 'name', header: 'Họ tên', rowHeader: true, width: 'max(25vw, 12rem)', cell: function (r) {
+      return h(React.Fragment, null, h('a', {href: '#', style: {color: 'var(--text-link)', fontWeight: 600}}, r.name),
+        h('div', {style: facts}, r.facts.map(function (f) { return h('span', {key: f, style: nowrap}, f, ' '); })));
+    }},
+    {key: 'code', header: 'Mã lượt khám', nowrap: true, width: '9rem', cell: function (r) { return r.code; }},
+    {key: 'status', header: 'Trạng thái', nowrap: true, width: '11rem', hideLabelWhenStacked: true, cell: function (r) {
+      return h(React.Fragment, null, h(F.StatusTag, {tone: r.tone, size: 'sm'}, r.status), r.count ? h('div', {style: meta}, r.count) : null);
+    }},
+    {key: 'next', header: 'Việc tiếp theo', cell: function (r) {
+      return h(React.Fragment, null, r.next, r.receipt ? h('div', {style: Object.assign({}, meta, nowrap)}, r.receipt) : null,
+        r.busy ? h('div', {style: {color: 'var(--text-muted)'}}, r.busy) : null);
+    }}]}));
 </script>

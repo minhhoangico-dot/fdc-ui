@@ -43,16 +43,20 @@
   gap: var(--space-10);
 }
 .Box {
+  --combobox-edge: 1px;
   position: relative;
   flex: 1 1 auto;
   min-inline-size: 0;
+}
+.Combobox:where([data-invalid]) .Box {
+  --combobox-edge: var(--border-width-strong);
 }
 .Input {
   box-sizing: border-box;
   inline-size: 100%;
   min-block-size: var(--control-height);
   padding: var(--space-10) var(--space-40);
-  border: 1px solid var(--border-control);
+  border: var(--combobox-edge) solid var(--border-control);
   border-radius: var(--radius-sm);
   background: var(--surface);
   color: var(--text-default);
@@ -75,8 +79,41 @@
   color: var(--text-disabled);
 }
 .Combobox:where([data-invalid]) .Input {
+  border-color: var(--status-error-text);
+}
+/* A chosen coded item at rest: the input's own text is hidden and .Shown draws it with the name cut and the
+   code kept, "Nhà chuyên m… (22)", because the code is what staff check. Focus shows the input's full text. */
+.Input[data-masked]:not(:focus) {
+  color: transparent;
+}
+.Shown {
   box-sizing: border-box;
-  border: var(--border-width-strong) solid var(--status-error-text);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding-inline: calc(var(--combobox-edge) + var(--space-40));
+  color: var(--text-default);
+  font-size: var(--font-size-body);
+  line-height: 1.4;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.Input:focus ~ .Shown {
+  visibility: hidden;
+}
+.ShownName {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ShownCode {
+  flex: none;
+  color: var(--text-muted);
+}
+.Input:disabled ~ .Shown,
+.Input:disabled ~ .Shown .ShownCode {
+  color: var(--text-disabled);
 }
 .Icon,
 .Chevron {
@@ -177,6 +214,10 @@
   font-weight: 400;
 }
 @media (forced-colors: active) {
+  /* System colors replace the transparent text, so the input shows its own text and the drawn copy goes. */
+  .Shown {
+    display: none;
+  }
   .Option[data-active] {
     outline: var(--focus-ring-width) solid Highlight;
     outline-offset: calc(var(--focus-ring-width) * -1);

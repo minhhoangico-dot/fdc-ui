@@ -44,6 +44,30 @@ export const ScreenState: Story = {
   ),
 };
 
+/**
+ * Previous and next: the "back" arrow before the words, the "next" arrow after them (`iconPosition="end"`), so each
+ * points the way it goes. The short label is what shows; the accessible name starts with it and adds the person.
+ */
+export const PreviousAndNext: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-10)', alignItems: 'center' }}>
+      <Button icon="simple-left" href="#" aria-label="Người trước: Ngô Văn Nam">
+        Người trước
+      </Button>
+      <Button icon="simple-right" iconPosition="end" href="#" aria-label="Người sau: Lê Thị Hà">
+        Người sau
+      </Button>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const next = canvas.getByRole('link', { name: 'Người sau: Lê Thị Hà' });
+    // The arrow comes after the words.
+    await expect(next.lastElementChild?.tagName.toLowerCase()).toBe('svg');
+    await expect(canvas.getByRole('link', { name: 'Người trước: Ngô Văn Nam' }).firstElementChild?.tagName.toLowerCase()).toBe('svg');
+  },
+};
+
 /** Tab still reaches an unavailable button with a reason; it reads the reason and ignores clicks. */
 export const DisabledWithReason: Story = {
   args: { variant: 'primary', children: 'Gửi lên Sở', disabledReason: 'Còn 3 mục còn thiếu.' },

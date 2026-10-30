@@ -42,7 +42,12 @@ export type HeaderProps = {
    * The thin bar shows `compactBar` (the person being worked on: name, date of birth, record code) and the menu button.
    */
   collapseOnScroll?: boolean;
-  /** compact: content of the thin bar shown when collapsed. */
+  /**
+   * compact: the person in the thin bar shown when collapsed, as a fragment: the name first, then each fact as its
+   * own element, e.g. `<><strong>Đặng Thanh Chi</strong><span>Sinh 07/07/1990</span><span>RD26-0006</span></>`.
+   * The name keeps one line (a very long name ends in "…"); each fact stays whole, set apart by space, never by "·".
+   * The thin bar is never taller than the full header row.
+   */
   compactBar?: ReactNode;
   className?: string;
 };
@@ -158,8 +163,9 @@ export function Header({
       onClick={() => setMenuOpen((v) => !v)}
     >
       <Icon name="navigation-menu" size={20} />
-      {/* The compact bar keeps "Menu" (state is in aria-expanded) so the one-row bar does not wrap at 320px. */}
-      <span>{menuOpen && !compact ? closeMenuLabel : menuLabel}</span>
+      {/* The compact bar keeps "Menu" (state is in aria-expanded) so the one-row bar does not wrap at 320px.
+          In the collapsed thin bar on a narrow phone only the icon shows; the word stays as the button's name. */}
+      <span className={styles.MenuLabel}>{menuOpen && !compact ? closeMenuLabel : menuLabel}</span>
     </button>
   );
 

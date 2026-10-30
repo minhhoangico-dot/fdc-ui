@@ -54,16 +54,15 @@
   min-inline-size: 0;
 }
 
-/* Boxed: a notice standing on its own in a page. Tinted in the type's color with an edge and a bar in the same
-   color; the mark carries the type, the words carry the meaning. */
+/* Boxed: a notice standing on its own in a page. A pale tint in the type's color, the sign and the words: no edge
+   and no side bar (a dark edge or a colored stripe makes a notice look like a control or a warning banner).
+   The mark carries the type, the words carry the meaning. */
 .FormNotice:where([data-boxed]) {
   box-sizing: border-box;
-  --notice-bar: var(--status-info-border);
   --notice-bg: var(--status-info-bg);
   padding: var(--space-15) var(--space-20);
-  border: 1px solid var(--notice-bar);
-  /* 6px bar: twice the heavy border width. */
-  border-inline-start: calc(2 * var(--border-width-heavy)) solid var(--notice-bar);
+  /* Transparent edge: invisible here, drawn in forced-colors mode where the tint is dropped. */
+  border: 1px solid transparent;
   border-radius: var(--radius-sm);
   background: var(--notice-bg);
   color: var(--text-default);
@@ -71,17 +70,14 @@
   font-weight: 500;
 }
 .FormNotice:where([data-boxed][data-type='warning']) {
-  --notice-bar: var(--status-warning-border);
   --notice-bg: var(--status-warning-bg);
 }
 .FormNotice:where([data-boxed][data-type='error']) {
-  --notice-bar: var(--status-error-text);
   --notice-bg: var(--status-error-bg);
   color: var(--status-error-text);
   font-weight: 600;
 }
 .FormNotice:where([data-boxed][data-type='success']) {
-  --notice-bar: var(--status-success-text);
   --notice-bg: var(--status-success-bg);
   color: var(--status-success-text);
   font-weight: 600;

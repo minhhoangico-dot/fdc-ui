@@ -1,4 +1,4 @@
-<!-- @dsCard group="Atoms" height=210 subtitle="secondary (white), primary, hotline, loading, unavailable with its reason" -->
+<!-- @dsCard group="Atoms" height=240 subtitle="secondary (white), primary, hotline, loading, unavailable with its reason, previous / next" -->
 <div id="root" style="display:flex;flex-direction:column;gap:16px;padding:16px"></div>
 <script>
 var h = React.createElement, F = window.FDC;
@@ -10,5 +10,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, nu
     h(F.Button, {variant: 'primary', loading: true}, 'Đặt lịch khám')),
   h('div', {style: {display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center'}},
     h(F.Button, {icon: 'simple-left'}, 'Quay lại phiếu'),
-    h(F.Button, {variant: 'primary', disabledReason: 'Chọn một dòng ở trên trước.'}, 'Dùng người và lượt khám này'))));
+    h(F.Button, {variant: 'primary', disabledReason: 'Chọn một dòng ở trên trước.'}, 'Dùng người và lượt khám này')),
+  h('div', {'data-density': 'compact', style: {display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}},
+    h(F.Button, {icon: 'simple-left', href: '#', 'aria-label': 'Người trước: Ngô Văn Nam'}, 'Người trước'),
+    h(F.Button, {icon: 'simple-right', iconPosition: 'end', href: '#', 'aria-label': 'Người sau: Nguyễn Thị Mai Anh'}, 'Người sau'))));
 </script>

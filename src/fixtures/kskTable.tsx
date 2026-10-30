@@ -15,21 +15,35 @@ export const statusTone: Record<RecordStatus, StatusTagTone> = {
   'Chờ gửi': 'info',
   'Đang gửi': 'info',
   'Sở đã tiếp nhận': 'success',
+  'Bộ đã xác nhận': 'success',
   'Bị từ chối': 'error',
   'Chưa rõ kết quả': 'attention',
 };
 
-const muted = { color: 'var(--text-muted)' } as const;
+/**
+ * Metadata under a value (the facts under the name, the count under the state): the caption size, 14px in the
+ * compact density of staff screens (16px in the comfortable one), muted, so the name and the state lead the row.
+ */
+const meta = { fontSize: 'calc(var(--font-size-body) - 0.125rem)', color: 'var(--text-muted)' } as const;
 /** Facts that tell people apart, set apart by space rather than "·"; each fact stays on one line. */
-const facts = { display: 'flex', flexWrap: 'wrap', columnGap: 'var(--space-15)', color: 'var(--text-muted)' } as const;
-const fact = { whiteSpace: 'nowrap' } as const;
+const facts = { ...meta, display: 'flex', flexWrap: 'wrap', columnGap: 'var(--space-15)' } as const;
+const nowrap = { whiteSpace: 'nowrap' } as const;
 
+/**
+ * Column widths are set for every column but "Việc tiếp theo", so no column moves when the filter changes the rows,
+ * and the width left over goes to the next step. The state column fits its longest word ("Sẵn sàng xem lại") on one
+ * line; the count of missing items sits under the tag, not in it.
+ */
 export const recordColumns: Array<DataTableColumn<KskRecord>> = [
   { key: 'stt', header: 'STT', cell: (r) => r.stt.toLocaleString('vi-VN'), align: 'end', width: '4.5rem', nowrap: true },
   {
     key: 'name',
     header: 'Họ tên',
     rowHeader: true,
+    // A length, so the column keeps its width whatever the rows hold (a percentage mixed with rem is treated as
+    // auto and moves with the rows): a quarter of the screen, and never under 12rem (the name and two lines of
+    // facts at 768px, or in a table that scrolls sideways on a phone).
+    width: 'max(25vw, 12rem)',
     cell: (r) => (
       <>
         <a href={`#ho-so-${r.recordCode}`} style={{ color: 'var(--text-link)', fontWeight: 600 }}>
@@ -37,8 +51,8 @@ export const recordColumns: Array<DataTableColumn<KskRecord>> = [
         </a>
         {/* The spaces between the facts are for screen readers; on screen the gap separates them. */}
         <div style={facts}>
-          <span style={fact}>{r.sex}</span> <span style={fact}>Sinh {r.birthDate}</span>{' '}
-          <span style={fact}>{r.idEnd ? `CCCD …${r.idEnd}` : 'Chưa có CCCD'}</span>
+          <span style={nowrap}>{r.sex}</span> <span style={nowrap}>Sinh {r.birthDate}</span>{' '}
+          <span style={nowrap}>{r.idEnd ? `CCCD …${r.idEnd}` : 'Chưa có CCCD'}</span>
         </div>
       </>
     ),
@@ -47,13 +61,17 @@ export const recordColumns: Array<DataTableColumn<KskRecord>> = [
   {
     key: 'status',
     header: 'Trạng thái',
-    width: '12rem',
-    // On phones the tag's words say it all ("Cần điền · còn 61 mục"), so its line needs no label.
+    width: '11rem',
+    nowrap: true,
+    // On phones the tag's words say it all, so its line needs no label (it still sits in the value column).
     hideLabelWhenStacked: true,
     cell: (r) => (
-      <StatusTag tone={statusTone[r.status]} size="sm">
-        {r.status === 'Cần điền' || r.status === 'Cần sửa' ? `${r.status} · còn ${r.missing} mục` : r.status}
-      </StatusTag>
+      <>
+        <StatusTag tone={statusTone[r.status]} size="sm">
+          {r.status}
+        </StatusTag>
+        {(r.status === 'Cần điền' || r.status === 'Cần sửa') && r.missing > 0 ? <div style={meta}>còn {r.missing} mục</div> : null}
+      </>
     ),
   },
   {
@@ -62,7 +80,12 @@ export const recordColumns: Array<DataTableColumn<KskRecord>> = [
     cell: (r) => (
       <>
         {r.next}
-        {r.openBy ? <div style={muted}>{r.openBy}</div> : null}
+        {r.receipt ? (
+          // Like "CCCD …0001": the end of the department's code tells records apart in the list; the record shows the
+          // whole code, where it is read out. It never breaks across lines.
+          <div style={{ ...meta, ...nowrap }}>Mã Sở …{r.receipt.slice(-6)}</div>
+        ) : null}
+        {r.openBy ? <div style={{ color: 'var(--text-muted)' }}>{r.openBy}</div> : null}
       </>
     ),
   },

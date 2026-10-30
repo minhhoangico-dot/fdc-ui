@@ -17,7 +17,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Empty: Story = {};
 
-/** A choice reads name first, code after: "Tăng huyết áp vô căn (nguyên phát) (I10)". */
+/**
+ * A choice reads name first, code after and lighter: "Tăng huyết áp vô căn (nguyên phát) (I10)". When the box is
+ * too narrow the name is cut ("Tăng huyết … (I10)"), never the code. Focused, the field shows its own text, scrolled so the code is in view.
+ */
 export const Chosen: Story = { args: { defaultValue: 'I10' } };
 
 /** Typed without tone marks; the list shows matches by name, code or other words. */
@@ -37,7 +40,10 @@ export const NoResults: Story = {
 
 export const Error: Story = { args: { label: 'Nghề nghiệp', options: occupations, required: true, error: 'Chọn nghề nghiệp trước khi xem lại' } };
 
-/** Lines up with TextFields in a FieldRow. */
+/**
+ * Lines up with TextFields in a FieldRow. In a two-column row the chosen name is cut and its code kept:
+ * "Nhà chuy… (22)". "Xóa" stays outside the box, a 44px target.
+ */
 export const InAFieldRow: Story = {
   decorators: [(Story) => <div style={{ maxWidth: 900 }}><Story /></div>],
   render: () => (

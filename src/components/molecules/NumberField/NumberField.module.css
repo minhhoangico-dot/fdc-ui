@@ -1,0 +1,19 @@
+/* The "Cao" / "Thấp" line, in the message line above the box (never beside it, where it took the box's width).
+   One line at most: the tag, then the normal range when it fits. The range is one unbreakable chunk that starts with
+   its "·"; when it does not fit beside the tag it wraps to a second line, which is clipped, so the line shows the tag
+   alone and never ends with a stray "·". Screen readers still read the range. The range is reference data, so it is
+   caption size (14px, like the tag): "Cao · bình thường 60–100" then fits a 13rem staff column. Role tokens only. */
+.Flag {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: flex-start;
+  column-gap: 0.3em;
+  max-block-size: 1.4em;
+  overflow: hidden;
+  min-inline-size: 0;
+}
+.Range {
+  font-size: 0.875rem;
+  white-space: nowrap;
+}

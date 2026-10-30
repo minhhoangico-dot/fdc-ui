@@ -1,5 +1,6 @@
-/* Legend, hint and error look like a field's label, hint and error (Combobox, TextField), so the group
-   lines up with the fields around it. The fieldset's flex gap does not reach the legend, hence its margin. */
+/* Hint and error look like a field's hint and error (Combobox, TextField), so the group lines up with the
+   fields around it. The legend is the group's question, 600 over the add field's 500 label, like a group
+   label ("Huyết áp (mmHg)") over its fields. The fieldset's flex gap does not reach the legend, hence its margin. */
 .CodeList {
   box-sizing: border-box;
   display: flex;
@@ -15,7 +16,7 @@
   padding: 0;
   margin-block-end: var(--space-5);
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.4;
   color: var(--text-default);
 }

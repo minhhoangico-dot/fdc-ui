@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode, type Ref } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, within } from '@storybook/test';
+import { expect, userEvent, waitFor, within } from '@storybook/test';
 import { Button } from '../components/atoms/Button';
 import { Checkbox } from '../components/atoms/Checkbox';
 import { StatusTag, type StatusTagTone } from '../components/atoms/StatusTag';
+import { VisuallyHidden } from '../components/atoms/VisuallyHidden';
 import { Inline } from '../components/layout/Inline';
 import { Breadcrumb } from '../components/molecules/Breadcrumb';
-import { ConfirmationPanel, type ConfirmationStep } from '../components/molecules/ConfirmationPanel';
+import { ConfirmationPanel, type ConfirmationStep, type ConfirmationTone } from '../components/molecules/ConfirmationPanel';
 import { FormNotice, type FormNoticeValue } from '../components/molecules/FormNotice';
 import { SummaryList, type SummaryRow } from '../components/molecules/SummaryList';
 import { DataTable } from '../components/organisms/DataTable';
@@ -23,7 +24,7 @@ import styles from './StaffReviewSend.module.css';
  */
 type Phase = 'review' | 'waiting' | 'sending' | 'accepted' | 'rejected' | 'unknown' | 'stale';
 
-/** The record's state tag. "Chờ gửi" has no countdown here: the panel title already counts. */
+/** The record's state tag. "Chờ gửi" has no countdown here: the panel says how long is left. */
 const tags: Record<Phase, { label: string; tone: StatusTagTone }> = {
   review: { label: 'Sẵn sàng xem lại', tone: 'neutral' },
   stale: { label: 'Sẵn sàng xem lại', tone: 'neutral' },
@@ -37,6 +38,47 @@ const tags: Record<Phase, { label: string; tone: StatusTagTone }> = {
 const canSend = (p: Phase) => p === 'review' || p === 'stale';
 /** A refusal opens the record again for a fix; while waiting or sending nothing may change. */
 const canEdit = (p: Phase) => canSend(p) || p === 'rejected';
+
+/** The person after Ngô Văn Nam in the batch (the same sample facts on every staff page). */
+const NEXT_PERSON = 'Đặng Thanh Chi';
+
+/**
+ * Step lines (ConfirmationPanel, decision of v2.4): done steps say what happened, the step being waited for says
+ * "Chờ …", later steps are plain event names. The panel adds the state in words for screen readers.
+ */
+const steps: Record<'waiting' | 'sending' | 'accepted' | 'rejected' | 'unknown', ConfirmationStep[]> = {
+  waiting: [
+    { label: 'Đã xem lại', state: 'done' },
+    { label: 'Chờ gửi', state: 'current' },
+    { label: 'Sở tiếp nhận', state: 'todo' },
+    { label: 'Bộ xác nhận', state: 'todo' },
+  ],
+  sending: [
+    { label: 'Đã xem lại', state: 'done' },
+    { label: 'Đã gửi lên Sở', state: 'done' },
+    { label: 'Chờ Sở trả lời', state: 'current' },
+    { label: 'Bộ xác nhận', state: 'todo' },
+  ],
+  accepted: [
+    { label: 'Đã xem lại', state: 'done' },
+    { label: 'Đã gửi lên Sở', state: 'done' },
+    { label: 'Sở đã tiếp nhận', state: 'done' },
+    { label: 'Chờ Bộ xác nhận', state: 'current' },
+  ],
+  rejected: [
+    { label: 'Đã gửi lên Sở', state: 'done' },
+    { label: 'Sở từ chối', state: 'failed' },
+    { label: 'Chờ chị sửa', state: 'current' },
+    { label: 'Xem lại', state: 'todo' },
+    { label: 'Gửi lại', state: 'todo' },
+  ],
+  unknown: [
+    { label: 'Đã xem lại', state: 'done' },
+    { label: 'Đã gửi lên Sở', state: 'done' },
+    { label: 'Chờ Sở trả lời', state: 'current' },
+    { label: 'Bộ xác nhận', state: 'todo' },
+  ],
+};
 
 const history = [
   'Có ai trong gia đình mắc một trong các bệnh: truyền nhiễm, tim mạch, đái tháo đường, lao, hen phế quản, ung thư, động kinh, rối loạn tâm thần không',
@@ -69,7 +111,7 @@ const history = [
 const abnormalLabs = labResults.filter((r) => r.flag);
 const manualLabs = labResults.filter((r) => r.source === 'Nhập tay');
 
-/** A code after its name, in brackets and lighter: "Tăng huyết áp (I10)". */
+/** A code after its name, in brackets and lighter: "Tăng huyết áp (I10)". It never breaks across lines. */
 const code = (c: string) => <span className={styles.Code}>({c})</span>;
 /** A value outside the normal range: amber "Cao"/"Thấp", never red (it is not an input error). */
 const flag = (word: string) => (
@@ -93,14 +135,16 @@ function partRows(phase: Phase): SummaryRow[] {
       ),
       changeHref,
     },
-    { key: '2. Lần khám', value: '10/10/2026 08:00, khám sức khỏe định kỳ', changeHref },
+    { key: '2. Lần khám', value: '10/10/2026 08:15, khám sức khỏe định kỳ', changeHref },
     {
       key: '3. Tiền sử',
       value: <>25 câu: Không, trừ Tăng huyết áp {code('I10')}</>,
       changeHref,
       detailsLabel: 'Xem 25 câu',
       details: (
+        // Inside the card: rows and dividers only, no second box (DataTable variant="plain").
         <DataTable
+          variant="plain"
           caption="25 câu tiền sử"
           minWidth="30rem"
           stackBelow="phone"
@@ -134,12 +178,12 @@ function partRows(phase: Phase): SummaryRow[] {
           {stale ? (
             <>
               <span>
-                Cân nặng <strong>53 kg</strong>{' '}
+                Cân nặng <strong>66 kg</strong>{' '}
                 <StatusTag tone="info" size="sm">
                   Chị Mai sửa 09:14
                 </StatusTag>
               </span>
-              <span>Chiều cao 170 cm, BMI 18,3</span>
+              <span>Chiều cao 170 cm, BMI 22,8</span>
             </>
           ) : (
             <span>Chiều cao 170 cm, cân nặng 65 kg, BMI 22,5</span>
@@ -159,17 +203,28 @@ function partRows(phase: Phase): SummaryRow[] {
     {
       key: '6. Cận lâm sàng',
       // The source sits next to the data: which person and visit HIS gave, when, and what was typed by hand.
-      // "X-quang nhập tay" is kept whole, so the line never breaks after "X-".
+      // Facts are whole chunks set apart by space, never by "·", so no line starts or ends with a stray mark.
       value: (
-        <>
-          12 chỉ số từ HIS (Ngô Văn Nam, 15/03/1990 · lượt khám 10/10/2026 08:15 · lấy lúc 09:12) · <span className={styles.Whole}>X-quang nhập tay</span>
-        </>
+        <span className={styles.Lines}>
+          <span>
+            12 chỉ số từ HIS, <span className={styles.Whole}>lấy lúc 09:12</span>
+          </span>
+          <span className={styles.Facts}>
+            <span>Ngô Văn Nam</span>
+            <span>Sinh 15/03/1990</span>
+            <span>Lượt khám 10/10/2026 08:15</span>
+          </span>
+          <span>
+            <span className={styles.Whole}>X-quang tim phổi</span> nhập tay
+          </span>
+        </span>
       ),
       changeHref,
       detailsLabel: 'Xem 12 chỉ số và X-quang',
       defaultDetailsOpen: true,
       details: (
         <DataTable
+          variant="plain"
           caption="Kết quả cận lâm sàng"
           minWidth="30rem"
           stackBelow="phone"
@@ -211,8 +266,9 @@ function partRows(phase: Phase): SummaryRow[] {
     },
     {
       key: '7. Kết luận',
+      // Every field of part 7, with the entry page's own names, so nothing is sent unseen.
       value: (
-        <span className={styles.Lines}>
+        <div className={styles.Lines}>
           {phase === 'rejected' ? (
             <span>
               Phân loại sức khỏe: <strong>chưa có</strong>{' '}
@@ -223,9 +279,14 @@ function partRows(phase: Phase): SummaryRow[] {
           ) : (
             <span>Phân loại sức khỏe: Loại II</span>
           )}
-          <span>Bệnh: Tăng huyết áp vô căn (nguyên phát) {code('I10')}</span>
-          <span>Lời bác sĩ: “Theo dõi huyết áp và đường huyết, khám lại sau 3 tháng.”</span>
-        </span>
+          <span>Bệnh, tật:</span>
+          <ul className={styles.SubList}>
+            <li>Tăng huyết áp vô căn (nguyên phát) {code('I10')}</li>
+            <li>Đái tháo đường type 2 {code('E11')}</li>
+          </ul>
+          <span>Diễn giải trên phiếu (nguyên văn): “Theo dõi huyết áp và đường huyết, khám lại sau 3 tháng.”</span>
+          <span>Lời khuyên: “Đo lại huyết áp sau 1 tháng; ăn nhạt, bớt đồ ngọt.”</span>
+        </div>
       ),
       changeHref,
     },
@@ -233,29 +294,59 @@ function partRows(phase: Phase): SummaryRow[] {
 }
 
 /** The way on after a send: staff never wait for the department; the record stays findable in the list. */
-function NextPerson({ line }: { line?: string }) {
+function NextPerson({ line, variant = 'primary' }: { line?: ReactNode; variant?: 'primary' | 'neutral' }) {
   return (
     <Inline gap={15}>
-      <Button variant="primary" href="#">
-        Sang người sau cần làm
+      <Button variant={variant} href="#" icon="simple-right" iconPosition="end">
+        {/* On a narrow phone the label breaks after the colon, never inside the name. */}
+        Sang người sau: <span className={styles.Whole}>{NEXT_PERSON}</span>
       </Button>
       {line ? <span>{line}</span> : null}
     </Inline>
   );
 }
 
-/** A refusal or an unknown outcome: the notice, its main button, and asking Minh (which can be taken back). */
-function NoticeOutcome({ notice, primary }: { notice: FormNoticeValue; primary: ReactNode }) {
+type NoticeOutcomeProps = {
+  tone: Extract<ConfirmationTone, 'error' | 'attention'>;
+  title: string;
+  steps: ConfirmationStep[];
+  focusOnMount: boolean;
+  /** What happened and what comes next, in sentences. */
+  children: ReactNode;
+  /** The main button: open the part to fix, or check the status. */
+  primary: ReactNode;
+};
+
+/**
+ * A refusal or an unknown outcome: a pale panel whose title is the state (an h2, so heading navigation finds it),
+ * the department's words, the main button, asking Minh (which can be taken back), and the way on to the next person.
+ */
+function NoticeOutcome({ tone, title, steps: outcomeSteps, focusOnMount, children, primary }: NoticeOutcomeProps) {
   const [asked, setAsked] = useState(false);
   return (
-    <section aria-label="Kết quả gửi" className={styles.Outcome}>
-      <FormNotice boxed notice={notice} />
+    <ConfirmationPanel tone={tone} headingLevel={2} title={title} steps={outcomeSteps} focusOnMount={focusOnMount}>
+      {children}
       <Inline gap={10}>
         {primary}
         {/* The same button changes its words, so focus stays on it. */}
         <Button onClick={() => setAsked((v) => !v)}>{asked ? 'Hủy yêu cầu' : 'Nhờ Minh kiểm tra'}</Button>
       </Inline>
       <FormNotice notice={asked ? { type: 'info', text: 'Đã nhờ Minh kiểm tra lúc 09:42. Minh trả lời trong hoso; chị làm người khác trong lúc chờ.' } : null} />
+      <NextPerson variant="neutral" />
+    </ConfirmationPanel>
+  );
+}
+
+/** A notice block that is not a send result (changed record, cancelled send): its own h2, then the boxed notice. */
+function NoticeBlock({ id, title, notice, headingRef, children }: { id: string; title: string; notice: FormNoticeValue; headingRef?: Ref<HTMLHeadingElement>; children?: ReactNode }) {
+  return (
+    <section aria-labelledby={id} className={styles.Outcome}>
+      <h2 id={id} ref={headingRef} tabIndex={headingRef ? -1 : undefined} className={styles.H2}>
+        {title}
+      </h2>
+      {/* Not live: the page's status line announces the moment once. */}
+      <FormNotice boxed live={false} notice={notice} />
+      {children}
     </section>
   );
 }
@@ -266,22 +357,38 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
   const [left, setLeft] = useState(undoSeconds);
   const [checking, setChecking] = useState(false);
   const [cancelled, setCancelled] = useState(false);
-  const cancelledRef = useRef<HTMLDivElement>(null);
+  // Focus moves to a new result's heading only after the person acted, or when focus was inside the result that
+  // went away. A page opened on a result does not jump.
+  const [moveFocus, setMoveFocus] = useState(false);
+  // The one status line that is always on the page: it announces the moments (start, end, cancel), never the seconds.
+  const [said, setSaid] = useState('');
+  const outcomeRef = useRef<HTMLDivElement>(null);
+  const cancelledRef = useRef<HTMLHeadingElement>(null);
 
   // The undo window counts down; at 0 the record goes to the department and can no longer be cancelled.
   useEffect(() => {
-    if (phase !== 'waiting') return;
+    if (phase !== 'waiting') return undefined;
     if (left <= 0) {
+      // "Hủy gửi" goes away with the window: if focus was in the panel, the next panel's heading takes it.
+      setMoveFocus(Boolean(outcomeRef.current?.contains(document.activeElement)));
       setPhase('sending');
-      return;
+      setSaid('Đã chuyển sang Đang gửi');
+      return undefined;
     }
     const t = window.setTimeout(() => setLeft((s) => s - 1), 1000);
     return () => window.clearTimeout(t);
   }, [phase, left]);
 
+  // Once read out, the status line is emptied, so a screen reader reading the page later meets no stale sentence.
+  useEffect(() => {
+    if (!said) return undefined;
+    const t = window.setTimeout(() => setSaid(''), 8000);
+    return () => window.clearTimeout(t);
+  }, [said]);
+
   // "Kiểm tra lại trạng thái": in this sample the department answers that it holds the record.
   useEffect(() => {
-    if (!checking) return;
+    if (!checking) return undefined;
     const t = window.setTimeout(() => {
       setChecking(false);
       setPhase('accepted');
@@ -289,7 +396,7 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
     return () => window.clearTimeout(t);
   }, [checking]);
 
-  // After "Hủy gửi" the panel and its button are gone: focus the line that says nothing was sent.
+  // After "Hủy gửi" the panel and its button are gone: focus the heading that says nothing was sent.
   useEffect(() => {
     if (cancelled) cancelledRef.current?.focus();
   }, [cancelled]);
@@ -297,32 +404,28 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
   const sendable = canSend(phase);
   const tag = tags[phase];
   const trail = [
+    { label: 'Việc của tôi', href: '#' },
     { label: 'Rạng Đông KSK 2026', href: '#' },
     { label: 'Ngô Văn Nam', href: '#' },
     { label: sendable ? 'Xem lại trước khi gửi' : 'Trạng thái gửi' },
   ];
 
+  // Each result is its own panel (key per phase), so its heading takes focus when it replaces the one before.
   let outcome: ReactNode = null;
   if (phase === 'waiting') {
     outcome = (
-      <ConfirmationPanel
-        tone="pending"
-        headingLevel={2}
-        title={`Chờ gửi · còn ${left} giây`}
-        steps={[
-          { label: 'Đã xem lại', state: 'done' },
-          { label: 'Chờ gửi', state: 'current' },
-          { label: 'Sở tiếp nhận', state: 'todo' },
-          { label: 'Bộ xác nhận', state: 'todo' },
-        ]}
-      >
+      <ConfirmationPanel key="waiting" tone="pending" headingLevel={2} title="Chờ gửi lên Sở" steps={steps.waiting} focusOnMount={moveFocus}>
+        {/* The seconds are here, not in the heading: a focused heading keeps one name while the count runs. */}
         <Inline gap={15}>
-          <span>Chưa có gì lên Sở.</span>
+          <span>
+            <strong className={styles.Seconds}>Còn {left} giây để hủy.</strong> Chưa có gì lên Sở.
+          </span>
           <Button
             onClick={() => {
               setPhase('review');
               setLeft(undoSeconds);
               setCancelled(true);
+              setSaid('Đã hủy gửi. Chưa có gì lên Sở; hồ sơ mở lại để chị sửa.');
             }}
           >
             Hủy gửi
@@ -332,95 +435,127 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
       </ConfirmationPanel>
     );
   } else if (phase === 'sending') {
-    const steps: ConfirmationStep[] = [
-      { label: 'Đã xem lại', state: 'done' },
-      { label: 'Chờ gửi', state: 'done' },
-      { label: 'Chờ Sở trả lời', state: 'current' },
-      { label: 'Bộ xác nhận', state: 'todo' },
-    ];
     outcome = (
-      <ConfirmationPanel tone="pending" headingLevel={2} title="Đang gửi lên Sở" steps={steps}>
-        <p>Gửi tự động đã chuyển hồ sơ lên Sở lúc 09:31. Không hủy được nữa; Sở thường trả lời trong vài phút.</p>
-        <NextPerson line="Câu trả lời của Sở hiện ở danh sách, nhóm Đang gửi." />
+      <ConfirmationPanel key="sending" tone="pending" headingLevel={2} title="Đang gửi lên Sở" steps={steps.sending} focusOnMount={moveFocus}>
+        <p>Hồ sơ đã gửi lên Sở lúc 09:31, không hủy được nữa. Sở thường trả lời trong vài phút.</p>
+        {/* Where each answer lands in the list (the list's groups, v2.4). */}
+        <p>Khi Sở trả lời, hồ sơ ở danh sách:</p>
+        <ul className={styles.Answers}>
+          <li>Sở tiếp nhận: nhóm Sở đã tiếp nhận.</li>
+          <li>Bị từ chối: nhóm Cần điền hoặc sửa, kèm lý do của Sở.</li>
+          <li>Chưa rõ kết quả: vẫn ở nhóm Đang gửi, với nút Kiểm tra lại trạng thái.</li>
+        </ul>
+        <NextPerson />
       </ConfirmationPanel>
     );
   } else if (phase === 'accepted') {
     outcome = (
       <ConfirmationPanel
+        key="accepted"
         emphasis="subtle"
         headingLevel={2}
         title="Sở đã tiếp nhận"
         reference="SYT-HN-2026-118204"
         referenceLabel="Mã tiếp nhận của Sở"
-        steps={[
-          { label: 'Đã xem lại', state: 'done' },
-          { label: 'Chờ gửi', state: 'done' },
-          { label: 'Sở đã tiếp nhận', state: 'done' },
-          { label: 'Chờ Bộ xác nhận', state: 'current' },
-        ]}
+        steps={steps.accepted}
+        focusOnMount={moveFocus}
       >
-        <p>Bộ Y tế chưa xác nhận. Khi Bộ xác nhận, trạng thái đổi thành “Bộ đã xác nhận”; không cần làm gì thêm.</p>
+        <p>Bộ Y tế chưa xác nhận. Khi Bộ xác nhận, trạng thái đổi thành “Bộ đã xác nhận”; chị không cần làm gì thêm.</p>
         <NextPerson />
       </ConfirmationPanel>
     );
   } else if (phase === 'rejected') {
     outcome = (
       <NoticeOutcome
-        notice={{
-          type: 'error',
-          text: 'Bị từ chối: Sở trả lại hồ sơ lúc 09:32. Lý do của Sở: “Thiếu kết luận phân loại sức khỏe”. Chưa có gì được ghi nhận.',
-        }}
+        key="rejected"
+        tone="error"
+        title="Bị từ chối"
+        steps={steps.rejected}
+        focusOnMount={moveFocus}
         primary={
           <Button variant="primary" href="#">
             Mở phần 7. Kết luận để sửa
           </Button>
         }
-      />
+      >
+        <p>Sở trả lại hồ sơ lúc 09:32. Lý do của Sở: “Thiếu kết luận phân loại sức khỏe”. Chưa có gì được ghi nhận.</p>
+        {/* The way back after the fix, said once: fix, save, review, send again. */}
+        <p>Sau khi sửa và lưu, hồ sơ chuyển sang nhóm Sẵn sàng xem lại: chị xem lại rồi gửi lại.</p>
+      </NoticeOutcome>
     );
   } else if (phase === 'unknown') {
     // No "Gửi lại" here: the department may already hold the record, and a second send makes a duplicate.
     outcome = (
       <NoticeOutcome
-        notice={{
-          type: 'warning',
-          text: 'Chưa rõ kết quả: đã gửi lúc 09:31 nhưng Sở chưa trả lời sau 10 phút. Sở có thể đã nhận hồ sơ, nên chưa gửi lại để tránh gửi trùng.',
-        }}
+        key="unknown"
+        tone="attention"
+        title="Chưa rõ kết quả"
+        steps={steps.unknown}
+        focusOnMount={moveFocus}
         primary={
-          <Button variant="primary" loading={checking} loadingLabel="Đang hỏi Sở…" onClick={() => setChecking(true)}>
+          <Button
+            variant="primary"
+            loading={checking}
+            loadingLabel="Đang hỏi Sở…"
+            onClick={() => {
+              setMoveFocus(true);
+              setChecking(true);
+            }}
+          >
             Kiểm tra lại trạng thái
           </Button>
         }
-      />
+      >
+        <p>Đã gửi lúc 09:31 nhưng Sở chưa trả lời sau 10 phút. Sở có thể đã nhận hồ sơ, nên chưa gửi lại để tránh gửi trùng.</p>
+        <p>Hồ sơ vẫn ở nhóm Đang gửi cho đến khi Sở trả lời.</p>
+      </NoticeOutcome>
     );
   } else if (phase === 'stale') {
     outcome = (
-      <section aria-label="Hồ sơ vừa đổi" className={styles.Outcome}>
-        <FormNotice
-          boxed
-          notice={{
-            type: 'warning',
-            text: 'Chưa gửi gì. Chị Mai vừa sửa phần 4. Thể lực lúc 09:14, sau khi chị mở trang này: Cân nặng 52,5 → 53 kg.',
-          }}
-        />
+      <NoticeBlock
+        key="stale"
+        id="ho-so-vua-doi"
+        title="Hồ sơ vừa đổi"
+        notice={{
+          type: 'warning',
+          text: 'Chưa gửi gì. Chị Mai vừa sửa phần 4. Thể lực lúc 09:14, sau khi chị mở trang này: cân nặng từ 65\u00a0kg thành 66\u00a0kg.',
+        }}
+      >
         <Inline gap={10}>
           <Button href="#phan-4-the-luc">Xem phần 4. Thể lực</Button>
         </Inline>
-      </section>
+      </NoticeBlock>
     );
   } else if (cancelled) {
     outcome = (
-      <div ref={cancelledRef} tabIndex={-1} className={styles.Focus}>
-        <FormNotice boxed notice={{ type: 'info', text: 'Đã hủy gửi. Chưa có gì lên Sở; hồ sơ mở lại để chị sửa.' }} />
-      </div>
+      <NoticeBlock
+        key="cancelled"
+        id="da-huy-gui"
+        title="Đã hủy gửi"
+        headingRef={cancelledRef}
+        notice={{ type: 'info', text: 'Chưa có gì lên Sở; hồ sơ mở lại để chị sửa.' }}
+      />
     );
   }
 
   return (
-    <StaffLayout header={staffHeader}>
+    <StaffLayout
+      header={{
+        ...staffHeader,
+        // Phones: the header sticks and shrinks to a thin bar that keeps who is being reviewed in view.
+        collapseOnScroll: true,
+        compactBar: (
+          <>
+            <strong>Ngô Văn Nam</strong>
+            <span>Sinh 15/03/1990</span>
+            <span>RD26-0004</span>
+          </>
+        ),
+      }}
+    >
       <div className={styles.Head}>
-        {/* Phones leave out "Việc của tôi" (it is in the menu), so the trail takes one line less above the work. */}
-        <Breadcrumb className={styles.WideOnly} items={[{ label: 'Việc của tôi', href: '#' }, ...trail]} />
-        <Breadcrumb className={styles.PhoneOnly} items={trail} />
+        {/* One trail: the full path from 40rem, only "‹ Ngô Văn Nam" (the way back) on phones. */}
+        <Breadcrumb collapseOnPhone items={trail} />
         <h1 className={styles.Title}>{sendable ? 'Xem lại trước khi gửi lên Sở Y tế' : 'Trạng thái gửi lên Sở Y tế'}</h1>
         <div className={styles.Person}>
           <PatientContextBar
@@ -436,7 +571,7 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
             status={<StatusTag tone={tag.tone}>{tag.label}</StatusTag>}
           />
           <p className={styles.Meta}>
-            <span>Khám 10/10/2026 08:00</span>
+            <span>Khám 10/10/2026 08:15</span>
             <span>
               Người ký: <strong>BS Hoàng Thị Cúc</strong>
             </span>
@@ -445,7 +580,10 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
         </div>
       </div>
 
-      {outcome}
+      <VisuallyHidden role="status">{said}</VisuallyHidden>
+      <div ref={outcomeRef} className={styles.OutcomeSlot}>
+        {outcome}
+      </div>
 
       <section aria-labelledby="khac-binh-thuong" className={styles.Block}>
         <h2 id="khac-binh-thuong" className={styles.H2}>
@@ -500,6 +638,8 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
 
       {sendable ? (
         <section aria-label="Gửi lên Sở" className={styles.Send}>
+          {/* Who sends, said where the send happens: this batch is sent by hand, by the person reviewing it. */}
+          <p className={styles.Muted}>Đợt này gửi tay: chị xem lại rồi tự gửi từng hồ sơ.</p>
           <p>Hồ sơ được ký bằng token của BS Hoàng Thị Cúc và gửi thật lên Sở Y tế. Bấm gửi xong có {undoSeconds} giây để hủy.</p>
           <Inline gap={15}>
             <Button icon="simple-left" href="#">
@@ -511,7 +651,9 @@ function ReviewSend({ initialPhase = 'review', initialTicked = false, undoSecond
               onClick={() => {
                 setLeft(undoSeconds);
                 setCancelled(false);
+                setMoveFocus(true);
                 setPhase('waiting');
+                setSaid(`Chờ gửi lên Sở, còn ${undoSeconds} giây để hủy`);
               }}
             >
               Gửi lên Sở: Ngô Văn Nam
@@ -534,30 +676,64 @@ type Story = StoryObj<typeof meta>;
 /** Before sending: what differs from normal, every part with its source, and why the send button cannot be pressed yet. */
 export const XemLai: Story = {};
 
-/** Ticked and sent: a 30-second undo window in pale blue (started, not finished), and the way on to the next person. */
+/**
+ * Ticked and sent: a 30-second undo window in pale blue (started, not finished), and the way on to the next person.
+ * Focus moves to the panel's heading, whose name stays "Chờ gửi lên Sở" while the seconds run in the text under it;
+ * the page's status line says the start once.
+ */
 export const ChoGui: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole('button', { name: 'Gửi lên Sở: Ngô Văn Nam' })).toHaveAttribute('aria-disabled', 'true');
     await userEvent.click(canvas.getByRole('checkbox', { name: 'Tôi đã đối chiếu phần nhập tay với phiếu giấy' }));
     await userEvent.click(canvas.getByRole('button', { name: 'Gửi lên Sở: Ngô Văn Nam' }));
-    await expect(canvas.getByRole('heading', { name: /^Chờ gửi · còn \d+ giây$/ })).toBeInTheDocument();
+    const heading = canvas.getByRole('heading', { name: 'Chờ gửi lên Sở' });
+    await expect(heading).toHaveFocus();
+    await expect(canvas.getByText('Chờ gửi lên Sở, còn 30 giây để hủy')).toBeInTheDocument();
     await expect(canvas.getByRole('button', { name: 'Hủy gửi' })).toBeInTheDocument();
-    await expect(canvas.getByRole('link', { name: 'Sang người sau cần làm' })).toBeInTheDocument();
-    // The record's tag says the state once; the countdown lives only in the panel title.
+    await expect(canvas.getByRole('link', { name: `Sang người sau: ${NEXT_PERSON}` })).toBeInTheDocument();
+    // The record's tag says the state once; the countdown lives only in the panel's text.
     const who = canvas.getByRole('region', { name: 'Người đang làm' });
     await expect(within(who).getByText('Chờ gửi')).toBeInTheDocument();
     await expect(within(who).queryByText(/giây/)).not.toBeInTheDocument();
   },
 };
 
-/** Sent, no answer yet: nothing can be cancelled; the steps show only what has really happened. */
+/** "Hủy gửi" in the undo window: focus goes to the "Đã hủy gửi" heading and the status line says nothing was sent. */
+export const HuyGui: Story = {
+  args: { initialTicked: true },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button', { name: 'Gửi lên Sở: Ngô Văn Nam' }));
+    await userEvent.click(canvas.getByRole('button', { name: 'Hủy gửi' }));
+    await expect(canvas.getByRole('heading', { name: 'Đã hủy gửi' })).toHaveFocus();
+    await expect(canvas.getByText('Đã hủy gửi. Chưa có gì lên Sở; hồ sơ mở lại để chị sửa.')).toBeInTheDocument();
+    await expect(canvas.getByRole('button', { name: 'Gửi lên Sở: Ngô Văn Nam' })).toBeInTheDocument();
+  },
+};
+
+/**
+ * The window runs out while focus is on "Hủy gửi" (3 seconds here): the button goes, focus moves to the
+ * "Đang gửi lên Sở" heading, and the status line says "Đã chuyển sang Đang gửi" once.
+ */
+export const HetGioHuy: Story = {
+  args: { initialTicked: true, undoSeconds: 3 },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button', { name: 'Gửi lên Sở: Ngô Văn Nam' }));
+    canvas.getByRole('button', { name: 'Hủy gửi' }).focus();
+    await waitFor(() => expect(canvas.getByRole('heading', { name: 'Đang gửi lên Sở' })).toHaveFocus(), { timeout: 6000 });
+    await expect(canvas.getByText('Đã chuyển sang Đang gửi')).toBeInTheDocument();
+  },
+};
+
+/** Sent, no answer yet: nothing can be cancelled; the steps show only what has really happened, and where each answer will land. */
 export const DangGui: Story = { args: { initialPhase: 'sending', initialTicked: true } };
 
 /** The department returned its receipt code: green, because this is a success. The ministry's confirmation is still to come. */
 export const SoDaTiepNhan: Story = { args: { initialPhase: 'accepted', initialTicked: true } };
 
-/** The department refused with a reason: what failed, the department's words, the part to fix, and help from Minh. */
+/** The department refused with a reason: what failed, the department's words, the part to fix, the way back (sửa, xem lại, gửi lại), and help from Minh. */
 export const BiTuChoi: Story = { args: { initialPhase: 'rejected', initialTicked: true } };
 
 /** No answer in time: the department may hold the record, so check the status or ask Minh; there is no "Gửi lại". */
@@ -566,5 +742,5 @@ export const ChuaRoKetQua: Story = { args: { initialPhase: 'unknown', initialTic
 /** Someone changed the record after it was opened: nothing was sent; the notice names the change, then send again. */
 export const BanDaDoi: Story = { args: { initialPhase: 'stale', initialTicked: true } };
 
-/** The review on a phone: the person and the work first, every block one column, nothing scrolls sideways. */
+/** The review on a phone: the person stays in the thin header bar, every block is one column, nothing scrolls sideways. */
 export const DienThoai: Story = { parameters: { viewport: { defaultViewport: 'mobile1' } } };

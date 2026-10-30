@@ -24,15 +24,14 @@ describe('StatusTag', () => {
     expect(tag).toHaveAttribute('title', 'Trạng thái hồ sơ');
   });
 
-  it('marks a state with a hidden dot; muted sources and strong tags have none', () => {
-    const tones: Record<StatusTagTone, boolean> = {
+  it('marks a state with a hidden dot; muted sources have none', () => {
+    const tones: Record<Exclude<StatusTagTone, 'strong'>, boolean> = {
       neutral: true,
       info: true,
       success: true,
       error: true,
       attention: true,
       muted: false,
-      strong: false,
     };
     for (const [tone, hasDot] of Object.entries(tones) as Array<[StatusTagTone, boolean]>) {
       const { unmount } = render(<StatusTag tone={tone}>Chữ</StatusTag>);
@@ -44,5 +43,12 @@ describe('StatusTag', () => {
       expect(tag).toHaveTextContent(/^Chữ$/);
       unmount();
     }
+  });
+
+  it('shows the deprecated strong tone as neutral: no tag is solid', () => {
+    render(<StatusTag tone="strong">Đang làm</StatusTag>);
+    const tag = screen.getByText('Đang làm');
+    expect(tag).toHaveAttribute('data-tone', 'neutral');
+    expect(tag.querySelector('[data-part="dot"]')).toHaveAttribute('aria-hidden', 'true');
   });
 });

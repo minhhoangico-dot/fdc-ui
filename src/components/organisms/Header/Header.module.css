@@ -215,14 +215,35 @@
   font-weight: 700;
   line-height: 1.3;
 }
-/* The thin bar's content (name · date of birth · record code): only when collapsed on a phone. */
+/* The thin bar's content, only when collapsed below 64rem: the name on one line, then the facts (date of birth,
+   record code) as whole chunks set apart by space. Two short lines fit beside the 44px Menu button, so the thin bar
+   is never taller than the full header row (55px). */
 .CompactBar {
   display: none;
   flex: 1 1 0;
+  flex-wrap: wrap;
+  align-content: center;
+  column-gap: var(--space-10);
   min-inline-size: 0;
-  align-items: center;
+  color: var(--text-muted);
   font-size: 1rem;
-  line-height: 1.4;
+  line-height: 1.3;
+}
+.CompactBar > :first-child {
+  flex: 1 0 100%;
+  min-inline-size: 0;
+  overflow: hidden;
+  /* Room for stacked tone marks (Ẫ, Ổ) inside the clipped line. */
+  padding-block: 0.125em;
+  margin-block: -0.125em;
+  color: var(--text-default);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.CompactBar > :not(:first-child) {
+  white-space: nowrap;
 }
 .Header:where([data-variant='compact']) .MenuButton {
   margin-inline-start: auto;
@@ -269,6 +290,29 @@
   .Header:where([data-collapsed]) .Bar {
     column-gap: var(--space-10);
     padding-block: var(--space-5);
+  }
+}
+/* Narrow phones, collapsed: the Menu button keeps only its icon (its name stays "Menu"), so the date of birth
+   and the record code fit on one line beside it. */
+@media (max-width: 29.99rem) {
+  .Header:where([data-collapsed]) .MenuButton {
+    justify-content: center;
+    inline-size: var(--target-min);
+    padding-inline: 0;
+  }
+  .Header:where([data-collapsed]) .MenuLabel {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+/* The smallest phones (under 360px): the facts drop to 14px so "Sinh 07/07/1990  RD26-0006" stays one line. */
+@media (max-width: 22.49rem) {
+  .Header:where([data-collapsed]) .CompactBar > :not(:first-child) {
+    font-size: 0.875rem;
   }
 }
 @media (min-width: 64rem) {

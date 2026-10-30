@@ -30,10 +30,78 @@
   color: var(--text-muted);
 }
 .Error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-5);
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.4;
   color: var(--status-error-text);
+}
+/* The error's sign, as on FormNotice: a red circle with "!", so the error does not rest on red alone (in the
+   nursing-home theme the orange brand sits next to it). Hidden from screen readers, which hear "Lỗi:". Centred on
+   the first line: the mark's font is 0.75em, so the line (1.4em of the text) is 1.4 / 0.75 em here. */
+.Mark {
+  box-sizing: border-box;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.65em;
+  block-size: 1.65em;
+  margin-block-start: calc((1.4em / 0.75 - 1.65em) / 2);
+  /* Transparent edge: invisible here, drawn in forced-colors mode where the fill is dropped. */
+  border: 1px solid transparent;
+  border-radius: var(--radius-round);
+  background: var(--status-error-text);
+  color: var(--text-on-action);
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1;
+}
+.ErrorText {
+  min-inline-size: 0;
+}
+
+/* One message line (NumberField): the current text and hidden copies of every text the line may show share one grid
+   cell, so the line keeps the height of the tallest and the box under it never moves while the person types, leaves
+   the field, or a tag or an error comes or goes. At least one line is always kept. The copies are drawn from
+   data-text by CSS, so they are not page text and screen readers skip them (aria-hidden as well). */
+.Message {
+  display: grid;
+  min-block-size: 1.4em;
+  min-inline-size: 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.Message > * {
+  grid-area: 1 / 1;
+  min-inline-size: 0;
+}
+.Reserve {
+  visibility: hidden;
+  color: var(--text-muted);
+}
+.Reserve::before {
+  content: attr(data-text);
+}
+/* An error copy has the error's shape: the sign, then bold words. */
+.ReserveError {
+  display: flex;
+  gap: var(--space-5);
+  font-weight: 600;
+}
+.ReserveError::before {
+  content: '!';
+  flex: none;
+  box-sizing: border-box;
+  inline-size: 1.65em;
+  font-size: 0.75em;
+  line-height: calc(1.4em / 0.75);
+}
+.ReserveError::after {
+  content: attr(data-text);
+  min-inline-size: 0;
 }
 .Control {
   display: flex;
@@ -41,8 +109,9 @@
   align-items: center;
   gap: var(--space-5) var(--space-10);
 }
-/* The box never shrinks below room for a few digits and its unit; in a narrow column the `after` tag
-   ("Cao") wraps under the box instead of squeezing it. */
+/* The box never shrinks below room for a few digits and its unit; in a narrow column the deprecated `after` tag
+   wraps under the box instead of squeezing it. Without `after` the box is the column's full width, so boxes in a
+   column share their right edge. */
 .Box {
   position: relative;
   flex: 1 1 7rem;
@@ -97,9 +166,17 @@ textarea.Input {
   border-color: var(--border);
   background: var(--surface-alt);
 }
+/* The error edge is 2px wide but the box keeps its size: a 1px border plus a 1px inset shadow, so the box (and
+   everything under it) does not move by 2px when the error comes or goes. */
 .TextField:where([data-invalid]) .Input {
   box-sizing: border-box;
-  border: var(--border-width-strong) solid var(--status-error-text);
+  border-color: var(--status-error-text);
+  box-shadow: inset 0 0 0 calc(var(--border-width-strong) - 1px) var(--status-error-text);
+}
+/* Focus on a field with an error: the red edge stays and the ring stands off it by a wider white gap, so in the
+   nursing-home theme the orange ring and the red edge read as two lines, not one red-orange frame. */
+.TextField:where([data-invalid]) .Input:focus-visible {
+  outline-offset: calc(var(--focus-ring-offset) + 1px);
 }
 .TextField:where([data-icon]) .Input {
   box-sizing: border-box;
