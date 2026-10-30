@@ -8,7 +8,7 @@ It moves focus to its heading when it appears, so screen readers announce the re
 - **`success`** (default): done and confirmed. Green is only ever for success.
 - **`pending`**: pressed but not finished ("Chờ gửi lên Sở" / "**Còn 27 giây để hủy.** Chưa có gì lên Sở. Chị có thể hủy."): `status-info-bg`, sign **i**. The title is fixed; the seconds are in the text.
 - **`error`**: the other side refused and said why ("Bị từ chối"): `status-error-bg`, sign **!**. Give the reason in their words, the button that opens the part to fix ("Mở phần 7. Kết luận để sửa") and the way back after the fix (sửa → xem lại → gửi lại). Only a refusal with a reason opens the record for a resend.
-- **`attention`**: the outcome is not known ("Chưa rõ kết quả"): `status-warning-bg`, sign **!**. Offer "Kiểm tra lại trạng thái" and "Nhờ Minh kiểm tra", **never "Gửi lại"**: the department may already hold the record, and a second send makes a duplicate.
+- **`attention`**: the outcome is not known (KSK: "Chưa rõ kết quả"): `status-warning-bg`, sign **!**. Offer a way to check the status and a way to ask a person (KSK: "Kiểm tra lại trạng thái", "Nhờ Minh kiểm tra"), **never a resend**: the other system may already hold the item, and a second send makes a duplicate.
 
 **`emphasis`** sets how loud a success is:
 - **`strong`** (default): the solid green panel with white text that ends a patient flow (the booking confirmation). What happens next sits under the panel, on the page.
@@ -26,7 +26,9 @@ Each step also starts with its **state in words for screen readers**, hidden on 
 
 **One row while it fits, otherwise a list.** The steps sit on one row with "→" between them while the whole row fits the panel. When it does not (a phone, a narrow column), they become a list, one step per line, **without arrows**: the signs and the state words give the order, the signs line up in one column and a step still to come starts where the words start. So no line ever begins or ends with "→". The panel measures the row once (and again when fonts finish loading) and CSS compares it with the panel's width (container query units), so the switch follows the width with no script; until it is measured, the list.
 
-| Moment (staff) | Panel | Steps |
+Example: how the KSK staff app maps its send states to panels (its workflow is in fdc-ui `docs/apps/ksk-nhan-vien.md`). Another app maps its own states the same way: waiting with an undo → `pending`, confirmed → `success` + `subtle`, refused with a reason → `error`, unknown → `attention`.
+
+| KSK moment | Panel | Steps |
 |---|---|---|
 | Chờ gửi lên Sở (còn n giây để hủy, in the text) | `pending` | ✓ Đã xem lại → ◷ Chờ gửi → Sở tiếp nhận → Bộ xác nhận |
 | Sở đã tiếp nhận | `success`, `subtle`, code "Mã tiếp nhận của Sở" | ✓ Đã xem lại → ✓ Đã gửi lên Sở → ✓ Sở đã tiếp nhận → ◷ Chờ Bộ xác nhận |

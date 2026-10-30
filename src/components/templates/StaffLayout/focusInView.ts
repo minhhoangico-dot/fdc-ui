@@ -49,9 +49,10 @@ function scrollToFit(top: number, bottom: number, min: number, max: number): num
 
 /**
  * How far to scroll (px, positive = down) after focus moved to a control, so the control with its ring and its
- * label show between the sticky bars; null leaves the page as it is.
- * - Usually: the control with its ring inside the scroll padding (80px under the top bars, 15px above the action
- *   bar), then its label `bars.top` (5px under the top bars) if a tall message line left it under them.
+ * label show between the sticky bars; null leaves the page as it is. `bars` is the clear area 5px inside the sticky
+ * bars' edges, `padded` the band the scroll padding keeps (80px under the top bars, 15px above the action bar).
+ * - Usually: the control with its ring inside the padded band, then its label down to `bars.top` if a tall message
+ *   line left it under the top bars.
  * - On a short screen (a phone held sideways) where that band is too small: the real bar edges, the label 5px under
  *   the top bars and the ring above the action bar, up to 15px clear of it as room allows. The label is let go
  *   before the control is; when even the control with its ring does not fit, the browser's own scroll stands.
