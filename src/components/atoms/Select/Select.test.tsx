@@ -4,9 +4,9 @@ import userEvent from '@testing-library/user-event';
 import { Select } from './Select';
 
 const groups = [
-  { value: 'can-lam', label: 'Cần điền hoặc sửa · 1.017' },
+  { value: 'can-lam', label: 'Cần điền hoặc sửa · 1.019' },
   { value: 'xem-lai', label: 'Sẵn sàng xem lại · 412' },
-  { value: 'da-gui', label: 'Đã gửi · 505', disabled: true },
+  { value: 'da-gui', label: 'Sở đã tiếp nhận · 506', disabled: true },
 ];
 
 describe('Select', () => {
@@ -15,11 +15,11 @@ describe('Select', () => {
     const select = screen.getByRole('combobox', { name: 'Nhóm người' });
     expect(select.tagName).toBe('SELECT');
     expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual([
-      'Cần điền hoặc sửa · 1.017',
+      'Cần điền hoặc sửa · 1.019',
       'Sẵn sàng xem lại · 412',
-      'Đã gửi · 505',
+      'Sở đã tiếp nhận · 506',
     ]);
-    expect(screen.getByRole('option', { name: 'Đã gửi · 505' })).toBeDisabled();
+    expect(screen.getByRole('option', { name: 'Sở đã tiếp nhận · 506' })).toBeDisabled();
     expect(select.closest('[data-component="Select"]')).not.toBeNull();
   });
 

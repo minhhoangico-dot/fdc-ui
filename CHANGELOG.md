@@ -6,12 +6,19 @@ Versions follow the FDC Medical Group design system in Claude Design (the master
 
 Answers to an outside review of the 2.3 staff screens by ChatGPT and Gemini (business rules first, then looks and phones). Every finding was checked against the code before acting; one was wrong (table cells were already top-aligned) and was not changed. Before release, eight independent reviewers checked the result against each finding, on rendered pages at 320–1280px in both themes and with the keyboard and a screen reader's view (1 Blocker, 11 High, 33 Medium, 38 Nit, and 19 findings only partly fixed); everything they found is fixed below unless listed under "Known and accepted".
 
+### Structure: the shared guide holds principles, each app holds its own rules
+- The staff section of the guide (`design/fdc-medical-group/README.md`) is now principles and component rules only, grouped as buttons and words, fields and errors, states and color, saving and hand-offs, layout and lists (about 900 words shorter). The test for each rule: would a second app use it unchanged?
+- The health-check app's own workflow moved to `docs/apps/ksk-nhan-vien.md`: who sends, the record-states table, list groups and counts, the entry and send pages' exact words, and its open questions. It lives next to the sample pages until the app has its own repository.
+- The general lessons stay in the guide as principles: say who acts; an undo window before anything that cannot be taken back; say where the answer will land; never offer to resend when the outcome is unknown; each moment is heard once; a tag names the state and its count sits beside it.
+- The skill's governance rule (`references/governance.md` §5, SKILL.md rule 9) now applies to written rules too, so other brands get it; the FDC brand profile's staff section follows the same split.
+- The business-rule entries below describe the KSK sample pages; their current wording is in the app doc.
+
 ### Business rules (the costly ones)
 - **Send outcomes split.** "Gửi lỗi" is now "Bị từ chối" (the department refused and gave a reason: fix, then resend) and "Chưa rõ kết quả" (no answer: the department may already hold the record, so check the status or ask Minh, never "Gửi lại"). "Đã gửi lên Sở" as an outcome is "Sở đã tiếp nhận"; "Bộ đã nhận" is "Bộ đã xác nhận". The words are the same in the pages, the fixtures, the component stories, the Claude Design cards and the README states table.
 - **Say who sends.** Rạng Đông is sent by hand: the list says "Đợt này gửi tay: chị xem lại rồi tự gửi từng hồ sơ." (plain text, not a tag) and the review page repeats it at the send button. Auto-send runs for one other batch, and the header tag names it, in `info` blue (running is not success). This replaces the 2.4 draft "Bạn nhập liệu · Minh duyệt gửi", which contradicted the page where chị Lan sends herself.
 - **Say where the answer lands.** Đang gửi tells staff: accepted → group "Sở đã tiếp nhận"; refused → "Cần điền hoặc sửa" (reason, then sửa → lưu → xem lại → gửi lại); unknown → stays in "Đang gửi". The list groups follow: "Chưa rõ kết quả" sits in Đang gửi and counts in "làm được ngay"; the "Đã gửi" pill is now "Sở đã tiếp nhận" (with Bộ đã xác nhận).
 - **Conflicts are never shown as saved.** SaveStatus `conflict`: "Cần xử lý 1 giá trị trước khi lưu", amber with "!". The field is read-only until a value is chosen; Ctrl + S moves focus to the question, never to one answer, and both answers are described by it; "Giữ … của tôi" names the current value.
-- **Sending never blocks the next person.** During "Chờ gửi lên Sở" the review page offers "Người sau: Đặng Thanh Chi" (one 44px line from 360px); the next person's page shows "Ngô Văn Nam: chờ gửi lên Sở · còn 22 giây" with "Hủy gửi", then "Mở hồ sơ Ngô Văn Nam" after a cancel and "Xem trạng thái gửi" after the countdown; the list row says "Hủy được đến 09:31:22".
+- **Sending never blocks the next person.** During "Chờ gửi lên Sở" the review page offers "Người sau: Đặng Thanh Chi" (one 44px line from 360px); the next person's page shows "Ngô Văn Nam: chờ gửi lên Sở. Còn 22 giây để hủy." with "Hủy gửi", then "Mở hồ sơ Ngô Văn Nam" after a cancel and "Xem trạng thái gửi" after the countdown; the list row says "Hủy được đến 09:31:22".
 - **Nothing moves while staff work.** Field errors and the error summary are set by "Xem lại" or "Lưu" and stay until the next press (as on GOV.UK); no hint, tag or error appears or disappears on focus, typing or leaving a field. Before, leaving a filled field removed its hint and moved the form 27px between mouse down and up, so the click on the next control was lost.
 - **Several diagnoses and the doctor's words.** New CodeList (name first, code after, add and remove) plus a free-text field for the wording on the paper form.
 - **The step line tells the truth.** Done steps say what happened with a ✓ ("Sở đã tiếp nhận" with its code); the step waited for says "Chờ Bộ xác nhận" with a clock, never a dashed edge (dashed means an unavailable button); a failed step has a red "!"; each step has a hidden state word for screen readers.
@@ -40,6 +47,7 @@ Answers to an outside review of the 2.3 staff screens by ChatGPT and Gemini (bus
 - **Button:** `iconPosition="end"` for "next" actions; a link button passes `aria-label` through. **TextLink:** `arrow` back / next / none, body-size text. **Base styles:** every link gets the 3px focus ring.
 - **SummaryList:** "Thay đổi" is a link in the link colour; the details toggle is the bold one.
 - **Breadcrumb:** the "›" ends an item; `collapseOnPhone`. **Kbd:** lighter keycaps. **FieldRow:** aligns Combobox and Select too.
+- **Wave 5 (after the independent check):** ConfirmationPanel reads `focusOnMount` once, at mount, and its step line becomes a list without arrows when the row does not fit (measured, so no line starts or ends with "→"). DataTable: an empty, loading or failed table is never a Tab stop, and on phones shows only its message; a stacked row header is 44px only when it holds a link; the 320px label column fits the longest state tag. Pagination: "‹" and "›" are hidden from screen readers (the controls are named Trước and Sau). NumberField: after "Xem lại" the page error shows only while the field is empty. TimeSlotPicker reports an error with one bar for the group, like RadioGroup. PatientContextBar: the tag names the state and the count is muted text beside it.
 - `formatViNumber(n, decimals, minDecimals)` for fixed decimals ("21,0").
 
 ### Sample pages
@@ -52,10 +60,12 @@ Answers to an outside review of the 2.3 staff screens by ChatGPT and Gemini (bus
 - The visual review no longer reports text inside a visually hidden table header as clipped (skill fix).
 
 ### Known and accepted
-- On the smallest phones (320 × 568) the first empty field of "4. Thể lực" still starts below the fold: the header, the person (name, date of birth, code, nav buttons) and the part toggle take the first screen. Freeing it would mean dropping a whole row (for example the nav buttons) on those phones: a design choice for 2.5. From 390 × 844 the first field is above the action bar.
+- First screen of "4. Thể lực", measured: the header, the person (name, date of birth, code, nav buttons) and the part toggle take most of a small phone. Above the action bar: at 320 × 568 and 320 × 640 only Chiều cao; at 390 × 664 Chiều cao and Cân nặng; the first empty field, Mạch, from 390 × 844. Freeing more would mean dropping a whole row (for example the nav buttons) on those phones: a design choice for 2.5. In a conflict, Ctrl + S brings the question and both answers on screen at 320 (on opening they start under the bar). The 32px from label to box is the reserved message line.
+- Between 640 and 767px the record list's columns are squeezed ("Việc tiếp theo" down to 89px); stacking the list up to 48rem is a 2.5 candidate.
+- "Nhờ Minh kiểm tra" on a refused or unknown record inserts the note under the buttons and moves "Người sau" down about 72px at 390.
 - "Người sau: Đặng Thanh Chi" is two lines at 320 (one line from 360px).
 - The "Cao"/"Thấp" tag and the "· bình thường 60–100" range are 14px (caption size, reference data); the range is hidden when it does not fit beside the tag, and screen readers still read it. The Combobox option hint ("Bệnh tuần hoàn") is 14px too.
-- RadioGroup, Checkbox and CodeList show an error as a 3px bar with 15px padding, so the group moves 18px when the error appears; that only happens at a press of "Xem lại" or "Tiếp tục", never while choosing.
+- RadioGroup, Checkbox, CodeList and TimeSlotPicker show an error as a 3px bar with 15px padding, so the group moves 18px when the error appears; that only happens at a press of "Xem lại" or "Tiếp tục", never while choosing.
 - In Windows high-contrast mode the inset half of the error edge is dropped (1px system edge); the sign and the words still mark the error.
 
 ### Decisions
@@ -67,6 +77,7 @@ Answers to an outside review of the 2.3 staff screens by ChatGPT and Gemini (bus
 - Dashed edge for unavailable buttons: kept (approved 25/10); a reviewer read it as a drop zone.
 - Normal ranges and any confirmation for very abnormal values: example ranges only; a doctor sets them.
 - Who sends: by hand per batch for now. If Minh should approve each record before it goes to the department, that is a new state ("Chờ Minh duyệt") for 2.5.
+- Whether a typed value outside its allowed range stops "Xem lại" and appears in the summary (today it counts as filled). Listed in `docs/apps/ksk-nhan-vien.md`.
 
 ## 2.3.0 — 2026-10-29
 

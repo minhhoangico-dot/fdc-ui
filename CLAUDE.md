@@ -7,6 +7,7 @@ This repo is the code side of the **FDC Medical Group design system**: the famil
 - **Claude Design is the master** for tokens and guidelines: [FDC Medical Group](https://claude.ai/artifact/EZhBJY8xppjGRBpCyPV1PG). `design/fdc-medical-group/tokens.json` is its copy. Never edit `src/tokens/tokens.css` by hand; run `npm run tokens`.
 - **Build in both themes**: `data-theme="clinic"` (blue) and `data-theme="nursing-home"` (orange).
 - **Patients and families first**: 18px body text, 48px controls, 44px tap targets, one question per page, the hotline as visible text, Vietnamese copy with sentence-case labels.
+- **Keep the guide shared, the workflow in the app**: the master guide holds principles and component rules every FDC app uses; one app's states, groups, counts and exact screen words go in `docs/apps/<app>.md` (the KSK staff app: `docs/apps/ksk-nhan-vien.md`). Test each rule and each review finding: would a second app use it unchanged?
 - **After UI changes, review what was built**: run `npm run check`, then `npm run review:visual`, or use the `design-review` agent (`.claude/agents/design-review.md`) for an independent, read-only review with screenshots. Done means 0 Blockers.
 
 ## Commands

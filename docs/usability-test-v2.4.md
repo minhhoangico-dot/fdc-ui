@@ -357,7 +357,7 @@ Hoàn thành đúng: tìm ra **Tôn Nữ Hoàng Bảo Ngọc Phương Thảo, RD
 
 **Người dẫn:** khi đồng hồ trên màn hình còn **20 giây**, nói đúng câu: *"Chị Lan vừa nhắn: kết quả X-quang của anh Nam nhập nhầm, phải sửa lại."* Bấm đồng hồ thứ hai từ lúc nói.
 
-Trong lúc chờ, màn có nút "Người sau: Đặng Thanh Chi". Khi người tham gia bấm, người dẫn mở màn Nhập kết quả › Sau Khi Gui (người sau; đầu trang có dòng "Ngô Văn Nam: chờ gửi lên Sở · còn … giây" và nút "Hủy gửi Ngô Văn Nam"). Vẫn nói câu của chị Lan lúc còn 20 giây và xem họ tìm lại anh Nam ở đâu.
+Trong lúc chờ, màn có nút "Người sau: Đặng Thanh Chi". Khi người tham gia bấm, người dẫn mở màn Nhập kết quả › Sau Khi Gui (người sau; đầu trang có dòng "Ngô Văn Nam: chờ gửi lên Sở. Còn … giây để hủy." và nút "Hủy gửi Ngô Văn Nam"). Vẫn nói câu của chị Lan lúc còn 20 giây và xem họ tìm lại anh Nam ở đâu.
 
 **Hoàn thành đúng khi:** (1) xem phần nhập tay (X-quang) rồi mới tích "Tôi đã đối chiếu phần nhập tay với phiếu giấy"; (2) bấm "Gửi lên Sở: Ngô Văn Nam" một lần; (3) bấm **"Hủy gửi" trước khi hết giờ**; (4) nói được "chưa có gì lên Sở".
 

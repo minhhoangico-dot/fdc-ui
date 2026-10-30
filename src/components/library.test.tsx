@@ -49,7 +49,7 @@ const samples: Record<string, JSX.Element> = {
   PatientContextBar: <FDC.PatientContextBar name="Đặng Thanh Chi" birthDate="07/07/1990" recordCode="RD26-0006" />,
   StaffLayout: <FDC.StaffLayout header={{ logo: clinicHeader.logo, items: [], appName: 'hoso' }}>x</FDC.StaffLayout>,
   Checkbox: <FDC.Checkbox label="Tôi đã xem phần nhập tay" />,
-  Select: <FDC.Select label="Nhóm người" options={[{ value: 'can-lam', label: 'Cần điền hoặc sửa · 1.017' }]} />,
+  Select: <FDC.Select label="Nhóm người" options={[{ value: 'can-lam', label: 'Cần điền hoặc sửa · 1.019' }]} />,
   CodeList: <FDC.CodeList label="Bệnh, tật" options={[{ value: 'I10', label: 'Tăng huyết áp', code: 'I10' }]} defaultValue={['I10']} />,
   FormPartNav: <FDC.FormPartNav items={[{ label: '4. Thể lực', count: 'còn 2', current: true }]} />,
   SiteLayout: <FDC.SiteLayout header={clinicHeader} footer={clinicFooter}>x</FDC.SiteLayout>,

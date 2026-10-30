@@ -88,7 +88,7 @@ describe('RadioGroup v2.1', () => {
 
 describe('RadioGroup v2.4 pills', () => {
   const filters = [
-    { value: 'can-lam', label: 'Cần điền hoặc sửa · 1.017' },
+    { value: 'can-lam', label: 'Cần điền hoặc sửa · 1.019' },
     { value: 'xem-lai', label: 'Sẵn sàng xem lại · 412' },
     { value: 'tat-ca', label: 'Tất cả · 2.033' },
   ];
@@ -106,7 +106,7 @@ describe('RadioGroup v2.4 pills', () => {
     const group = screen.getByRole('group', { name: 'Nhóm người' });
     expect(group).toHaveAttribute('data-variant', 'pills');
     expect(screen.getAllByRole('radio')).toHaveLength(3);
-    const first = screen.getByRole('radio', { name: 'Cần điền hoặc sửa · 1.017' });
+    const first = screen.getByRole('radio', { name: 'Cần điền hoặc sửa · 1.019' });
     expect(first).toBeChecked();
     expect(first.closest('[data-checked]')).not.toBeNull();
 

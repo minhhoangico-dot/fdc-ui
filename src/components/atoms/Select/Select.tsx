@@ -6,7 +6,7 @@ import styles from './Select.module.css';
 
 export type SelectOption = {
   value: string;
-  /** What the person reads: "Cần điền hoặc sửa · 1.017". */
+  /** What the person reads: "Cần điền hoặc sửa · 1.019". */
   label: string;
   disabled?: boolean;
 };
