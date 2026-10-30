@@ -13,7 +13,11 @@ it('names the person as the page heading with the facts that tell people apart',
       recordCode="RD26-0006"
       organization="Công ty TNHH Rạng Đông"
       breadcrumb={[{ label: 'Việc của tôi', href: '/' }, { label: 'Người 6/2.033' }]}
-      status={<StatusTag>Cần điền · còn 3 mục</StatusTag>}
+      status={
+        <>
+          <StatusTag>Cần điền</StatusTag> <span>còn 3 mục</span>
+        </>
+      }
     />,
   );
   expect(screen.getByRole('region', { name: 'Người đang làm' })).toBeInTheDocument();
@@ -23,7 +27,8 @@ it('names the person as the page heading with the facts that tell people apart',
   expect(facts?.textContent).toBe('Nữ Sinh 07/07/1990 (36 tuổi) CCCD …0006 Mã lượt khám RD26-0006 Công ty TNHH Rạng Đông');
   expect(screen.getByText('RD26-0006').tagName).toBe('STRONG');
   expect(screen.getByRole('navigation', { name: 'Vị trí' })).toBeInTheDocument();
-  expect(screen.getByText('Cần điền · còn 3 mục')).toBeInTheDocument();
+  expect(screen.getByText('Cần điền')).toBeInTheDocument();
+  expect(screen.getByText('còn 3 mục')).toBeInTheDocument();
 });
 
 it('leaves missing facts out and keeps a custom code label', () => {

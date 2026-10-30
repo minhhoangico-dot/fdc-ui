@@ -22,7 +22,7 @@ export type PatientContextBarProps = {
   organization?: string;
   /** Where this page sits, above the name. */
   breadcrumb?: BreadcrumbItem[];
-  /** A StatusTag with the record's state: "Cần điền · còn 47 mục". It sits right after the name. */
+  /** The record's state: a StatusTag naming the state ("Cần điền"), with any count as muted text after it ("còn 47 mục"), never joined by a "·". It sits right after the name. */
   status?: ReactNode;
   /**
    * The way to the previous and next person: two Buttons with short visible words, the next arrow after them, and

@@ -96,7 +96,11 @@ export const RecordForm: Story = {
           { label: 'Rạng Đông KSK 2026', href: '#' },
           { label: 'Người 6 / 2.033' },
         ]}
-        status={<StatusTag>Cần điền · còn 48 mục</StatusTag>}
+        status={
+          <>
+            <StatusTag>Cần điền</StatusTag> <span style={{ color: 'var(--text-muted)' }}>còn 48 mục</span>
+          </>
+        }
         actions={
           <>
             <Button icon="simple-left" href="#" aria-label="Người trước: Ngô Văn Nam">

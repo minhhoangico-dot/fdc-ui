@@ -6,7 +6,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, nu
   name: 'Đặng Thanh Chi', sex: 'Nữ', birthDate: '07/07/1990', ageOn: new Date(2026, 9, 10), idEnd: '0006',
   recordCode: 'RD26-0006', organization: 'Công ty TNHH Rạng Đông',
   breadcrumb: [{label: 'Việc của tôi', href: '#'}, {label: 'Rạng Đông KSK 2026', href: '#'}, {label: 'Người 6 / 2.033'}],
-  status: h(F.StatusTag, null, 'Cần điền · còn 3 mục'),
+  status: h(React.Fragment, null, h(F.StatusTag, null, 'Cần điền'), ' ', h('span', {style: {color: 'var(--text-muted)'}}, 'còn 3 mục')),
   actions: h(React.Fragment, null,
     h(F.Button, {icon: 'simple-left', href: '#', 'aria-label': 'Người trước: Ngô Văn Nam'}, 'Người trước'),
     h(F.Button, {icon: 'simple-right', iconPosition: 'end', href: '#', 'aria-label': 'Người sau: Nguyễn Thị Mai Anh'}, 'Người sau'))}),

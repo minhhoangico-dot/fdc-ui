@@ -21,7 +21,11 @@ const meta = {
       { label: 'Rạng Đông KSK 2026', href: '#' },
       { label: 'Người 6 / 2.033' },
     ],
-    status: <StatusTag>Cần điền · còn 3 mục</StatusTag>,
+    status: (
+      <>
+        <StatusTag>Cần điền</StatusTag> <span style={{ color: 'var(--text-muted)' }}>còn 3 mục</span>
+      </>
+    ),
     // Short visible words; the name adds who it goes to. The next arrow sits after the words.
     actions: (
       <>

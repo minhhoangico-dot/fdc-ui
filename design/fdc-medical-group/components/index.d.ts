@@ -241,7 +241,7 @@ export declare const Kbd: import('react').ForwardRefExoticComponent<{
 /* ===== components/atoms/Select/Select ===== */
 export type SelectOption = {
     value: string;
-    /** What the person reads: "Cần điền hoặc sửa · 1.017". */
+    /** What the person reads: "Cần điền hoặc sửa · 1.019". */
     label: string;
     disabled?: boolean;
 };
@@ -595,7 +595,11 @@ export type ConfirmationPanelProps = {
     referenceLabel?: string;
     /** What happens next, how to change or cancel, and the buttons for the next step. */
     children?: ReactNode;
-    /** Move focus to the title when shown (after a submit). Default true. */
+    /**
+     * Move focus to the title when the panel is shown (after a submit). Default true. Read once, when the panel
+     * mounts: a later change does not move focus, so a panel already on screen never takes focus from a button in
+     * it. For a new result, show a new panel (a `key` per result) with `focusOnMount` set when it appears.
+     */
     focusOnMount?: boolean;
     /**
      * What the result is. Every tone except a strong success is a pale panel: a tint, a sign in a circle before the
@@ -622,6 +626,8 @@ export type ConfirmationPanelProps = {
      * later steps are plain event names ("Bộ xác nhận"):
      * [{ label: 'Sở đã tiếp nhận', state: 'done' }, { label: 'Chờ Bộ xác nhận', state: 'current' }].
      * Plain strings with `currentStep` still work (earlier steps are then shown as done).
+     * The steps sit on one row with an arrow between them while the row fits the panel; when it does not (a phone, a
+     * narrow column), they become a list, one step per line, without arrows: the signs and the state words give the order.
      */
     steps?: Array<string | ConfirmationStep>;
     /** For plain-string steps: index of the current step (0-based). */
@@ -818,7 +824,9 @@ export type NumberFieldProps = {
     /**
      * An error from the page, e.g. a required field still empty after pressing "Xem lại". Wins over the field's own
      * checks and shows in the same line, as given. Keep it short ("Điền mạch", "Điền tâm thu"): the line is one line
-     * in a 9rem column; the error summary can keep its own short name.
+     * in a 9rem column; the error summary can keep its own short name. Pass an "Điền …" only while the field is empty:
+     * once something is typed, the line shows the field's own message ("Cao" tag, range error) even if the page keeps
+     * its summary until the next press. The line keeps the room of the last page error, so dropping it moves nothing.
      */
     error?: string;
     /** Fixed help text instead of the automatic "Chưa điền" / "ví dụ 78"; an error or a "Cao" tag takes its place. */
@@ -864,7 +872,9 @@ export declare const NumberField: import('react').ForwardRefExoticComponent<{
     /**
      * An error from the page, e.g. a required field still empty after pressing "Xem lại". Wins over the field's own
      * checks and shows in the same line, as given. Keep it short ("Điền mạch", "Điền tâm thu"): the line is one line
-     * in a 9rem column; the error summary can keep its own short name.
+     * in a 9rem column; the error summary can keep its own short name. Pass an "Điền …" only while the field is empty:
+     * once something is typed, the line shows the field's own message ("Cao" tag, range error) even if the page keeps
+     * its summary until the next press. The line keeps the room of the last page error, so dropping it moves nothing.
      */
     error?: string;
     /** Fixed help text instead of the automatic "Chưa điền" / "ví dụ 78"; an error or a "Cao" tag takes its place. */
@@ -907,6 +917,7 @@ export declare function rangeText({ page, pageSize, total, itemLabel }: Pick<Pag
 /**
  * "Hiển thị 1–50 trong 2.033 người · ‹ Trước · Trang 1 / 41 · Sau ›".
  * Says what is shown and how much there is; only Previous and Next, so the control never grows with the list.
+ * The arrows are hidden from screen readers: the controls are named "Trước" and "Sau".
  * Renders nothing when the list is empty (the table says so instead).
  */
 export declare function Pagination({ page, pageSize, total, itemLabel, getHref, onPageChange, label, live, previousLabel, nextLabel, className, }: PaginationProps): import("react").JSX.Element | null;
@@ -1035,10 +1046,13 @@ export type SaveStatusProps = {
  * The conflict and the failed save carry the "!" sign in a circle, as FormNotice does: in the nursing-home theme the
  * red and the amber sit next to an orange button, so color alone does not tell them apart.
  *
- * One live region per change: a polite `role="status"` that is always in the page (unsaved, saving, saved, conflict),
- * and, for a failed save only, a `role="alert"` added with its sentence, so it is read once and at once. The count in
- * brackets and the "Lưu lại" button sit outside both regions: typing into another field while the network is down
- * does not read the failure again, and the button's name is never part of the message.
+ * One live region per moment: a polite `role="status"` that is always in the page and says the moment when it changes
+ * (unsaved, saving, saved, conflict), and, for a failed save only, a `role="alert"` added with its sentence, so it is
+ * read once and at once. Counts are never part of a region: while a person types, "1 ô chưa lưu" becoming "2 ô chưa
+ * lưu" is not read out over the typing. On the line the count shows in the words as before; a screen reader hears the
+ * same words in place (the count beside the region, outside it), so reading the line gives the current count once.
+ * The count in brackets on a failed save and the "Lưu lại" button sit outside both regions: typing into another
+ * field while the network is down does not read the failure again, and the button's name is never part of the message.
  */
 export declare function SaveStatus({ status, onRetry, retryLabel, className, ...rest }: SaveStatusProps): import("react").JSX.Element;
 
@@ -1290,8 +1304,10 @@ export type DataTableProps<Row> = {
  * The box scrolls sideways on narrow screens instead of the page, and becomes a keyboard-scrollable region
  * only when it actually overflows; with stackBelow="phone" each row becomes a block on phones instead.
  * Loading, empty and failed states keep the header so the page does not jump; their message sits under the table,
- * outside the sideways scroll, so it and "Tải lại" are always on screen. One polite live region, always on the page,
- * says the count, the empty result or the failure whenever it changes.
+ * outside the sideways scroll, so it and "Tải lại" are always on screen. With no rows nothing scrolls: where the
+ * header would not fit the box (a phone), it is kept for screen readers only, so it is never cut at the edge and
+ * the box is never a Tab stop. One polite live region, always on the page, says the count, the empty result or
+ * the failure whenever it changes.
  */
 export declare function DataTable<Row>({ caption, showCaption, columns, rows, getRowKey, variant, status, loadingText, errorText, onRetry, retryLabel, emptyText, resultNote, minWidth, stackBelow, pagination, className, }: DataTableProps<Row>): import("react").JSX.Element;
 
@@ -1506,7 +1522,7 @@ export type PatientContextBarProps = {
     organization?: string;
     /** Where this page sits, above the name. */
     breadcrumb?: BreadcrumbItem[];
-    /** A StatusTag with the record's state: "Cần điền · còn 47 mục". It sits right after the name. */
+    /** The record's state: a StatusTag naming the state ("Cần điền"), with any count as muted text after it ("còn 47 mục"), never joined by a "·". It sits right after the name. */
     status?: ReactNode;
     /**
      * The way to the previous and next person: two Buttons with short visible words, the next arrow after them, and
@@ -1621,6 +1637,46 @@ export type SiteLayoutProps = {
 };
 /** Page shell: skip link, header, main content, footer. Every public FDC page uses it. */
 export declare function SiteLayout({ header, footer, children, theme, skipLabel, className }: SiteLayoutProps): import("react").JSX.Element;
+
+/* ===== components/templates/StaffLayout/focusInView ===== */
+/**
+ * The measuring behind StaffLayout's keyboard focus helper: where a focused control shows, ring and label included,
+ * and how far to scroll so it shows between the sticky bars. Kept apart from the component so the numbers can be
+ * tested without a browser.
+ */
+/**
+ * Where a focused control shows on screen, ring included: the element that draws the ring (the control itself, or
+ * the closest option or slot that draws it for a small or hidden input, as RadioGroup and TimeSlotPicker do) grown
+ * by the ring's width and offset, and the control's drawn labels (an option's words can run below its ring).
+ * `top` is the top of a label above the control (a field's label sits above its message line and box), else the
+ * ring's top.
+ */
+export declare function focusBox(el: HTMLElement): {
+    top: number;
+    ringTop: number;
+    bottom: number;
+};
+/**
+ * How far to scroll (px, positive = down) after focus moved to a control, so the control with its ring and its
+ * label show between the sticky bars; null leaves the page as it is. `bars` is the clear area 5px inside the sticky
+ * bars' edges, `padded` the band the scroll padding keeps (80px under the top bars, 15px above the action bar).
+ * - Usually: the control with its ring inside the padded band, then its label down to `bars.top` if a tall message
+ *   line left it under the top bars.
+ * - On a short screen (a phone held sideways) where that band is too small: the real bar edges, the label 5px under
+ *   the top bars and the ring above the action bar, up to 15px clear of it as room allows. The label is let go
+ *   before the control is; when even the control with its ring does not fit, the browser's own scroll stands.
+ */
+export declare function focusScroll(box: {
+    top: number;
+    ringTop: number;
+    bottom: number;
+}, bars: {
+    top: number;
+    bottom: number;
+}, padded: {
+    top: number;
+    bottom: number;
+}): number | null;
 
 /* ===== components/templates/StaffLayout/StaffLayout ===== */
 export type StaffLayoutProps = {
